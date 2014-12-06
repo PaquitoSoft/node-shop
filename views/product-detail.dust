@@ -15,7 +15,7 @@
 		<!--END BREADCRUMB-->
 
 		<!--START PRODUCT-->
-		<div itemscope itemtype="http://schema.org/Product" class="twelve columns alpha omega">
+		<div itemscope itemtype="http://schema.org/Product" class="twelve columns alpha omega" data-controller="product-detail-controller">
 			<meta itemprop="url" content="#" />
 			<meta itemprop="image" content="http://static.zara.net/photos{product.colors[0].pictures[0]}" />
 
@@ -32,7 +32,7 @@
 				<!-- START GALLERY-->
 				<section id="gallery">
 					{#product.colors[0].pictures}
-						<a href="#" class="fancybox-media " rel="gallery">
+						<a href="#" class="fancybox-media _thumb" rel="gallery">
 							<img src="http://static.zara.net/photos{.}" alt="">
 						</a>
 					{/product.colors[0].pictures}
@@ -44,7 +44,7 @@
 
 			<!--START BUY-->
 			<section id="buy" class="five columns omega">
-				<form action="/cart/add" method="post" id="product-form" class="quickAdd" enctype="multipart/form-data">
+				<form action="/cart/add/{_id}" method="post" id="product-form" class="quickAdd" enctype="multipart/form-data">
 					<h1>{product.name}</h1>
 					<h2 id="product-price" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
 						<meta itemprop="priceCurrency" content="USD" />
@@ -57,7 +57,7 @@
 							<label for="product-select-option-0">Size</label>
 							<select class="single-option-selector" data-option="option1" id="product-select-option-0">
 								{#product.sizes}
-									<option value="{id}">{name}</option>
+									<option value="{id}">{id} - {name} - {stock} - {.}</option>
 								{/product.sizes}
 							</select>
 						</div>

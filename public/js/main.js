@@ -1,37 +1,28 @@
 (function() {
 	'use strict';
 
-	/*
-	$(document).ready(function() {
-		var $mainMenu = $('#main-menu');
-
-		$mainMenu.on('click', 'li > .accordion-button', function() {
-			console.log($(this).text());
-			$mainMenu.find('.accordion-content').addClass('invisible');
-			console.log($(this).siblings('.accordion-content'));
-			$(this).siblings('.accordion-content').removeClass('invisible');
-		});
-
-	});
-	*/
-
+	// Main configuration
 	requirejs.config({
 		baseUrl: '/js',
 		paths: {
-			jquery: '/vendor/jquery/dist/jquery'
+			jquery: '/vendor/jquery/dist/jquery',
 		}
 	});
 	
-	require(['jquery'], function($) {
-		var controllers = $('*[data-controller]').map(function(index, elem) {
-			return 'controllers/' + $(elem).attr('data-controller');
+	// Main initialization
+	require(['jquery', 'plugins/dom'], function($, dom) {
+		var controllers = [],
+			mainElements = [];
+		
+		$('*[data-controller]').each(function(index, elem) {
+			controllers.push('controllers/' + $(elem).attr('data-controller'));
+			mainElements.push($(elem));
 		});
 
-		console.log('Load controllers:', controllers);
-		require(controllers.toArray(), function() {
+		require(controllers, function() {
 			$.each(arguments, function(index, controller) {
 				try {
-					controller.init();
+					controller.init(mainElements[index]);
 				} catch (e) {
 					console.log('Error initializing controller %s: %s', controller, e);
 					console.log(e.stack);
