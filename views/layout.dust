@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<!--[if lt IE 7 ]><html class="ie ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!--><html lang="en"> <!--<![endif]-->
+	<head>
+		<title>
+			Simple ecommerce theme demo store
+		</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<meta name="description" content="Testing demo store" />
+
+		<link href="/styles/theme.css" rel="stylesheet" type="text/css"  media="all"  />
+		<link rel="stylesheet" href="/styles/main.css">
+
+		<link rel="shortcut icon" href="/images/favicon.ico">
+		<link rel="apple-touch-icon" href="/images/apple-touch-icon.png?2243">
+		<link rel="apple-touch-icon" sizes="72x72" href="/images/apple-touch-icon-72x72.png?2243">
+		<link rel="apple-touch-icon" sizes="114x114" href="/images/apple-touch-icon-114x114.png?2243">
+
+		{!
+		<script> Shopify.money_format = "${{amount}}"; </script>
+		<script src="//cdn.shopify.com/s/files/1/0037/5472/t/4/assets/jquery.theme.js?2243" type="text/javascript"></script>
+		!}
+
+		{!
+		<script>
+			//<![CDATA[
+			var Shopify = Shopify || {};
+			Shopify.shop = "simpletheme.myshopify.com";
+			Shopify.theme = {"name":"Simple","id":8185153,"theme_store_id":null,"role":"main"};
+			//]]>
+		</script>
+
+		<script id="__st">
+			//<![CDATA[
+			var __st={"a":375472,"offset":-14400,"reqid":"0bb0ce23-0776-4fc5-8512-29c3f9a0ce4f","pageurl":"simpletheme.myshopify.com/","u":"b322e1f7f8de","p":"home"};
+			//]]>
+		</script>
+
+		<script>
+			//<![CDATA[
+			(function() {
+			function asyncLoad() {
+			var urls = ["//cdn.shopify.com/s/javascripts/shopify_stats.js?v=6"];
+			for (var i = 0; i < urls.length; i++) {
+			var s = document.createElement('script');
+			s.type = 'text/javascript';
+			s.async = true;
+			s.src = urls[i];
+			var x = document.getElementsByTagName('script')[0];
+			x.parentNode.insertBefore(s, x);
+			}
+			}
+			window.attachEvent ? window.attachEvent('onload', asyncLoad) : window.addEventListener('load', asyncLoad, false);
+			})();
+			//]]>
+		</script>
+
+		<script type="text/javascript" src="//cdn.shopify.com/s/global/ga_urchin_forms.js?63add19976f930e99d30c78151440707ea8d3db6"></script>
+		!}
+	</head>
+
+
+	<body id="simple-ecommerce-theme-demo-store" class="template-index" >
+		<div id="cart-animation">1</div>
+		<div id="fb-root"></div>
+
+		{!
+		<script>
+			(function(d, s, id) {
+			var js, fjs = d.getElementsByTagName(s)[0];
+			if (d.getElementById(id)) return;
+			js = d.createElement(s); js.id = id;
+			js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=1743713679100277";
+			fjs.parentNode.insertBefore(js, fjs);
+			}(document, 'script', 'facebook-jssdk'));
+		</script>
+		!}
+
+		<!--START DRAWER-->
+		<div id="drawer">
+			<div class="container">
+				<div class="sixteen columns description">
+					<p class="empty">Your cart is empty.</p>
+				</div>
+			</div>
+		</div>
+		<!--END DRAWER-->
+
+		<!--START HEADER-->
+		<header>
+			<!--START CONTAINER-->
+			<div class="container upper">
+				<!--START SIDEBAR-->
+				<div class="three columns product-search-wrapper" data-controller="product-search-controller">
+					<div id="product-search">
+						<form action="/search" method="get" class="search-form" role="search">
+							<input type="hidden" name="type" value="product" />
+							<input type="submit" id="search-submit" class="icon " />
+							<input class="search" placeholder="Search" name="q" type="text" id="search-field"  />
+						</form>
+						<br class="clear">
+					</div>
+				</div>
+				<!--END SIDEBAR-->
+
+				<!--START TOP NAV-->
+				<div class="seven columns offset-by-one desktop">
+				</div>
+				<!--END TOP NAV-->
+
+				<!--START MINICART-->
+				<div class="five columns minicart-wrapper" data-controller="mini-cart-controller">
+					<div id="minicart">
+						<a href="#" class="toggle-drawer cart desktop ">My Cart <span id="cart-target-desktop" class="count cart-target">(0)</span></a>
+						<a href="/cart" class="cart mobile  cart-target">My Cart <span id="cart-target-mobile" class="count cart-target">(0)</span></a>
+						<a href="/cart" class="checkout">Check Out</a>
+					</div>
+				</div>
+				<!--END MINI CART-->
+
+			</div>
+			<!--END CONTAINER-->
+
+			<!--START CONTAINER 2-->
+			<div class="container lower">
+				<div class="sixteen columns">
+					<div class="table logo-tagline">
+						<div class="table-cell">
+							<h1 id="logo">
+								<a href="/">
+									<img src="/images/logo.png" alt="Shopify Shirts" />
+								</a>
+							</h1>
+						</div>
+
+						<div class="table-cell">
+							<div id="tagline" class="desktop">
+								<h3>Free shipping on all orders over $75</h3>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!--START CONTAINER 3-->
+
+		</header>
+		<!--END HEADER-->
+
+		<!--START CONTAINER 3-->
+		<div class="container">
+
+			<!--START SIDEBAR-->
+			<div id="sidebar" class="three columns" data-controller="main-navigation-controller">
+				<nav>
+					<a href="#" id="toggle-menu" class="mobile"><span>Menu</span></a>
+						<ul id="main-menu" class="accordion">
+							{#categories}
+								<li>
+									<a href="#" class="accordion-button">{name}
+										<span>+</span>
+									</a>
+									<div class="accordion-content {@ne key=_id value=parentCategoryId}invisible{/ne}">
+										{#subcategories}
+											{! TODO Mark selected category !}
+											<a href="/catalog/category/{id}/{name}" >{name} </a>
+										{/subcategories}
+									</div>
+								</li>
+							{/categories}
+
+							{!
+							<li>
+								<a href="#" class="accordion-button">Mens
+									<span>+</span>
+								</a>
+								<div class="accordion-content" style="display:none" >
+									<a href="/collections/mens-1" class="first">All</a>
+									<a href="/collections/mens-1/jacket" >Jacket </a>
+									<a href="/collections/mens-1/pants" >Pants </a>
+									<a href="/collections/mens-1/sweatshirts" >Sweatshirts </a>
+								</div>
+							</li>
+							!}
+
+							<li><a href="/blogs/news">Blog</a></li>
+							<li><a href="/pages/contact-us">Contact Us</a></li>
+
+						</ul>
+
+						<div id="social">
+							<a href="http://www.facebook.com/" target="_blank" class="facebook "></a>
+							<a href="http://www.twitter.com/" target="_blank" class="twitter "></a>
+							<a href="http://www.instagram.com/" target="_blank" class="instagram "></a>
+							<a href="http://www.pinterest.com/" target="_blank" class="pinterest "></a>
+							<a href="#" class="rss"></a>
+						</div>
+				</nav>
+			</div>
+			<!--END SIDEBAR-->
+
+
+			<!--START MAIN-->
+			<div id="main" class="twelve columns offset-by-one">
+				{+ mainContent /}
+			</div>
+			<!--END MAIN-->
+
+			<br class="clear">
+
+			<!--START FOOTER-->
+			<footer>
+				<section class="upper">
+
+					<!--START NAV-->
+					<div class="three columns ">
+						<nav>
+							<h2></h2>
+						</nav>
+					</div>
+					<!--END NAV-->
+
+					<!--START PAGE CONTENT-->
+					<div class="eight offset-by-one columns">
+						<div id="footer-content">
+							<h2>Theme documentation and support</h2>
+							<div>
+								<p>
+									You can find the documentation for this theme <a href="http://simpletheme.myshopify.com/pages/documentation" target="_blank">right here</a>. Since this is an official Shopify theme you can always ask <a href="http://support.shopify.com" target="_blank">one of our gurus</a>.
+								</p>
+								<p class="adr">
+									<span class="street-address">1 Main Street</span>
+									<br />
+									<span class="locality">Los Angeles</span>, <span class="region">California</span>,<br /><span class="postal-code">90210</span> <span class="country-name">USA</span><br /> <span class="tel">Phone: (555) 867 5309</span>
+								</p>
+							</div>
+						</div>
+					</div>
+					<!--END PAGE CONTENT-->
+
+					<!--START MAILING LIST / OR CREDIT CARDS-->
+					<div class="three columns offset-by-one">
+						<div id="payment-methods">
+							<img src="/images/payment/cc-amex.png" alt="We accept Amex" />
+							<img src="/images/payment/cc-discover.png" alt="We accept Discover" />
+							<img src="/images/payment/cc-visa.png" alt="We accept Visa" />
+							<img src="/images/payment/cc-mastercard.png" alt="We accept Mastercard" />
+							<img src="/images/payment/cc-maestro.png" alt="We accept Maestro" />
+							<img src="/images/payment/cc-cirrus.png" alt="We accept Cirrus" />
+							<img src="/images/payment/cc-paypal.png" alt="You can check out using Paypal" />
+							<img src="/images/payment/cc-google.png" alt="You can check out using Google Wallet" />
+						</div>
+					</div>
+					<!--END MAILING LIST / CREDIT CARDS-->
+
+					<br class="clear">
+
+				</section>
+
+				<section class="lower">
+					<div class="nine columns">
+						<div class="legals">
+							Copyright &copy; 2014 Shopify Shirts. <a href="http://www.shopify.ca" target="_blank">Ecommerce Software by Shopify</a>.
+						</div>
+					</div>
+					<div class="six columns offset-by-one">
+						<nav>
+							<a href="/search" title="Search">Search</a>
+							<a href="/pages/about-us" title="About Us">About Us</a>
+							<a href="/pages/privacy-policy" title="Privacy Policy">Privacy Policy</a>
+						</nav>
+					</div>
+				</section>
+
+				<br class="clear">
+
+			</footer>
+			<!--END FOOTER-->
+
+		</div>
+		<!-- END CONTAINER 3-->
+
+		{!
+		<script src="/vendor/jquery/dist/jquery.js"></script>
+		<script src="/js/main.js"></script>
+		!}
+
+		<script data-main="/js/main.js" src="/vendor/requirejs/require.js"></script>
+
+	</body>
+</html>

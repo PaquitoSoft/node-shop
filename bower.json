@@ -1,0 +1,23 @@
+{
+  "name": "node-shop",
+  "version": "1.0.0",
+  "homepage": "https://github.com/PaquitoSoft/node-shop",
+  "authors": [
+    "PaquitoSoft <paquitosoftware@gmail.com>"
+  ],
+  "description": "e-commerce playground website",
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "public/vendor",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~2.1.1",
+    "requirejs": "~2.1.15"
+  }
+}

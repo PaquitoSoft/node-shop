@@ -1,0 +1,26 @@
+{>layout/}
+
+{<mainContent}
+
+	<div id="page-content">  
+
+		<!--START BREADCRUMB-->
+		{!
+		<div id="breadcrumb" class="desktop">
+			<a href="/">Home</a> —
+			<a href="/collections/mens-1">Mens</a>  —  <a href="/collections/mens-1/jacket" class="active">Jacket</a>
+		</div>
+		!}
+		<!--END BREADCRUMB-->
+
+		<h1>{catName}</h1>
+		<span class="products-count">Products: {@size key=products/}</span>
+
+		<!--START PRODUCT GRID-->
+		{>"partials/products-grid" products=products categoryId=_id/}
+		<!--END PRODUCT GRID-->
+
+		<br class="clear">
+	</div>
+
+{/mainContent}

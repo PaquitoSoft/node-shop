@@ -1,0 +1,13 @@
+{> layout /}
+
+{< mainContent}
+	<div id="page-content">
+		<br>
+		
+		<!--START PRODUCT GRID-->
+		{>"partials/products-grid" products=products/}
+		<!--END PRODUCT GRID-->
+
+		<br class="clear">
+	</div>
+{/ mainContent}
