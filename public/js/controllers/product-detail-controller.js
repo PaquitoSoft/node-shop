@@ -1,10 +1,9 @@
 (function() {
 	// ProductDetailController
-	define(['jquery'], function($) {
+	define(['jquery', 'plugins/events-manager'], function($, events) {
 
 		
 		function configure($mainElement) {
-			console.log('This is the main element:', $mainElement);
 			var $mainImg = $mainElement.find('#feature-image'),
 				$sizeSelector = $mainElement.find('#product-select-option-0'),
 				$colorSelector = $mainElement.find('#product-select-option-1');
@@ -18,13 +17,15 @@
 			// Configure product addition
 			$mainElement.find('#product-form').on('submit', function(e) {
 				e.preventDefault();
+				
 				$.post($(this).attr('action'), 
 					{
-						colorId: $sizeSelector.find('options:selected').attr('value'),
-						sizeId: $colorSelector.find('options:selected').attr('value')
+						colorId: $sizeSelector.find('option:selected').attr('value'),
+						sizeId: $colorSelector.find('option:selected').attr('value')
 					})
 					.done(function(resp) {
-						console.log('Product added to cart!');
+						console.log('ProductDetailController: Product added to cart!');
+						events.trigger('productAddedToCart');
 					})
 					.fail(function() {
 						console.log('Error adding product:', arguments);

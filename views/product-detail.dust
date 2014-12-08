@@ -44,12 +44,12 @@
 
 			<!--START BUY-->
 			<section id="buy" class="five columns omega">
-				<form action="/cart/add/{_id}" method="post" id="product-form" class="quickAdd" enctype="multipart/form-data">
+				<form action="/shop/cart/{product._id}" method="post" id="product-form" class="quickAdd" enctype="multipart/form-data">
 					<h1>{product.name}</h1>
 					<h2 id="product-price" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
 						<meta itemprop="priceCurrency" content="USD" />
 						<link itemprop="availability" href="http://schema.org/InStock" />
-						<span class="product-price" itemprop="price">${.product.price}</span>
+						<span class="product-price" itemprop="price">${product.price}</span>
 					</h2>
 
 					<div id="product-variants" class="">
@@ -57,7 +57,8 @@
 							<label for="product-select-option-0">Size</label>
 							<select class="single-option-selector" data-option="option1" id="product-select-option-0">
 								{#product.sizes}
-									<option value="{id}">{id} - {name} - {stock} - {.}</option>
+									{! TODO Disable size when it's out of stock !}
+									<option value="{id}">{name}</option>
 								{/product.sizes}
 							</select>
 						</div>

@@ -114,8 +114,8 @@
 				<!--START MINICART-->
 				<div class="five columns minicart-wrapper" data-controller="mini-cart-controller">
 					<div id="minicart">
-						<a href="#" class="toggle-drawer cart desktop ">My Cart <span id="cart-target-desktop" class="count cart-target">(0)</span></a>
-						<a href="/cart" class="cart mobile  cart-target">My Cart <span id="cart-target-mobile" class="count cart-target">(0)</span></a>
+						<a href="/shop/cart" class="toggle-drawer cart desktop ">My Cart <span id="cart-target-desktop" class="count cart-target">(<span class="_items-count">0</span>)</span></a>
+						<a href="/cart" class="cart mobile  cart-target">My Cart <span id="cart-target-mobile" class="count cart-target">()</span></a>
 						<a href="/cart" class="checkout">Check Out</a>
 					</div>
 				</div>
