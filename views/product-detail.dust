@@ -15,10 +15,10 @@
 		<!--END BREADCRUMB-->
 
 		<!--START PRODUCT-->
-		<div itemscope itemtype="http://schema.org/Product" class="twelve columns alpha omega" data-controller="product-detail-controller">
+		<div itemscope itemtype="http://schema.org/Product" class="twelve columns alpha omega" data-controller="product-detail-controller" data-productId="{product._id}" data-categoryId="{categoryId}">
 			<meta itemprop="url" content="#" />
 			<meta itemprop="image" content="http://static.zara.net/photos{product.colors[0].pictures[0]}" />
-
+			
 			<!-- START PRODUCT IMAGES-->
 			<section id="images" class="seven columns alpha">
 

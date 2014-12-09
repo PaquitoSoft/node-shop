@@ -5,8 +5,8 @@
 		
 		function configure($mainElement) {
 			var $mainImg = $mainElement.find('#feature-image'),
-				$sizeSelector = $mainElement.find('#product-select-option-0'),
-				$colorSelector = $mainElement.find('#product-select-option-1');
+				$sizeSelector = $mainElement.find('#product-select-option-1'),
+				$colorSelector = $mainElement.find('#product-select-option-0');
 
 			// Configure images switching
 			$mainElement.on('click', '#gallery ._thumb', function(e) {
@@ -21,7 +21,8 @@
 				$.post($(this).attr('action'), 
 					{
 						colorId: $sizeSelector.find('option:selected').attr('value'),
-						sizeId: $colorSelector.find('option:selected').attr('value')
+						sizeId: $colorSelector.find('option:selected').attr('value'),
+						categoryId: $mainElement.attr('data-categoryId')
 					})
 					.done(function(resp) {
 						console.log('ProductDetailController: Product added to cart!');

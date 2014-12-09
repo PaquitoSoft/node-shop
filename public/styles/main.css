@@ -23,3 +23,7 @@
 section#gallery a {
 	margin-right: 8px;
 }
+
+#cart .row .description {
+	padding-bottom: 20px;
+}
