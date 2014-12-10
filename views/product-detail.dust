@@ -54,20 +54,20 @@
 
 					<div id="product-variants" class="">
 						<div class="selector-wrapper">
+							<label for="product-select-option-1">Color</label>
+							<select class="single-option-selector" data-option="option2" id="product-select-option-1">
+								{#product.colors}
+									<option value="{id}">{name}</option>
+								{/product.colors}
+							</select>
+						</div>
+						<div class="selector-wrapper">
 							<label for="product-select-option-0">Size</label>
 							<select class="single-option-selector" data-option="option1" id="product-select-option-0">
 								{#product.sizes}
 									{! TODO Disable size when it's out of stock !}
 									<option value="{id}">{name}</option>
 								{/product.sizes}
-							</select>
-						</div>
-						<div class="selector-wrapper">
-							<label for="product-select-option-1">Color</label>
-							<select class="single-option-selector" data-option="option2" id="product-select-option-1">
-								{#product.colors}
-									<option value="{id}">{name}</option>
-								{/product.colors}
 							</select>
 						</div>
 						{!

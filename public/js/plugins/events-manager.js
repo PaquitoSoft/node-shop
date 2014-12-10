@@ -23,7 +23,7 @@
 					fns[i](data);
 				} catch (e) {
 					console.warn('Error executing event callback:', eventName);
-					console.warn(e);
+					console.warn(e.stack);
 				}
 			}
 		}
