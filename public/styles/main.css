@@ -24,6 +24,14 @@ section#gallery a {
 	margin-right: 8px;
 }
 
+.product-detail .products-navigation {
+	text-align: right;
+}
+
+.product-detail .products-navigation .right {
+	margin-left: 10px;
+}
+
 #cart .row .description {
 	padding-bottom: 20px;
 }
