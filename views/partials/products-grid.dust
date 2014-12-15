@@ -1,8 +1,8 @@
 
-<section class="product-grid twelve columns alpha omega">
+<section class="product-grid twelve columns alpha omega" data-controller="products-grid-controller">
 	{#products}
 		<div class="four columns">
-			<a href="/catalog/category/{categoryId}/product/{_id}/{name}" id="product-{id}" class="__animated __fadeInUpBig">
+			<a href="/catalog/category/{categoryId}/product/{_id}/{name|s}" data-id="{_id}" class="__animated __fadeInUpBig _product-summary">
 				<img src="http://static.zara.net/photos{colors[0].pictures[0]}" alt="Blue ripped jeans" class="product" />
 				<h3>{name}</h3>
 				<h4>${price} </h4>

@@ -24,8 +24,8 @@
 
 				<!--START: PRODUCTS NAVIGATION-->
 				<div class="products-navigation">
-					<span class="left"><a href="#">< Prev.</a></span>
-					<span class="right"><a href="#">Next ></a></span>
+					<span class="left _nav-link"><a class="product-navigation-link" href="#">< Prev.</a></span>
+					<span class="right _nav-link"><a class="product-navigation-link" href="#">Next ></a></span>
 				</div>
 				<!--END: PRODUCTS NAVIGATION-->
 

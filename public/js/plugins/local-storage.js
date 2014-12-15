@@ -3,43 +3,66 @@
 
 	// Browser storage plugin
 	define(function() {
+		var storage = window.localStorage;
+		var SEPARATOR = '|',
+			TYPE_STRING = '#',
+			TYPE_OBJECT = '@';		
 
-		// TODO Implement ttls for any kind of values on store and retrieve
-
+		// TTL in seconds
 		function store(key, value, options) {
-			var storage, 
-				rawValue = value;
+			var rawValue = value,
+				_options = options || {},
+				type = (typeof value === 'string') ? TYPE_STRING : TYPE_OBJECT,
+				ttl = _options.ttl || '';
 
-			options = options || {};
-			storage = (options.ttl === 'session') ? window.sessionStorage : window.localStorage;
-			
-			if (typeof value !== 'string') {
-				if (options.ttl && options.ttl !== 'session') {
-					value._ttl = options.ttl;
-				}
-				rawValue = '@' + JSON.stringify(value);
+			console.log('Storing value:', value);
+			if (type === TYPE_OBJECT) {
+				rawValue = JSON.stringify(value);
 			}
+
+			rawValue = type + SEPARATOR + ttl + SEPARATOR + rawValue;
 
 			storage.setItem(key, rawValue);
 		}
 
 		function retrieve(key) {
-			var rawValue = window.localStorage.getItem(key) || window.sessionStorage.getItem(key),
-				result = rawValue;
+			var rawValue = storage.getItem(key),
+				result = rawValue,
+				parts;
 
 			if (!result) return result;
+			
+			parts = rawValue.split(SEPARATOR);
 
-			if (rawValue[0] === '@') {
-				result = JSON.parse(rawValue.substr(1));
-				delete result._ttl;
+			// Check if value is expired
+			if (parts[1] && Date.now() > parts[1]) {
+				storate.removeItem(key);
+				return null;
+			}
+
+			// Parse value if needed
+			if (parts[0] === TYPE_OBJECT) {
+				result = JSON.parse(parts.slice(2).join(''));
+			} else {
+				result = parts.slice(2).join('');
 			}
 
 			return result;
 		}
 
+		function remove(key) {
+			return storage.removeItem(key);
+		}
+
+		function clearAll() {
+			return storage.clear();
+		}
+
 		return {
 			store: store,
-			retrieve: retrieve
+			retrieve: retrieve,
+			remove: remove,
+			clearAll: clearAll
 		}
 
 	});
