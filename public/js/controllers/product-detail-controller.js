@@ -2,7 +2,7 @@
 	// ProductDetailController
 	define(['jquery', 'plugins/events-manager', 'plugins/local-storage'], function($, events, storage) {
 
-		var $mainImg, $sizeSelector, $colorSelector,
+		var $mainImg, $sizeSelector, $colorSelector, $shopCartBtn,
 			productId,
 			productCategoryId;
 
@@ -48,6 +48,7 @@
 				.done(function(resp) {
 					console.log('ProductDetailController: Product added to cart!');
 					events.trigger('productAddedToCart');
+					$shopCartBtn.removeClass('hidden');
 				})
 				.fail(function() {
 					console.log('Error adding product:', arguments);
@@ -58,6 +59,7 @@
 			$mainImg = $mainElement.find('#feature-image');
 			$sizeSelector = $mainElement.find('#product-select-option-1');
 			$colorSelector = $mainElement.find('#product-select-option-0');
+			$shopCartBtn = $mainElement.find('#shop');
 			productId = $mainElement.attr('data-productId');
 			productCategoryId = $mainElement.attr('data-categoryId');
 

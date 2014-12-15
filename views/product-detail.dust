@@ -86,7 +86,8 @@
 						!}
 					</div>
 					
-					<input type="submit" value="Add To Cart" id="add" class="btn add-to-cart" />	
+					<input type="submit" value="Add To Cart" id="add" class="btn add-to-cart" />
+					<a href="/shop/cart" id="shop" class="btn invert hidden">Buy!</a>
 				</form>
 
 				<!-- START SHARE-->

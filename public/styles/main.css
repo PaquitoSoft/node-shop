@@ -51,7 +51,19 @@ section#gallery a {
 	padding-bottom: 20px;
 }
 
+#product-form #shop {
+	font-size: 15px;
+	text-decoration: none;
+	margin-left: 15px;
+	padding: 10px 20px;
+	background: #333 !important;
+	color: #fff;
+}
 
+#product-form #shop:hover {
+	background: #fff !important;
+	color: #333;
+}
 .hidden {
 	visibility: hidden;
 }
