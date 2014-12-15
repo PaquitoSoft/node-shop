@@ -165,7 +165,7 @@
 									<div class="accordion-content {@ne key=_id value=parentCategoryId}invisible{/ne}">
 										{#subcategories}
 											{! TODO Mark selected category !}
-											<a href="/catalog/category/{id}/{name}" >{name} </a>
+											<a href="/catalog/category/{id}/{name}" class="{?selected}selected{/selected}" >{name} </a>
 										{/subcategories}
 									</div>
 								</li>

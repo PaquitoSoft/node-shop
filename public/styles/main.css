@@ -7,6 +7,11 @@
 	padding-left: 10px;
 }
 
+#main-menu .selected {
+	font-size: 16px;
+	color: #000;
+}
+
 .invisible {
 	display: none;
 }
