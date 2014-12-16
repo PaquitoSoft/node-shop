@@ -32,7 +32,7 @@
 
 					<!-- START ROW-->
 					{#cart.orderItems}
-						<div class="row">
+						<div class="row" data-skuId="{skuId}">
 							<div class="six columns alpha description">
 								<img src="http://static.zara.net/photos{imageUrl}" alt="{name}">
 								<div class="info">
@@ -65,7 +65,7 @@
 				<!--START TOTAL-->
 				<div class="twelve columns alpha omega row">
 					<div class="six columns alpha continue-shopping">
-						<a href="/collections/all">« Continue Shopping</a>
+						<a href="/">« Continue Shopping</a>
 					</div>
 					<div class="six columns omega cart total">
 						<h2>Total $128.00</h2>

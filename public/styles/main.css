@@ -51,6 +51,15 @@ section#gallery a {
 	padding-bottom: 20px;
 }
 
+#drawer {
+	max-height: 310px;
+	overflow-y: auto;
+}
+
+#drawer .row .col {
+	padding-top: 50px !important;
+}
+
 #product-form #shop {
 	font-size: 15px;
 	text-decoration: none;
@@ -64,6 +73,11 @@ section#gallery a {
 	background: #fff !important;
 	color: #333;
 }
+
 .hidden {
 	visibility: hidden;
+}
+.visible {
+	visibility: visible !important;
+	display: block !important;
 }

@@ -24,8 +24,12 @@
 		function configure($mainEl) {
 			$itemsCount = $mainEl.find('._items-count');
 
-			// _initUI();
 			events.on('productAddedToCart', _onProductAddedToCart);
+
+			$mainEl.on('click', '.cart', function(e) {
+				e.preventDefault();
+				events.trigger('toggleSummaryCartRequested');
+			});
 
 			console.log('MiniCartController initialized!');
 		}

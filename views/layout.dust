@@ -80,11 +80,32 @@
 		!}
 
 		<!--START DRAWER-->
-		<div id="drawer">
+		<div id="drawer" data-controller="summary-cart-controller">
 			<div class="container">
-				<div class="sixteen columns description">
-					<p class="empty">Your cart is empty.</p>
-				</div>
+				<form action="/shop/cart" method="get">
+					{#shoppingCart.orderItems}
+						<div class="row first" data-skuId="{skuId}">
+							<div class="nine columns description">
+								<img src="http://static.zara.net/photos{imageUrl}" alt="{name}">
+								<div class="info col">
+									<h3>
+										<a href="#">{name}</a>
+									</h3>
+									<p class="mobile">1 x ${price}</p>
+								</div>
+							</div>
+							<div class="two columns price desktop col">${amount}</div>	
+							<div class="two columns price desktop col">{quantity} unit/s</div>
+							<div class="two columns total desktop col">${amount}</div>
+							<div class="one column remove desktop col">
+								<a href="#" class="removeLine">Remove</a>
+							</div>
+						</div>
+					{/shoppingCart.orderItems}
+					<div class="actions">
+						<input type="submit" value="Check Out">
+					</div>
+				</form>
 			</div>
 		</div>
 		<!--END DRAWER-->
@@ -115,8 +136,8 @@
 				<div class="five columns minicart-wrapper" data-controller="mini-cart-controller">
 					<div id="minicart">
 						<a href="/shop/cart" class="toggle-drawer cart desktop ">My Cart <span id="cart-target-desktop" class="count cart-target">(<span class="_items-count">{shoppingCart.unitsCount}</span>)</span></a>
-						<a href="/cart" class="cart mobile  cart-target">My Cart <span id="cart-target-mobile" class="count cart-target">({shoppingCart.unitsCount})</span></a>
-						<a href="/cart" class="checkout">Check Out</a>
+						<a href="/shop/cart" class="cart mobile  cart-target">My Cart <span id="cart-target-mobile" class="count cart-target">({shoppingCart.unitsCount})</span></a>
+						<a href="/shop/cart" class="checkout">Check Out</a>
 					</div>
 				</div>
 				<!--END MINI CART-->
