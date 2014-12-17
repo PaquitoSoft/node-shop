@@ -51,6 +51,10 @@ section#gallery a {
 	padding-bottom: 20px;
 }
 
+section#cart form div.row div.price {
+	padding-top: 0;
+}
+
 #drawer {
 	max-height: 310px;
 	overflow-y: auto;

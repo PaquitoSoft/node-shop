@@ -43,8 +43,8 @@
 							</div>
 
 							<div class="two columns price desktop">${price}</div>
-							<div class="one columns quantity tr">
-								<input type="text" value="{quantity}">
+							<div class="one columns quantity total tr">
+								{quantity}
 								<p class="mobile">x ${amount}</p>
 							</div>
 							<div class="two columns total desktop">
@@ -77,11 +77,11 @@
 
 				<!-- START ACTIONS -->
 				<div class="twelve columns alpha omega">
-					<div class="six columns alpha">
+					<div class="six columns alpha hidden">
 						<textarea id="note" name="note" placeholder="Add a note to your order..."></textarea>
 					</div>
 					<div class="six columns omega actions">
-						<input type="submit" id="update" name="update" value="Update">
+						<input type="submit" id="update" name="update" value="Update" class="hidden">
 						<input type="submit" id="checkout" name="checkout" value="Check Out">
 					</div>
 				</div>
