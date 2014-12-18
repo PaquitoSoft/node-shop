@@ -18,48 +18,6 @@
 		<link rel="apple-touch-icon" href="/images/apple-touch-icon.png?2243">
 		<link rel="apple-touch-icon" sizes="72x72" href="/images/apple-touch-icon-72x72.png?2243">
 		<link rel="apple-touch-icon" sizes="114x114" href="/images/apple-touch-icon-114x114.png?2243">
-
-		{!
-		<script> Shopify.money_format = "${{amount}}"; </script>
-		<script src="//cdn.shopify.com/s/files/1/0037/5472/t/4/assets/jquery.theme.js?2243" type="text/javascript"></script>
-		!}
-
-		{!
-		<script>
-			//<![CDATA[
-			var Shopify = Shopify || {};
-			Shopify.shop = "simpletheme.myshopify.com";
-			Shopify.theme = {"name":"Simple","id":8185153,"theme_store_id":null,"role":"main"};
-			//]]>
-		</script>
-
-		<script id="__st">
-			//<![CDATA[
-			var __st={"a":375472,"offset":-14400,"reqid":"0bb0ce23-0776-4fc5-8512-29c3f9a0ce4f","pageurl":"simpletheme.myshopify.com/","u":"b322e1f7f8de","p":"home"};
-			//]]>
-		</script>
-
-		<script>
-			//<![CDATA[
-			(function() {
-			function asyncLoad() {
-			var urls = ["//cdn.shopify.com/s/javascripts/shopify_stats.js?v=6"];
-			for (var i = 0; i < urls.length; i++) {
-			var s = document.createElement('script');
-			s.type = 'text/javascript';
-			s.async = true;
-			s.src = urls[i];
-			var x = document.getElementsByTagName('script')[0];
-			x.parentNode.insertBefore(s, x);
-			}
-			}
-			window.attachEvent ? window.attachEvent('onload', asyncLoad) : window.addEventListener('load', asyncLoad, false);
-			})();
-			//]]>
-		</script>
-
-		<script type="text/javascript" src="//cdn.shopify.com/s/global/ga_urchin_forms.js?63add19976f930e99d30c78151440707ea8d3db6"></script>
-		!}
 	</head>
 
 
@@ -67,17 +25,6 @@
 		<div id="cart-animation">1</div>
 		<div id="fb-root"></div>
 
-		{!
-		<script>
-			(function(d, s, id) {
-			var js, fjs = d.getElementsByTagName(s)[0];
-			if (d.getElementById(id)) return;
-			js = d.createElement(s); js.id = id;
-			js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=1743713679100277";
-			fjs.parentNode.insertBefore(js, fjs);
-			}(document, 'script', 'facebook-jssdk'));
-		</script>
-		!}
 
 		<!--START DRAWER-->
 		<div id="drawer" data-controller="summary-cart-controller">
