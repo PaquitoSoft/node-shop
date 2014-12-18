@@ -33,7 +33,7 @@
 
 				});
 			} else {
-				// TODO Disabled instead of hiding?
+				// TODO Disable instead of hide
 				$productsNavigation.addClass('hidden');
 			}
 		}

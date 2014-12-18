@@ -250,10 +250,13 @@
 		</div>
 		<!-- END CONTAINER 3-->
 
-		{!
-		<script src="/vendor/jquery/dist/jquery.js"></script>
-		<script src="/js/main.js"></script>
-		!}
+		<script>
+			window.NodeShop = {
+				version: '0.1.0',
+				dataLayer: {@clientDataLayer /}
+			};
+			console.log('Data Layer:', NodeShop.dataLayer);
+		</script>
 
 		<script data-main="/js/main.js" src="/vendor/requirejs/require.js"></script>
 

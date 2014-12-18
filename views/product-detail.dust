@@ -7,6 +7,9 @@
 
 	<div id="page-content" class="product-detail">
 
+		{@clientDataLayer key="product-detail-controller" attr="product" data=product /}
+		{@clientDataLayer key="product-detail-controller" attr="label" data="Martini" /}
+		
 		<!--START BREADCRUMB-->
 		<div id="breadcrumb" class="desktop">
 			<a href="/" >Home</a> &mdash;
@@ -123,7 +126,7 @@
 			</section>
 			<!--END PRODUCT INFO-->
 
-			<!--START PRODUCT GRID-->
+			<!--START RELATED PRODUCT GRID-->
 			{!
 			<section id="related-products" class="product-grid twelve columns alpha omega">
 				<h2>More products like this</h2>
