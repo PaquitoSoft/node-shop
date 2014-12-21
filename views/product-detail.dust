@@ -8,7 +8,6 @@
 	<div id="page-content" class="product-detail">
 
 		{@clientDataLayer key="product-detail-controller" attr="product" data=product /}
-		{@clientDataLayer key="product-detail-controller" attr="label" data="Martini" /}
 		
 		<!--START BREADCRUMB-->
 		<div id="breadcrumb" class="desktop">

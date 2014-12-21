@@ -3,10 +3,9 @@
 	define(['jquery', 'plugins/events-manager', 'plugins/local-storage'], function($, events, storage) {
 
 		var $mainImg, $sizeSelector, $colorSelector, $shopCartBtn,
-			productId,
-			productCategoryId;
-
+			productData;
 		
+
 		function configureProductsNavigation($productsNavigation) {
 			var selectedCategoryProductId = storage.retrieve('selectedCategoryProductId'),
 				currentCategoryProductsIds = storage.retrieve('currentCategoryProductsIds');
@@ -17,7 +16,7 @@
 					e.preventDefault();
 					
 					var $link = $(this),
-						idIndex = currentCategoryProductsIds.indexOf(productId),
+						idIndex = currentCategoryProductsIds.indexOf(productData._id.toString()),
 						nextUrl;
 					
 					if (idIndex !== -1) {
@@ -33,21 +32,30 @@
 
 				});
 			} else {
-				// TODO Disable instead of hide
+				// TODO Disable instead of hide?
 				$productsNavigation.addClass('hidden');
 			}
 		}
 
 		function addProductToCart($form) {
+			var colorId = $colorSelector.find('option:selected').attr('value'),
+				sizeId = $sizeSelector.find('option:selected').attr('value');
+
 			$.post($form.attr('action'), 
 				{
-					colorId: $sizeSelector.find('option:selected').attr('value'),
-					sizeId: $colorSelector.find('option:selected').attr('value'),
-					categoryId: productCategoryId
+					colorId: colorId,
+					sizeId: sizeId,
+					categoryId: productData.categoryId
 				})
 				.done(function(resp) {
 					console.log('ProductDetailController: Product added to cart!');
-					events.trigger('productAddedToCart');
+					var shopCartItem = resp.shopCartItem;
+					shopCartItem.name = productData.name;
+					shopCartItem.price = productData.price;
+					shopCartItem.amount = 1;
+					shopCartItem.imageUrl = $mainImg.attr('src');
+
+					events.trigger('productAddedToCart', { shopCartItem: shopCartItem });
 					$shopCartBtn.removeClass('hidden');
 				})
 				.fail(function() {
@@ -55,19 +63,22 @@
 				});
 		}
 
-		function configure($mainElement) {
-			$mainImg = $mainElement.find('#feature-image');
-			$sizeSelector = $mainElement.find('#product-select-option-1');
-			$colorSelector = $mainElement.find('#product-select-option-0');
-			$shopCartBtn = $mainElement.find('#shop');
-			productId = $mainElement.attr('data-productId');
-			productCategoryId = $mainElement.attr('data-categoryId');
+		function changeMainImage(event) {
+			event.preventDefault();
+			$mainImg.attr('src', $(this).find('img').attr('src'));
+		}
 
+		function configure($mainElement, data) {
+			$mainImg = $mainElement.find('#feature-image');
+			$sizeSelector = $mainElement.find('#product-select-option-0');
+			$colorSelector = $mainElement.find('#product-select-option-1');
+			$shopCartBtn = $mainElement.find('#shop');
+			productData = data.product;
+			
 			// Configure images switching
-			$mainElement.on('click', '#gallery ._thumb', function(e) {
-				e.preventDefault();
-				$mainImg.attr('src', $(this).find('img').attr('src'));
-			});
+			$mainElement.on('click', '#gallery ._thumb', changeMainImage);
+
+			// TODO Configure color change (switch images)
 
 			// Configure products navigation
 			configureProductsNavigation($mainElement.find('.products-navigation'));

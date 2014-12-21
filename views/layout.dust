@@ -28,8 +28,12 @@
 
 		<!--START DRAWER-->
 		<div id="drawer" data-controller="summary-cart-controller">
+
+			{@clientDataLayer key="summary-cart-controller" attr="shopCart" data=shoppingCart /}
+			
 			<div class="container">
-				<form action="/shop/cart" method="get">
+				<form action="/shop/cart" method="post" class="_list">
+					{!
 					{#shoppingCart.orderItems}
 						<div class="row first" data-skuId="{skuId}">
 							<div class="nine columns description">
@@ -49,6 +53,7 @@
 							</div>
 						</div>
 					{/shoppingCart.orderItems}
+					!}
 					<div class="actions">
 						<input type="submit" value="Check Out">
 					</div>
@@ -252,10 +257,14 @@
 
 		<script>
 			window.NodeShop = {
-				version: '0.1.0',
+				appContext: {
+					version: '0.1.0',
+					templates: {
+						disableCaching: true
+					}
+				},
 				dataLayer: {@clientDataLayer /}
 			};
-			console.log('Data Layer:', NodeShop.dataLayer);
 		</script>
 
 		<script data-main="/js/main.js" src="/vendor/requirejs/require.js"></script>

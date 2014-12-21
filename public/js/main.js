@@ -5,7 +5,8 @@
 	requirejs.config({
 		baseUrl: '/js',
 		paths: {
-			jquery: '/vendor/jquery/dist/jquery',
+			jquery: '/vendor/jquery/dist/jquery.min',
+			handlebars: '/vendor/handlebars/handlebars'
 		}
 	});
 	
@@ -13,6 +14,7 @@
 	require(['jquery'], function($) {
 		var controllers = [],
 			mainElements = [],
+			dataLayer = window.NodeShop.dataLayer,
 			onControllerInitialized,
 			pendingControllers;
 		
@@ -34,11 +36,13 @@
 		require(controllers, function() {
 			
 			$.each(arguments, function(index, controller) {
+				var controllerData;
 				try {
+					controllerData = dataLayer[mainElements[index].attr('data-controller')] || {};
 					if (controller.init.length > 1) {
-						controller.init(mainElements[index], onControllerInitialized);
+						controller.init(mainElements[index], controllerData, onControllerInitialized);
 					} else {
-						controller.init(mainElements[index]);
+						controller.init(mainElements[index], controllerData);
 						onControllerInitialized();
 					}
 					// TODO Maybe we should have a timeout warning if some controller gets stuck
