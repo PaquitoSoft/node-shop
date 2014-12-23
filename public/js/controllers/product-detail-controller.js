@@ -49,13 +49,11 @@
 				})
 				.done(function(resp) {
 					console.log('ProductDetailController: Product added to cart!');
-					var shopCartItem = resp.shopCartItem;
-					shopCartItem.name = productData.name;
-					shopCartItem.price = productData.price;
-					shopCartItem.amount = 1;
-					shopCartItem.imageUrl = $mainImg.attr('src');
-
-					events.trigger('productAddedToCart', { shopCartItem: shopCartItem });
+					events.trigger('productAddedToCart', {
+						product: productData,
+						colorId: colorId,
+						sizeId: sizeId
+					});
 					$shopCartBtn.removeClass('hidden');
 				})
 				.fail(function() {

@@ -1,6 +1,6 @@
 (function() {
 	// SummaryCartController
-	define(['jquery', 'plugins/events-manager', 'plugins/templates'], function($, events, templates) {
+	define(['jquery', 'plugins/events-manager', 'plugins/templates', 'models/shop-cart'], function($, events, templates, ShopCart) {
 		var $el,
 			$shopCartItemsWrapper,
 			shopCart,
@@ -27,21 +27,9 @@
 		}
 
 		function _onProductAddedToCart(data) {
-			var prevItemIndex = -1;
-
-			$.each(shopCart.orderItems, function (index, oi) {
-				if (oi.skuId === data.shopCartItem.skuId) {
-					prevItemIndex = index;
-					return false;
-				}
-			})
-
-			if (prevItemIndex >= 0) {
-				shopCart.orderItems[prevItemIndex].quantity += 1;
-			} else {
-				shopCart.orderItems.push(data.shopCartItem);
-			}
-
+			
+			shopCart.addProduct(data.product, data.colorId, data.sizeId);
+			_renderOrderItems();
 			
 			console.log('SummaryCartController# Prouduct added to cart:', data.shopCartItem);
 		}
@@ -49,7 +37,7 @@
 		function configure($mainEl, data) {
 			$el = $mainEl;
 			$shopCartItemsWrapper = $mainEl.find('._list');
-			shopCart = data.shopCart;
+			shopCart = new ShopCart(data.shopCart);
 
 			// Maybe we should render summary cart only when user wants to see it
 
