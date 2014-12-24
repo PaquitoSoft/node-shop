@@ -1,20 +1,29 @@
 (function() {
 	// SummaryCartController
-	define(['jquery', 'plugins/events-manager', 'plugins/templates', 'models/shop-cart'], function($, events, templates, ShopCart) {
+	define(['jquery', 'plugins/events-manager', 'plugins/templates', 'stores/shop-cart'], function($, events, templates, ShopCartStore) {
 		var $el,
 			$shopCartItemsWrapper,
-			shopCart,
 			itemsRendered = false;
 
 		function _renderOrderItems(done) {
-			templates.render('shop-cart-items', { orderItems: shopCart.orderItems }, function (html) {
+			console.log('Rendering shop cart summary:', ShopCartStore.getOrderItems());
+			templates.render('shop-cart-items', { orderItems: ShopCartStore.getOrderItems() }, function (html) {
 				$shopCartItemsWrapper.html(html);
 				if (done) done();
 			});
 		}
 
+		function _deleteOrderItem(event) {
+			var $link = $(this),
+				skuId = $link.parents('.row').attr('data-skuId');
+
+			event.preventDefault();
+
+			ShopCartStore.removeOrderItem(skuId).done(_renderOrderItems);
+		}
+
 		function _toggle() {
-			if (shopCart && shopCart.orderItems.length) {
+			if (ShopCartStore.itemsCount) {
 				if (!itemsRendered) {
 					_renderOrderItems(function() {
 						itemsRendered = true;
@@ -27,20 +36,15 @@
 		}
 
 		function _onProductAddedToCart(data) {
-			
-			shopCart.addProduct(data.product, data.colorId, data.sizeId);
 			_renderOrderItems();
-			
-			console.log('SummaryCartController# Prouduct added to cart:', data.shopCartItem);
 		}
 
 		function configure($mainEl, data) {
 			$el = $mainEl;
 			$shopCartItemsWrapper = $mainEl.find('._list');
-			shopCart = new ShopCart(data.shopCart);
-
-			// Maybe we should render summary cart only when user wants to see it
-
+			
+			$el.on('click', '.removeLine', _deleteOrderItem);
+			
 			events.on('toggleSummaryCartRequested', _toggle);
 
 			events.on('productAddedToCart', _onProductAddedToCart);

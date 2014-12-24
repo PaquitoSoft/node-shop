@@ -1,6 +1,6 @@
 (function() {
 	// ProductDetailController
-	define(['jquery', 'plugins/events-manager', 'plugins/local-storage'], function($, events, storage) {
+	define(['jquery', 'plugins/events-manager', 'plugins/local-storage', 'stores/shop-cart'], function($, events, storage, ShopCart) {
 
 		var $mainImg, $sizeSelector, $colorSelector, $shopCartBtn,
 			productData;
@@ -41,23 +41,10 @@
 			var colorId = $colorSelector.find('option:selected').attr('value'),
 				sizeId = $sizeSelector.find('option:selected').attr('value');
 
-			$.post($form.attr('action'), 
-				{
-					colorId: colorId,
-					sizeId: sizeId,
-					categoryId: productData.categoryId
-				})
-				.done(function(resp) {
+			ShopCart.addProduct(productData, colorId, sizeId)
+				.done(function() {
 					console.log('ProductDetailController: Product added to cart!');
-					events.trigger('productAddedToCart', {
-						product: productData,
-						colorId: colorId,
-						sizeId: sizeId
-					});
 					$shopCartBtn.removeClass('hidden');
-				})
-				.fail(function() {
-					console.log('Error adding product:', arguments);
 				});
 		}
 

@@ -261,7 +261,8 @@
 					version: '0.1.0',
 					templates: {
 						disableCaching: true
-					}
+					},
+					shopCartData: {shoppingCart|js|s}
 				},
 				dataLayer: {@clientDataLayer /}
 			};
