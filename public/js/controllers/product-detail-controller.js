@@ -1,9 +1,12 @@
 (function() {
 	// ProductDetailController
-	define(['jquery', 'plugins/events-manager', 'plugins/local-storage', 'stores/shop-cart'], function($, events, storage, ShopCart) {
+	define(
+		['jquery', 'plugins/app-context', 'plugins/events-manager', 'plugins/local-storage',
+			'models/product', 'stores/shop-cart', 'plugins/templates'],
+		function($, appContext, events, storage, Product, ShopCart, templates) {
 
-		var $mainImg, $sizeSelector, $colorSelector, $shopCartBtn,
-			productData;
+		var $mainImg, $gallery, $sizeSelector, $colorSelector, $shopCartBtn,
+			product;
 		
 
 		function configureProductsNavigation($productsNavigation) {
@@ -16,7 +19,7 @@
 					e.preventDefault();
 					
 					var $link = $(this),
-						idIndex = currentCategoryProductsIds.indexOf(productData._id.toString()),
+						idIndex = currentCategoryProductsIds.indexOf(product._id.toString()),
 						nextUrl;
 					
 					if (idIndex !== -1) {
@@ -37,11 +40,24 @@
 			}
 		}
 
+		function configureColorChange() {
+			$colorSelector.on('change', function (event) {
+				var colorData = product.getColor($colorSelector.find('option:selected').attr('value'));
+				$mainImg.attr('src', appContext.photosBasePath + colorData.pictures[0]);
+				templates.render('product-images', {
+					productImages: colorData.pictures,
+					basePath: appContext.photosBasePath
+				}, function(html) {
+					$gallery.html(html);
+				});
+			});
+		}
+
 		function addProductToCart($form) {
 			var colorId = $colorSelector.find('option:selected').attr('value'),
 				sizeId = $sizeSelector.find('option:selected').attr('value');
 
-			ShopCart.addProduct(productData, colorId, sizeId)
+			ShopCart.addProduct(product, colorId, sizeId)
 				.done(function() {
 					console.log('ProductDetailController: Product added to cart!');
 					$shopCartBtn.removeClass('hidden');
@@ -55,15 +71,17 @@
 
 		function configure($mainElement, data) {
 			$mainImg = $mainElement.find('#feature-image');
+			$gallery = $mainElement.find('#gallery');
 			$sizeSelector = $mainElement.find('#product-select-option-0');
 			$colorSelector = $mainElement.find('#product-select-option-1');
 			$shopCartBtn = $mainElement.find('#shop');
-			productData = data.product;
+			product = new Product(data.product);
 			
 			// Configure images switching
 			$mainElement.on('click', '#gallery ._thumb', changeMainImage);
 
-			// TODO Configure color change (switch images)
+			// Configure color change (switch images)
+			configureColorChange();
 
 			// Configure products navigation
 			configureProductsNavigation($mainElement.find('.products-navigation'));

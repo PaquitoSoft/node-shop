@@ -259,6 +259,7 @@
 			window.NodeShop = {
 				appContext: {
 					version: '0.1.0',
+					photosBasePath: 'http://static.zara.net/photos',
 					templates: {
 						disableCaching: true
 					},

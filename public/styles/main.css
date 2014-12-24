@@ -16,6 +16,10 @@
 	display: none;
 }
 
+select[disabled] {
+	background-color: #ddd;
+}
+
 .products-count {
 	position: absolute;
 	right: 10px;
