@@ -16,7 +16,7 @@
 		});
 		Object.defineProperty(ShopCart.prototype, 'unitsCount', {
 			get: function() {
-				return this.orderItems.orderItems.reduce(function(total, orderItem) {
+				return this.orderItems.reduce(function(total, orderItem) {
 					return total + orderItem.quantity;
 				}, 0);
 			}
@@ -78,18 +78,10 @@
 			return deferred;
 		};
 
-		ShopCart.prototype.removeOrderItem = function(skuId) {
+		ShopCart.prototype.removeOrderItem = function(orderItemIndex) {
 			var deferred = $.Deferred(),
 				self = this,
-				orderItemIndex = -1,
-				orderItem = this.orderItems.filter(function(oi, index) {
-					if (oi.skuId === skuId) {
-						orderItemIndex = index;
-						return true;
-					} else {
-						return false;
-					}
-				})[0];
+				orderItem = this.orderItems[orderItemIndex];
 
 			if (orderItem) {
 				$.ajax({
@@ -101,14 +93,14 @@
 					}
 				})
 				.done(function() {
-					events.trigger('productRemovedFromCart');
 					self.orderItems.splice(orderItemIndex, 1);
+					events.trigger('productRemovedFromCart');
 					deferred.resolve();
 				}).fail(function() {
 					deferred.reject();
 				});
 			} else {
-				console.warn('No order item found with skuId:', skuId);
+				console.warn('No order item found with index:', orderItemIndex);
 				deferred.reject();
 			}
 

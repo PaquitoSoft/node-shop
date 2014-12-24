@@ -1,9 +1,7 @@
 (function() {
 	// MiniCartController
-	define(['jquery', 'plugins/events-manager'/*, 'plugins/local-storage'*/], function($, events, storage) {
+	define(['jquery', 'plugins/events-manager', 'stores/shop-cart'], function($, events, ShopCartStore) {
 		var $itemsCount;
-
-		// TODO Retrieve mini-cart if local info has expired
 
 		function _initUI() {
 			var miniCart = storage.retrieve('mini-cart');
@@ -12,19 +10,15 @@
 			}
 		}
 
-		function _onProductAddedToCart() {
-			// var miniCart = storage.retrieve('mini-cart') || { count: 0 };
-			// miniCart.count += 1;
-			// storage.store('mini-cart', miniCart, { ttl: 1500 });
-			// $itemsCount.text(miniCart.count);
-
-			$itemsCount.text(parseInt($itemsCount.text(), 10) + 1);
+		function _onShopCartUpdated() {
+			$itemsCount.text(ShopCartStore.unitsCount);
 		}
 
 		function configure($mainEl) {
 			$itemsCount = $mainEl.find('._items-count');
 
-			events.on('productAddedToCart', _onProductAddedToCart);
+			events.on('productAddedToCart', _onShopCartUpdated);
+			events.on('productRemovedFromCart', _onShopCartUpdated);
 
 			$mainEl.on('click', '.cart', function(e) {
 				e.preventDefault();

@@ -15,11 +15,11 @@
 
 		function _deleteOrderItem(event) {
 			var $link = $(this),
-				skuId = $link.parents('.row').attr('data-skuId');
+				orderItemIndex = $link.parents('.row').attr('data-index');
 
 			event.preventDefault();
-
-			ShopCartStore.removeOrderItem(skuId).done(_renderOrderItems);
+			
+			ShopCartStore.removeOrderItem(orderItemIndex).done(_renderOrderItems);
 		}
 
 		function _toggle() {
