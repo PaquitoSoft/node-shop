@@ -3,8 +3,8 @@
 
 	// Client side rendering plugin
 	define(
-		['plugins/app-context', 'plugins/local-storage', 'jquery', 'handlebars'],
-		function(appContext, storage, $, HBS) {
+		['plugins/app-context', 'plugins/local-storage', 'jquery', 'handlebars', 'plugins/handlebars-helpers'],
+		function(appContext, storage, $, HBS, viewHelpers) {
 
 			var cache;
 			var cacheLoaded = false;
@@ -42,10 +42,12 @@
 			}
 
 			function preloadTemplate(templateName) {
-				// TODO Error handling
-				$.get(TEMPLATES_BASE_PATH + templateName + '.hbs', function(raw) {
-					cacheTemplate(templateName, HBS.compile(raw));
-				});
+				if (!cache.templates[templateName]) {
+					// TODO Error handling
+					$.get(TEMPLATES_BASE_PATH + templateName + '.hbs', function(raw) {
+						cacheTemplate(templateName, HBS.compile(raw));
+					});
+				}
 			}
 
 			function getTemplate(templateName, done) {
@@ -76,6 +78,9 @@
 					done(tpl(context));
 				});
 			}
+
+			// Apply Handlebars custom helpers
+			viewHelpers.extendeHandlerbars();
 
 			return {
 				preloadTemplate: preloadTemplate,

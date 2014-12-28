@@ -1,0 +1,28 @@
+<div id="page-content">
+	<br>
+	
+	<!--START PRODUCT GRID-->
+	{{! > "partials/products-grid" products=products/}}
+
+	<section class="product-grid twelve columns alpha omega" data-controller="products-grid-controller">
+		{{#products}}
+			<div class="four columns">
+				<a href="/catalog/category/{{categoryId}}/product/{{_id}}/{{{name}}}" data-id="{{_id}}" class="__animated __fadeInUpBig _product-summary">
+					<img src="http://static.zara.net/photos{{colors.[0].pictures.[0]}}" alt="Blue ripped jeans" class="product" />
+					<h3>{{name}}</h3>
+					<h4>${{price}} </h4>
+				</a>
+			</div>
+			
+			{{#ifMultipleIndex @index}}
+				<br class="clear">
+			{{/ifMultipleIndex}}
+
+
+		{{/products}}
+	</section>
+
+	<!--END PRODUCT GRID-->
+
+	<br class="clear">
+</div>
