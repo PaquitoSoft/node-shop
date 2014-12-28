@@ -26,6 +26,12 @@
 			return this.orderItems;
 		}
 
+		ShopCart.prototype.getTotalAmount = function() {
+			return this.orderItems.reduce(function(total, oi) {
+				return total + (oi.quantity * oi.price);
+			}, 0);
+		}
+
 		ShopCart.prototype.addProduct = function(product, colorId, sizeId) {
 			var deferred = $.Deferred(),
 				self = this;

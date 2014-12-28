@@ -13,7 +13,7 @@
 
 		<h1>My Cart</h1>
 
-		<section id="cart">
+		<section id="cart" data-controller="shop-cart-controller">
 
 			<form action="/cart" method="post">
 				<!--START CART CONTENTS-->
@@ -32,7 +32,7 @@
 
 					<!-- START ROW-->
 					{#cart.orderItems}
-						<div class="row" data-skuId="{skuId}">
+						<div class="row" data-skuId="{skuId}" data-index="{@idx}{.}{/idx}">
 							<div class="six columns alpha description">
 								<img src="http://static.zara.net/photos{imageUrl}" alt="{name}">
 								<div class="info">
@@ -51,7 +51,7 @@
 								<span>${amount} </span>
 							</div>
 							<div class="one column remove omega desktop">
-								<a href="/cart/{productId}">x</a>
+								<a href="#" class="_removeOrderItemLink">x</a>
 							</div>
 						</div>
 					{/cart.orderItems}
@@ -68,7 +68,7 @@
 						<a href="/">« Continue Shopping</a>
 					</div>
 					<div class="six columns omega cart total">
-						<h2>Total $128.00</h2>
+						<h2>Total $<span class="_orderAmount">{orderTotalAmount}</span></h2>
 					</div>
 				</div>
 				<!--END TOTAL-->
