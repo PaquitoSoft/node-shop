@@ -15,7 +15,7 @@
 
 		<section id="cart" data-controller="shop-cart-controller">
 
-			<form action="/cart" method="post">
+			<form action="/" method="get">
 				<!--START CART CONTENTS-->
 				<div class="twelve columns alpha omega">
 				
