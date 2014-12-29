@@ -1,25 +1,28 @@
 (function() {
+	'use strict';
+
 	// MainNavigationController
-	define(['jquery'], function($) {
+	define(['jquery', 'plugins/events-manager'], function($, events) {
+		var $mainMenu;
 
-		/*$(document).ready(function() {
-			var $mainMenu = $('#main-menu');
-			$mainMenu.on('click', 'li > .accordion-button', function() {
-				console.log($(this).text());
-				$mainMenu.find('.accordion-content').addClass('invisible');
-				console.log($(this).siblings('.accordion-content'));
-				$(this).siblings('.accordion-content').removeClass('invisible');
-			});
-		});*/
+		function onRootCategoryClick (event) {
+			$mainMenu.find('.accordion-content').addClass('invisible');
+			$(event.target).siblings('.accordion-content').removeClass('invisible');
+		}
 
+		function onSubcategoryClick(event) {
+			$mainMenu.find('.accordion-content a').removeClass('selected');
+			$(event.target).addClass('selected');
+		}
+	
 		function configure() {
+			$mainMenu = $('#main-menu');
 			
 			// Configure menu un/folding
-			var $mainMenu = $('#main-menu');
-			$mainMenu.on('click', 'li > .accordion-button', function() {
-				$mainMenu.find('.accordion-content').addClass('invisible');
-				$(this).siblings('.accordion-content').removeClass('invisible');
-			});
+			$mainMenu.on('click', 'li > .accordion-button', onRootCategoryClick);
+
+			// Configure subcategory selection highlighting
+			$mainMenu.on('click', 'li .accordion-content a', onSubcategoryClick);
 
 			console.log('MainNavigationController initialized!');
 		}
