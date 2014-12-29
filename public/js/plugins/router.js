@@ -2,7 +2,9 @@
 	'use strict';
 
 	// Router plugin
-	define(['pagejs', 'jquery', 'plugins/templates'], function(page, $, templates) {
+	define(['pagejs', 'jquery', 'plugins/templates', 'plugins/controllers-manager', 'plugins/events-manager'],
+		function(page, $, templates, controllersManager, events) {
+		
 		var $mainContainer;
 
 		function navTo(options) {
@@ -15,6 +17,8 @@
 						templates.render(options.template, data, function (html) {
 							if (html) {
 								$mainContainer.html(html);
+								controllersManager.config($mainContainer);
+								events.trigger('NAVIGATION_DONE', {url: context.path});
 								console.log('Navigation done!');
 							} else {
 								console.warn('Could not render HOME page (no template)');
@@ -25,7 +29,7 @@
 						// TODO Handle error properly
 						console.error('Error handling ' + context.path + ' route:', textStatus);
 					});
-			}
+			};
 		}
 
 		function init() {
@@ -40,7 +44,7 @@
 			page('/catalog/category/:categoryId/product/:productId/:productName?', navTo({
 				template: 'product-detail'
 			}));
-			page('/shop/cart', navTo({ 
+			page('/shop/cart', navTo({
 				template: 'shop-cart'
 			}));
 
