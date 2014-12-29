@@ -3,12 +3,17 @@
 
 	// Client side rendering plugin
 	define(
-		['plugins/app-context', 'plugins/local-storage', 'jquery', 'handlebars', 'plugins/handlebars-helpers'],
-		function(appContext, storage, $, HBS, viewHelpers) {
+		['plugins/app-context', 'plugins/local-storage', 'jquery', 'handlebars', 'plugins/handlebars-helpers', 'dust', 'plugins/dust-custom-helpers'],
+		function(appContext, storage, $, HBS, viewHelpers, dust, dustHelpers) {
+
+			// var MODE = 'HBS';
+			var MODE = 'dust';
 
 			var cache;
 			var cacheLoaded = false;
-			var TEMPLATES_BASE_PATH = '/js/templates/';
+			var TEMPLATES_BASE_PATH = (MODE === 'HBS') ? '/js/templates/' : '/_templates/';
+			var TEMPLATES_EXTENSION = (MODE === 'HBS') ? '.hbs' : '.dust';
+			// var TEMPLATES_BASE_PATH = '/_templates/';
 
 			function loadCachedTemplates() {
 				var templatesData = storage.retrieve('templatesData'),
@@ -44,7 +49,7 @@
 			function preloadTemplate(templateName) {
 				if (!cache.templates[templateName]) {
 					// TODO Error handling
-					$.get(TEMPLATES_BASE_PATH + templateName + '.hbs', function(raw) {
+					$.get(TEMPLATES_BASE_PATH + templateName + TEMPLATES_EXTENSION, function(raw) {
 						cacheTemplate(templateName, HBS.compile(raw));
 					});
 				}
@@ -64,8 +69,14 @@
 					done(null, tpl);
 				} else {
 					// TODO Error handling
-					$.get(TEMPLATES_BASE_PATH + templateName + '.hbs', function(raw) {
-						tpl = HBS.compile(raw);
+					$.get(TEMPLATES_BASE_PATH + templateName + TEMPLATES_EXTENSION, function(raw) {
+						if (MODE === 'HBS') {
+							tpl = HBS.compile(raw);
+						} else {
+							console.info('Compiling dust template:', templateName);
+							tpl = dust.compile(raw, templateName);
+							dust.loadSource(tpl);
+						}
 						done(null, tpl);
 						cacheTemplate(templateName, tpl);
 					});
@@ -75,17 +86,28 @@
 			function render(templateName, context, done) {
 				getTemplate(templateName, function(err, tpl) {
 					// TODO Error handling
-					done(tpl(context));
+					if (MODE === 'HBS') {
+						done(tpl(context));
+					} else {
+						dust.render(templateName, context, function (err, html) {
+							if (err) {
+								console.warn('Error rendering template ', templateName, ':', err);
+								console.warn(err.stack);
+							}
+							done(html);
+						});
+					}
 				});
 			}
 
 			// Apply Handlebars custom helpers
 			viewHelpers.extendeHandlerbars();
+			dustHelpers.registerDustHelpers();
 
 			return {
 				preloadTemplate: preloadTemplate,
 				render: render
-			}
+			};
 
 		}
 	);

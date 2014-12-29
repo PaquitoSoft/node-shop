@@ -7,7 +7,14 @@
 		paths: {
 			jquery: '/vendor/jquery/dist/jquery.min',
 			handlebars: '/vendor/handlebars/handlebars',
+			dust: '/vendor/dustjs-linkedin/dist/dust-full',
+			dustHelpers: '/vendor/dustjs-linkedin-helpers/dist/dust-helpers',
 			pagejs: '/vendor/page.js/page'
+		},
+		shim: {
+			dust: {
+				exports: 'dust'
+			}
 		}
 	});
 	
