@@ -1,9 +1,10 @@
 (function() {
+	'use strict';
 	// ProductDetailController
 	define(
 		['jquery', 'plugins/app-context', 'plugins/events-manager', 'plugins/local-storage',
-			'models/product', 'stores/shop-cart', 'plugins/templates'],
-		function($, appContext, events, storage, Product, ShopCart, templates) {
+			'models/product', 'stores/shop-cart', 'plugins/templates', 'plugins/router'],
+		function($, appContext, events, storage, Product, ShopCart, templates, router) {
 
 		var $mainImg, $gallery, $sizeSelector, $colorSelector, $shopCartBtn,
 			product;
@@ -25,11 +26,11 @@
 					if (idIndex !== -1) {
 						$link.hasClass('left') ? idIndex-- : idIndex++;
 						if (idIndex >= 0 && idIndex < currentCategoryProductsIds.length) {
-							nextUrl = window.location.href.replace(
+							nextUrl = window.location.pathname.replace(
 								/(product\/)(\d*)(\/)(.*)/, '$1' +
 								currentCategoryProductsIds[idIndex] +
 								'$3');
-							window.location.href = nextUrl;
+							router.navTo(nextUrl);
 						}
 					}
 

@@ -7,7 +7,7 @@
 		
 		var $mainContainer;
 
-		function navTo(options) {
+		function handler(options) {
 			return function(context/*, next*/) {
 				// console.log(context);
 				// options.handler.call(null, context, options.template);
@@ -16,7 +16,7 @@
 					.done(function (data) {
 						templates.render(options.template, data, function (html) {
 							if (html) {
-								$mainContainer.html(html);
+								$mainContainer.empty().html(html);
 								controllersManager.config($mainContainer);
 								events.trigger('NAVIGATION_DONE', {url: context.path});
 								console.log('Navigation done!');
@@ -32,19 +32,23 @@
 			};
 		}
 
+		function navTo(path) {
+			page(path);
+		}
+
 		function init() {
 			$mainContainer = $('#main');
 
-			page('/', navTo({
+			page('/', handler({
 				template: 'home'
 			}));
-			page('/catalog/category/:categoryId/:categoryName', navTo({
+			page('/catalog/category/:categoryId/:categoryName', handler({
 				template: 'category'
 			}));
-			page('/catalog/category/:categoryId/product/:productId/:productName?', navTo({
+			page('/catalog/category/:categoryId/product/:productId/:productName?', handler({
 				template: 'product-detail'
 			}));
-			page('/shop/cart', navTo({
+			page('/shop/cart', handler({
 				template: 'shop-cart'
 			}));
 
@@ -67,7 +71,8 @@
 		}
 
 		return {
-			init: init
+			init: init,
+			navTo: navTo
 		};
 	});
 }());
