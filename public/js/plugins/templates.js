@@ -70,12 +70,19 @@
 				} else {
 					// TODO Error handling
 					$.get(TEMPLATES_BASE_PATH + templateName + TEMPLATES_EXTENSION, function(raw) {
+						var data, templates;
 						if (MODE === 'HBS') {
 							tpl = HBS.compile(raw);
 						} else {
 							console.info('Compiling dust template:', templateName);
-							tpl = dust.compile(raw, templateName);
-							dust.loadSource(tpl);
+							templates = (raw.partials || []).concat([raw.template]);
+							templates.forEach(function(t) {
+								tpl = dust.compile(t, templateName);
+								dust.loadSource(tpl);
+							});
+
+							// tpl = dust.compile(raw, templateName);
+							// dust.loadSource(tpl);
 						}
 						done(null, tpl);
 						cacheTemplate(templateName, tpl);
