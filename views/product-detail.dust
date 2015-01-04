@@ -79,13 +79,6 @@
 								{/product.sizes}
 							</select>
 						</div>
-						{!
-						<select id="product-select" name="id" class="hidden" style="display: none;">
-							<option value="335387650">Large / Blue - $99.00</option>
-							<option value="336787156">Medium / Green - $99.00</option>
-							<option value="654886997">Medium / Black - $99.00</option>
-						</select>
-						!}
 					</div>
 					
 					<input type="submit" value="Add To Cart" id="add" class="btn add-to-cart" />
@@ -106,8 +99,6 @@
 			<section id="product-info">
 				<ul class='tabs clearfix'>
 					<li class=""><a href='#tab1'>Product description</a></li>
-					{!<li class="first"><a href='#tab1'>Product description</a></li>
-					<li><a href='#tab2'>Shipping info</a></li>!}
 				</ul>
 
 				<div id='tab1'>

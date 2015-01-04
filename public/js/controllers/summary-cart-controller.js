@@ -1,4 +1,6 @@
 (function() {
+	'use strict';
+
 	// SummaryCartController
 	define(['jquery', 'plugins/events-manager', 'plugins/templates', 'stores/shop-cart'], function($, events, templates, ShopCartStore) {
 		var $el,
@@ -7,14 +9,14 @@
 
 		function _renderOrderItems(done) {
 			console.log('Rendering shop cart summary:', ShopCartStore.getOrderItems());
-			templates.render('shop-cart-items', { orderItems: ShopCartStore.getOrderItems() }, function (html) {
+			templates.render('partials/mini-shop-cart-items', { orderItems: ShopCartStore.getOrderItems() }, function (html) {
 				$shopCartItemsWrapper.html(html);
 				if (done) done();
 			});
 		}
 
 		function _deleteOrderItem(event) {
-			var $link = $(this),
+			var $link = $(event.target),
 				orderItemIndex = $link.parents('.row').attr('data-index');
 
 			event.preventDefault();
@@ -28,7 +30,7 @@
 					_renderOrderItems(function() {
 						itemsRendered = true;
 						$el.addClass('visible');
-					})
+					});
 				} else {
 					$el.toggleClass('visible');
 				}

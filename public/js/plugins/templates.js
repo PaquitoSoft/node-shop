@@ -75,17 +75,18 @@
 							tpl = HBS.compile(raw);
 						} else {
 							console.info('Compiling dust template:', templateName);
-							templates = (raw.partials || []).concat([raw.template]);
-							templates.forEach(function(t) {
-								tpl = dust.compile(t, templateName);
+							
+							tpl = dust.compile(raw.template, templateName);
+							dust.loadSource(tpl);
+
+							Object.keys(raw.partials).forEach(function(partName) {
+								tpl = dust.compile(raw.partials[partName], partName);
 								dust.loadSource(tpl);
 							});
-
-							// tpl = dust.compile(raw, templateName);
-							// dust.loadSource(tpl);
 						}
 						done(null, tpl);
-						cacheTemplate(templateName, tpl);
+						// TODO Cache response
+						// cacheTemplate(templateName, tpl);
 					});
 				}
 			}
@@ -107,7 +108,7 @@
 				});
 			}
 
-			// Apply Handlebars custom helpers
+			// Apply custom helpers
 			viewHelpers.extendeHandlerbars();
 			dustHelpers.registerDustHelpers();
 

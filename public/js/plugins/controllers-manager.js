@@ -2,14 +2,11 @@
 	'use strict';
 
 	// Controller Manager plugin
-	define(['jquery'/*, 'plugins/router'*/], function($/*, Router*/) {
+	define(['jquery', 'plugins/data-layer'], function($, dataLayer) {
 		
 		function config($root, done) {
-			// TODO Initialize html controllers
-		
 			var controllers = [],
 				mainElements = [],
-				dataLayer = window.NodeShop.dataLayer, // TODO Improve this!
 				initialized = false,
 				initData = {},
 				onControllerInitialized,

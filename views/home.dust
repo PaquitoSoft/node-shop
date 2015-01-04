@@ -7,7 +7,6 @@
 		<!--START PRODUCT GRID-->
 		{>"partials/products-grid" products=products/}
 		<!--END PRODUCT GRID-->
-		{>"partials/dummy" /}
 
 		<br class="clear">
 	</div>
