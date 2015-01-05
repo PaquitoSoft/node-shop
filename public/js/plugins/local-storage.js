@@ -36,7 +36,7 @@
 
 			// Check if value is expired
 			if (parts[1] && Date.now() > parts[1]) {
-				storate.removeItem(key);
+				storage.removeItem(key);
 				return null;
 			}
 
