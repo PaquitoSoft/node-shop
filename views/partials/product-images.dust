@@ -1,0 +1,5 @@
+{#productImages}
+	<a href="#" class="fancybox-media _thumb" rel="gallery">
+		<img src="{basePath}{.}" alt="">
+	</a>
+{/productImages}

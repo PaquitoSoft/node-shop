@@ -45,7 +45,7 @@
 			$colorSelector.on('change', function (event) {
 				var colorData = product.getColor($colorSelector.find('option:selected').attr('value'));
 				$mainImg.attr('src', appContext.photosBasePath + colorData.pictures[0]);
-				templates.render('product-images', {
+				templates.render('partials/product-images', {
 					productImages: colorData.pictures,
 					basePath: appContext.photosBasePath
 				}, function(html) {
