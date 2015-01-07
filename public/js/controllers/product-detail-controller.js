@@ -67,7 +67,7 @@
 
 		function changeMainImage(event) {
 			event.preventDefault();
-			$mainImg.attr('src', $(this).find('img').attr('src'));
+			$mainImg.attr('src', $(event.target).find('img').attr('src'));
 		}
 
 		function configure($mainElement, data) {
@@ -92,6 +92,9 @@
 				e.preventDefault();
 				addProductToCart($(this));
 			});
+
+			// Ensure menu is open
+			events.trigger('SELECT_MENU_CATEGORY_REQUEST', {categoryId: product.categoryId.toString() });
 
 			console.log('ProductDetailController initialized!');
 		}

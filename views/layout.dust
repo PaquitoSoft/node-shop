@@ -112,13 +112,13 @@
 						<ul id="main-menu" class="accordion">
 							{#categories}
 								<li>
-									<a href="#" class="accordion-button">{name}
+									<a href="#" class="accordion-button _rootCategory" data-categoryId="{_id}">{name}
 										<span>+</span>
 									</a>
 									<div class="accordion-content {@ne key=_id value=parentCategoryId}invisible{/ne}">
 										{#subcategories}
 											{! TODO Mark selected category !}
-											<a href="/catalog/category/{id}/{name}" class="{?selected}selected{/selected}" >{name} </a>
+											<a href="/catalog/category/{id}/{name}" class="_subcategory {?selected}selected{/selected}" data-categoryId="{id}">{name} </a>
 										{/subcategories}
 									</div>
 								</li>
@@ -136,11 +136,10 @@
 									<a href="/collections/mens-1/sweatshirts" >Sweatshirts </a>
 								</div>
 							</li>
-							!}
 
 							<li><a href="/blogs/news">Blog</a></li>
 							<li><a href="/pages/contact-us">Contact Us</a></li>
-
+							!}
 						</ul>
 
 						<div id="social">

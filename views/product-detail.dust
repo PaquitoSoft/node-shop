@@ -5,7 +5,7 @@
 
 {!<div id="main" class="twelve columns offset-by-one">!}
 
-	<div id="page-content" class="product-detail">
+	<div id="page-content" class="product-detail" data-controller="product-detail-controller">
 
 		{@clientDataLayer key="product-detail-controller" attr="product" data=product /}
 		
@@ -14,10 +14,10 @@
 			<a href="/" >Home</a> &mdash;
 			<a href="/collections/all-products">All Products</a> &mdash; <a href="/products/blue-ripped-jeans" class="active">Blue ripped jeans</a>
 		</div>
-		<!--END BREADCRUMB-->		
+		<!--END BREADCRUMB-->
 
 		<!--START PRODUCT-->
-		<div itemscope itemtype="http://schema.org/Product" class="twelve columns alpha omega" data-controller="product-detail-controller" data-productId="{product._id}" data-categoryId="{categoryId}">
+		<div itemscope itemtype="http://schema.org/Product" class="twelve columns alpha omega">
 			<meta itemprop="url" content="#" />
 			<meta itemprop="image" content="http://static.zara.net/photos{product.colors[0].pictures[0]}" />
 			
