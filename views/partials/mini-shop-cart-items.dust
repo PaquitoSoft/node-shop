@@ -1,5 +1,5 @@
 {#orderItems}
-	<div class="row first" data-index="{@idx}.{/idx}">
+	<div class="row first" data-index="{@idx}{.}{/idx}">
 		<div class="nine columns description">
 			<img src="{imageUrl}" alt="{name}">
 			<div class="info col">
