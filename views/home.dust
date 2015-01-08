@@ -3,6 +3,8 @@
 {< mainContent}
 	<div id="page-content">
 		<br>
+
+		{@clientDataLayer key="products-grid-controller" attr="products" data=products /}
 		
 		<!--START PRODUCT GRID-->
 		{>"partials/products-grid" products=products/}

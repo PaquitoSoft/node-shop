@@ -1,16 +1,17 @@
 
 <section class="product-grid twelve columns alpha omega" data-controller="products-grid-controller">
-	{#products}
+	
+	{-#each products:index-}
 		<div class="four columns">
-			<a href="/catalog/category/{categoryId}/product/{_id}/{name}" data-id="{_id}" class="__animated __fadeInUpBig _product-summary">
-				<img src="http://static.zara.net/photos{colors[0].pictures[0]}" alt="Blue ripped jeans" class="product" />
-				<h3>{name}</h3>
-				<h4>${price} </h4>
+			<a href="/catalog/category/{-categoryId-}/product/{-_id-}/{-name-}" data-id="{-_id-}" class="__animated __fadeInUpBig _product-summary">
+				<img src="http://static.zara.net/photos{-colors[0].pictures[0]-}" alt="Blue ripped jeans" class="product" />
+				<h3>Name: {-name-}</h3>
+				<h4>${-price-} </h4>
 			</a>
 		</div>
 
-		{@if cond="({$idx} + 1) % 3 === 0"}
+		{-#if (index + 1) % 3 === 0-}
 			<br class="clear">
-		{/if}
-	{/products}
+		{-/if-}
+	{-/each-}
 </section>
