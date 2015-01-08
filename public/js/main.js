@@ -9,7 +9,8 @@
 			handlebars: '/vendor/handlebars/handlebars',
 			dust: '/vendor/dustjs-linkedin/dist/dust-full',
 			dustHelpers: '/vendor/dustjs-linkedin-helpers/dist/dust-helpers',
-			pagejs: '/vendor/page.js/page'
+			pagejs: '/vendor/page.js/page',
+			ractive: '/vendor/ractive/ractive'
 		},
 		shim: {
 			dust: {

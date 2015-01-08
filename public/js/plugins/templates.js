@@ -84,7 +84,7 @@
 								dust.loadSource(tpl);
 							});
 						}
-						done(null, tpl);
+						done(null, raw.template);
 						// TODO Cache response
 						// cacheTemplate(templateName, tpl);
 					});
@@ -114,6 +114,7 @@
 
 			return {
 				preloadTemplate: preloadTemplate,
+				getTemplate: getTemplate,
 				render: render
 			};
 
