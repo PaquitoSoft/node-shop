@@ -3,11 +3,13 @@
 
 {< mainContent}
 
-{!<div id="main" class="twelve columns offset-by-one">!}
 
-	<div id="page-content" class="product-detail">
+
+	<div id="page-content" class="product-detail" data-controller="product-detail-controller">
 
 		{@clientDataLayer key="product-detail-controller" attr="product" data=product /}
+		{@clientDataLayer key="product-detail-controller" attr="mainImage" data=mainImage /}
+		{@clientDataLayer key="product-detail-controller" attr="mainColor" data=mainColor /}
 		
 		<!--START BREADCRUMB-->
 		<div id="breadcrumb" class="desktop">
@@ -17,34 +19,31 @@
 		<!--END BREADCRUMB-->		
 
 		<!--START PRODUCT-->
-		<div itemscope itemtype="http://schema.org/Product" class="twelve columns alpha omega" data-controller="product-detail-controller" data-productId="{product._id}" data-categoryId="{categoryId}">
+		<div itemscope itemtype="http://schema.org/Product" class="twelve columns alpha omega" data-productId="{-product._id-}" data-categoryId="{-categoryId-}">
 			<meta itemprop="url" content="#" />
-			<meta itemprop="image" content="http://static.zara.net/photos{product.colors[0].pictures[0]}" />
+			<meta itemprop="image" content="http://static.zara.net/photos{-product.colors[0].pictures[0]-}" />
 			
 			<!-- START PRODUCT IMAGES-->
 			<section id="images" class="seven columns alpha">
 
 				<!--START: PRODUCTS NAVIGATION-->
 				<div class="products-navigation">
-					<span class="left _nav-link"><a class="product-navigation-link" href="#">< Prev.</a></span>
-					<span class="right _nav-link"><a class="product-navigation-link" href="#">Next ></a></span>
+					<span class="left _nav-link"><a class="product-navigation-link" href="#" on-click="goBack">&lt; Prev.</a></span>
+					<span class="right _nav-link"><a class="product-navigation-link" href="#" on-click="goForward">Next &gt;</a></span>
 				</div>
 				<!--END: PRODUCTS NAVIGATION-->
 
 				<!-- START ZOOM IMAGE-->
-				<img id="feature-image" class="desktop" src="http://static.zara.net/photos{product.colors[0].pictures[0]}" alt="{product.name}" />
-				{!
-				<img class="mobile" src="http://static.zara.net/photos{product.colors[0].pictures[0]}" alt="{product.name}" />
-				!}
+				<img id="feature-image" class="desktop" src="http://static.zara.net/photos{-mainImage-}" alt="{-product.name-}" />
 				<!-- END ZOOM IMAGE-->
 
 				<!-- START GALLERY-->
 				<section id="gallery">
-					{#product.colors[0].pictures}
+					{-#each mainColor.pictures-}
 						<a href="#" class="fancybox-media _thumb" rel="gallery">
-							<img src="http://static.zara.net/photos{.}" alt="">
+							<img src="http://static.zara.net/photos{-.-}" alt="" on-click="updateMainImage">
 						</a>
-					{/product.colors[0].pictures}
+					{-/each-}
 				</section>
 				<!-- END GALLERY-->
 				
@@ -53,36 +52,37 @@
 
 			<!--START BUY-->
 			<section id="buy" class="five columns omega">
-				<form action="/shop/cart/{product._id}" method="post" id="product-form" class="quickAdd" enctype="multipart/form-data">
-					<h1>{product.name}</h1>
+				<form action="/shop/cart/{-product._id-}" method="post" id="product-form" class="quickAdd" enctype="multipart/form-data">
+					<h1>{-product.name-}</h1>
 					<h2 id="product-price" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
 						<meta itemprop="priceCurrency" content="USD" />
 						<link itemprop="availability" href="http://schema.org/InStock" />
-						<span class="product-price" itemprop="price">${product.price}</span>
+						<span class="product-price" itemprop="price">${-product.price-}</span>
 					</h2>
 
 					<div id="product-variants" class="">
 						<div class="selector-wrapper">
 							<label for="product-select-option-1">Color</label>
-							<select class="single-option-selector" data-option="option2" id="product-select-option-1" {@lte key=product.colors.length value=1}disabled{/lte}>
-								{#product.colors}
-									<option value="{id}">{name}</option>
-								{/product.colors}
+							<select class="single-option-selector" data-option="option2" id="product-select-option-1" value="{-selectedColor-}" on-change="updateAllImages">
+								{-#each product.colors-}
+									<option value="{-.-}">{-name-}</option>
+								{-/each-}
 							</select>
 						</div>
 						<div class="selector-wrapper">
 							<label for="product-select-option-0">Size</label>
-							<select class="single-option-selector" data-option="option1" id="product-select-option-0">
-								{#product.sizes}
-									{! TODO Disable size when it's out of stock !}
-									<option value="{id}" {@ne key=stock value="in_stock"}disabled{/ne}>{name}</option>
-								{/product.sizes}
+							<select class="single-option-selector" data-option="option1" id="product-select-option-0" value="{-selectedSizeId-}">
+								{-#each product.sizes-}
+									<option value="{-id-}">{-name-}</option>
+								{-/each-}
 							</select>
 						</div>
 					</div>
 					
-					<input type="submit" value="Add To Cart" id="add" class="btn add-to-cart" />
-					<a href="/shop/cart" id="shop" class="btn invert hidden">Buy!</a>
+					<input type="submit" value="Add To Cart" id="add" class="btn add-to-cart" on-click="addToCart" />
+					{-#if showBuyButton-}
+						<a href="/shop/cart" id="shop" class="btn invert">Buy!</a>
+					{-/if-}
 				</form>
 
 				<!-- START SHARE-->
@@ -103,51 +103,11 @@
 
 				<div id='tab1'>
 					<div class="wysiwyg">
-						<p>{product.description}</p>
+						<p>{-product.description-}</p>
 					</div>
 				</div>
-				{!
-				<div id='tab2'>
-					<div class="wysiwyg">
-						<p>You can embed any other page on your store here. It's perfect for things like displaying shipping rates.&nbsp;</p>
-					</div>
-				</div>
-				!}
 			</section>
 			<!--END PRODUCT INFO-->
-
-			<!--START RELATED PRODUCT GRID-->
-			{!
-			<section id="related-products" class="product-grid twelve columns alpha omega">
-				<h2>More products like this</h2>
-				<div class="four columns alpha">
-					<a href="/collections/all-products/products/off-white-trench-style-jacket" id="product-2" >
-						<img src="//cdn.shopify.com/s/files/1/0037/5472/products/5475447731_2_1_1_large.jpg?v=1373476750" alt="Off white trench style jacket" class="product" />
-						<h3>Off white trench style jacket</h3>
-						<h4>$199.00 </h4>
-					</a>
-				</div>
-
-				<div class="four columns ">
-					<a href="/collections/all-products/products/contrast-jacket" id="product-3" >
-						<img src="//cdn.shopify.com/s/files/1/0037/5472/products/0706412401_2_1_1_large.jpg?v=1373476417" alt="Contrast jacket" class="product" />
-						<h3>Contrast jacket</h3>
-						<h4>$199.00 </h4>
-					</a>
-				</div>
-
-				<div class="four columns omega">
-					<a href="/collections/all-products/products/cream-white-pants" id="product-4" >
-						<img src="//cdn.shopify.com/s/files/1/0037/5472/products/6917416805_2_1_1_large.jpg?v=1373477293" alt="Cream white pants" class="product" />
-						<h3>Cream white pants</h3>
-						<h4>$79.00 </h4>
-					</a>
-				</div>
-
-				<br class="clear">
-			</section>
-			!}
-			<!--END PRODUCT GRID-->
 
 			<br class="clear">
 

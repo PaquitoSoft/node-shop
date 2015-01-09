@@ -8,6 +8,7 @@
 			Object.keys(data).forEach(function(key) {
 				this[key] = data[key];
 			}, this);
+			this.mainImage = data.colors[0].pictures[0];
 		}
 
 		Product.prototype.getColor = function(colorId) {

@@ -2,13 +2,38 @@
 	'use strict';
 	// ProductDetailController
 	define(
-		['jquery', 'plugins/app-context', 'plugins/events-manager', 'plugins/local-storage',
+		['jquery', 'ractive', 'plugins/app-context', 'plugins/events-manager', 'plugins/local-storage',
 			'models/product', 'stores/shop-cart', 'plugins/templates', 'plugins/router'],
-		function($, appContext, events, storage, Product, ShopCart, templates, router) {
+		function($, R, appContext, events, storage, Product, ShopCart, templates, router) {
+
+		var initialized = false;
 
 		var $mainImg, $gallery, $sizeSelector, $colorSelector, $shopCartBtn,
-			product;
+			product, selectedCategoryProductId, currentCategoryProductsIds;
 		
+		function navigate(productId, mode) {
+			var idIndex = currentCategoryProductsIds.indexOf(productId.toString()),
+				nextUrl;
+			
+			if (idIndex !== -1) {
+				idIndex = (mode === 'back') ? idIndex - 1 : idIndex + 1;
+				if (idIndex >= 0 && idIndex < currentCategoryProductsIds.length) {
+					nextUrl = window.location.pathname.replace(
+						/(product\/)(\d*)(\/)(.*)/, '$1' +
+						currentCategoryProductsIds[idIndex] +
+						'$3');
+					router.navTo(nextUrl);
+				}
+			}
+		}
+
+		function _addProductToCart(product, colorId, sizeId, done) {
+			ShopCart.addProduct(product, colorId, sizeId).done(done);
+		}
+
+
+		/* ---------------------------------------------------------------- */
+
 
 		function configureProductsNavigation($productsNavigation) {
 			var selectedCategoryProductId = storage.retrieve('selectedCategoryProductId'),
@@ -67,33 +92,99 @@
 
 		function changeMainImage(event) {
 			event.preventDefault();
-			$mainImg.attr('src', $(this).find('img').attr('src'));
+			$mainImg.attr('src', $(event.target).find('img').attr('src'));
 		}
 
 		function configure($mainElement, data) {
+			selectedCategoryProductId = storage.retrieve('selectedCategoryProductId');
+			currentCategoryProductsIds = storage.retrieve('currentCategoryProductsIds');
+
 			$mainImg = $mainElement.find('#feature-image');
 			$gallery = $mainElement.find('#gallery');
 			$sizeSelector = $mainElement.find('#product-select-option-0');
 			$colorSelector = $mainElement.find('#product-select-option-1');
 			$shopCartBtn = $mainElement.find('#shop');
 			product = new Product(data.product);
-			
+			data.product = new Product(data.product);
+
+			data.selectedColor = data.product.colors[0];
+			data.selectedSizeId = data.product.sizes[0].id;
+			data.showBuyButton = false;
+
 			// Configure images switching
-			$mainElement.on('click', '#gallery ._thumb', changeMainImage);
+			// $mainElement.on('click', '#gallery ._thumb', changeMainImage);
 
 			// Configure color change (switch images)
-			configureColorChange();
+			// configureColorChange();
 
 			// Configure products navigation
-			configureProductsNavigation($mainElement.find('.products-navigation'));
+			// configureProductsNavigation($mainElement.find('.products-navigation'));
 
 			// Configure product addition
-			$mainElement.find('#product-form').on('submit', function(e) {
-				e.preventDefault();
-				addProductToCart($(this));
-			});
+			// $mainElement.find('#product-form').on('submit', function(e) {
+			// 	e.preventDefault();
+			// 	addProductToCart($(this));
+			// });
 
-			console.log('ProductDetailController initialized!');
+
+			$(document).ready(function() {
+				var templateGetter,
+					sync = function(template) {
+						var $mainEl,
+							$template = $(template);
+
+						// $mainEl = $template.data('controller') ? $template : $template.find('*[data-controller]');
+						$mainEl = $template.find('*[data-controller]').addBack();
+						
+						var synchronizer = new R({
+							el: $mainElement[0],
+							template: $mainEl.html(),
+							data: data,
+							delimiters: ['{-', '-}']
+						});
+
+						$mainElement.css('visibility', 'visible');
+
+						synchronizer.on({
+							updateMainImage: function(rEvent, selectedColor) {
+								this.set('mainImage', rEvent.context);
+							},
+							updateAllImages: function(rEvent) {
+								var self = this;
+								setTimeout(function() {
+									self.set('mainImage', data.selectedColor.pictures[0]);
+									self.set('mainColor', data.selectedColor);
+								}, 4);
+							},
+							goBack: function() {
+								navigate(data.product._id, 'back');
+							},
+							goForward: function() {
+								navigate(data.product._id, 'forward');
+							},
+							addToCart: function(rEvent) {
+								var self = this;
+								rEvent.original.preventDefault();
+								_addProductToCart(data.product, data.selectedColor.id, data.selectedSizeId, function() {
+									console.log('ProductDetailController: Product added to cart!');
+									self.set('showBuyButton', true);
+								});
+							}
+						});
+
+						initialized = true;
+						console.log('ProductDetailController initialized!');
+					};
+
+				if (!initialized) {
+					templateGetter = templates.render;
+				} else {
+					templateGetter = function(tplName, ctx, done) { done($mainElement); };
+				}
+
+				templateGetter('product-detail', data, sync);
+
+			});
 		}
 
 		return {

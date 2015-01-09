@@ -9,19 +9,21 @@
 
 		function handler(options) {
 			return function(context/*, next*/) {
-				// console.log(context);
-				// options.handler.call(null, context, options.template);
 				console.log('Navigating to:', context.path);
 				$.getJSON(context.path)
 					.done(function (data) {
 						templates.render(options.template, data, function (html) {
 							if (html) {
-								$mainContainer.empty().html(html);
+								// $mainContainer.empty().html(html);
+
+								var $html = $(html);
+								$html.find('*[data-controller]').addBack().css('visibility', 'hidden');
+								$mainContainer.empty().html($html);
 								controllersManager.config($mainContainer);
 								events.trigger('NAVIGATION_DONE', {url: context.path});
 								console.log('Navigation done!');
 							} else {
-								console.warn('Could not render HOME page (no template)');
+								console.warn('Could not render page (no template)');
 							}
 						});
 					})

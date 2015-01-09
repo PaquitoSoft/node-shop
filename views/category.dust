@@ -4,6 +4,8 @@
 
 	<div id="page-content">  
 
+		{@clientDataLayer key="products-grid-controller" attr="products" data=products /}
+
 		<!--START BREADCRUMB-->
 		{!
 		<div id="breadcrumb" class="desktop">
