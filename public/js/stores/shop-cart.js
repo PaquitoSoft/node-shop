@@ -73,9 +73,9 @@
 						self.orderItems.push(orderItem);
 					}
 
-					events.trigger('productAddedToCart');
+					events.trigger('productAddedToCart', { orderItems: self.orderItems });
 
-					deferred.resolve();
+					deferred.resolve(self.orderItems);
 				})
 				.fail(function() {
 					deferred.reject();
@@ -101,7 +101,7 @@
 				.done(function() {
 					self.orderItems.splice(orderItemIndex, 1);
 					events.trigger('productRemovedFromCart');
-					deferred.resolve();
+					deferred.resolve(self.orderItems);
 				}).fail(function() {
 					deferred.reject();
 				});
@@ -111,7 +111,7 @@
 			}
 
 			return deferred;
-		}
+		};
 
 		return new ShopCart(appContext.shopCartData);
 	});

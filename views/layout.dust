@@ -27,18 +27,12 @@
 
 
 		<!--START DRAWER-->
-		<div id="drawer" data-controller="summary-cart-controller">
+		<div id="drawer" data-controller="summary-cart-controller" data-dummy="{-orderItems-}">
 
 			{@clientDataLayer key="summary-cart-controller" attr="shopCart" data=shoppingCart /}
+
+			{> "partials/mini-shop-cart-items" /}
 			
-			<div class="container">
-				<form action="/shop/cart" method="get" class="_list">
-					{! Client side rendering !}
-					<div class="actions">
-						<input type="submit" value="Check Out">
-					</div>
-				</form>
-			</div>
 		</div>
 		<!--END DRAWER-->
 

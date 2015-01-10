@@ -3,59 +3,51 @@
 
 	// SummaryCartController
 	define(['jquery', 'plugins/events-manager', 'plugins/templates', 'stores/shop-cart'], function($, events, templates, ShopCartStore) {
-		var $el,
-			$shopCartItemsWrapper,
-			itemsRendered = false;
-
-		function _renderOrderItems(done) {
-			console.log('Rendering shop cart summary:', ShopCartStore.getOrderItems());
-			templates.render('partials/mini-shop-cart-items', { orderItems: ShopCartStore.getOrderItems() }, function (html) {
-				$shopCartItemsWrapper.html(html);
-				if (done) done();
-			});
-		}
-
-		function _deleteOrderItem(event) {
-			var $link = $(event.target),
-				orderItemIndex = $link.parents('.row').attr('data-index');
-
-			event.preventDefault();
-			
-			ShopCartStore.removeOrderItem(orderItemIndex).done(_renderOrderItems);
-		}
+		
+		var $el, context, sync;
 
 		function _toggle() {
 			if (ShopCartStore.itemsCount) {
-				if (!itemsRendered) {
-					_renderOrderItems(function() {
-						itemsRendered = true;
-						$el.addClass('visible');
-					});
-				} else {
-					$el.toggleClass('visible');
-				}
+				// TODO I need to know how to maniulate main element from ractive
+				// (it seems to affect only to its contents -template-)
+				$el.toggleClass('visible');
 			}
 		}
 
 		function _onProductAddedToCart(data) {
-			_renderOrderItems();
+			sync.set('orderItems', data.orderItems);
 		}
 
-		function configure($mainEl, data) {
+		function deleteOrderItem(rEvent) {
+			rEvent.original.preventDefault();
+			ShopCartStore.removeOrderItem(context.orderItems.indexOf(rEvent.context))
+				.done(function (orderItems) {
+					sync.set('ordetItems', orderItems);
+				});
+		}
+
+		function setup($mainEl, data) {
+			data.orderItems = ShopCartStore.getOrderItems();
+			return data;
+		}
+
+		function init($mainEl, data, synchronizer) {
 			$el = $mainEl;
-			$shopCartItemsWrapper = $mainEl.find('._list');
-			
-			$el.on('click', '.removeLine', _deleteOrderItem);
+			context = data;
+			sync = synchronizer;
 			
 			events.on('toggleSummaryCartRequested', _toggle);
-
 			events.on('productAddedToCart', _onProductAddedToCart);
+
+			sync.on('deleteOrderItem', deleteOrderItem);
 
 			console.log('SummaryCartController initialized!');
 		}
 
 		return {
-			init: configure
+			setup: setup,
+			init: init,
+			templateName: 'partials/mini-shop-cart-items'
 		};
 
 	});

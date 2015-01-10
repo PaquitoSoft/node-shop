@@ -55,6 +55,7 @@
 						$mainElement = mainElements[index];
 
 					try {
+						console.log('Initializing controller:', $mainElement.attr('data-controller'));
 						controllerData = dataLayer[$mainElement.attr('data-controller')] || {};
 
 						getTemplate(controller.templateName, controllerData, index, function(template) {
