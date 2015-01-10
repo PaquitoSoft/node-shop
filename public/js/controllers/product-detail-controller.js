@@ -10,7 +10,7 @@
 		var selectedCategoryProductId, currentCategoryProductsIds;
 		
 		function navigate(productId, mode) {
-			var idIndex = currentCategoryProductsIds.indexOf(productId.toString()),
+			var idIndex = currentCategoryProductsIds.indexOf(productId),
 				nextUrl;
 			
 			if (idIndex !== -1) {
