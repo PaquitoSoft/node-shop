@@ -3,32 +3,40 @@
 
 	// MainNavigationController
 	define(['jquery', 'plugins/events-manager'], function($, events) {
-		var $mainMenu;
+		var context,
+			sync;
 
-		function onRootCategoryClick (event) {
-			$mainMenu.find('.accordion-content').addClass('invisible');
-			$(event.target).siblings('.accordion-content').removeClass('invisible');
+		function selectRootCategory(rEvent) {
+			context.categories.forEach(function(category) {
+				category.selected = (category._id === rEvent.context._id);
+			});
+			sync.set('categories', context.categories);
 		}
 
-		function onSubcategoryClick(event) {
-			$mainMenu.find('.accordion-content a').removeClass('selected');
-			$(event.target).addClass('selected');
+		function selectSubcategory(rEvent) {
+			context.categories.forEach(function(rootCategory, i) {
+				rootCategory.subcategories.forEach(function(subcat, j) {
+					subcat.visiting = (subcat.id === rEvent.context.id);
+				});
+			});
+			sync.set('categories', context.categories);
 		}
-	
-		function configure() {
-			$mainMenu = $('#main-menu');
+
+		function init($mainEl, data, synchronizer) {
+			context = data;
+			sync = synchronizer;
 			
-			// Configure menu un/folding
-			$mainMenu.on('click', 'li > .accordion-button', onRootCategoryClick);
-
-			// Configure subcategory selection highlighting
-			$mainMenu.on('click', 'li .accordion-content a', onSubcategoryClick);
+			sync.on({
+				selectRootCategory: selectRootCategory,
+				selectSubcategory: selectSubcategory
+			});
 
 			console.log('MainNavigationController initialized!');
 		}
 
 		return {
-			init: configure
+			init: init,
+			templateName: 'partials/navigation-menu'
 		};
 
 	});

@@ -67,7 +67,7 @@
 							
 							initializer(function() {
 
-								// TODO We still hace controllers with no template bindings
+								// TODO We still have controllers with no template bindings
 								if (template) {
 									synchronizer = new R({
 										el: $mainElement[0],
@@ -75,14 +75,14 @@
 										data: controllerData,
 										delimiters: ['{-', '-}']
 									});
-									controllerData.sync = synchronizer;
+									// This is for client-side navigation
 									$mainElement.css('visibility', 'visible');
 								}
 
-								if (controller.init.length > 2) {
-									controller.init($mainElement, controllerData, $.proxy(onControllerInitialized, controllers[index]));
+								if (controller.init.length > 3) {
+									controller.init($mainElement, controllerData, synchronizer, $.proxy(onControllerInitialized, controllers[index]));
 								} else {
-									controller.init($mainElement, controllerData);
+									controller.init($mainElement, controllerData, synchronizer);
 									onControllerInitialized(controllers[index]);
 								}
 							});

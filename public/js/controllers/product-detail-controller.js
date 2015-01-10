@@ -6,7 +6,7 @@
 			'models/product', 'stores/shop-cart', 'plugins/templates', 'plugins/router'],
 		function($, R, appContext, events, storage, Product, ShopCart, templates, router) {
 
-		var context;
+		var context, sync;
 		var selectedCategoryProductId, currentCategoryProductsIds;
 		
 		function navigate(productId, mode) {
@@ -30,18 +30,18 @@
 			ShopCart.addProduct(context.product, context.selectedColor.id, context.selectedSizeId)
 				.done(function() {
 					console.log('ProductDetailController: Product added to cart!');
-					context.sync.set('showBuyButton', true);
+					sync.set('showBuyButton', true);
 				});
 		}
 
 		function updateMainImage(rEvent) {
-			context.sync.set('mainImage', rEvent.context);
+			sync.set('mainImage', rEvent.context);
 		}
 
 		function updateAllImages(rEvent) {
 			setTimeout(function() {
-				context.sync.set('mainImage', context.selectedColor.pictures[0]);
-				context.sync.set('mainColor', context.selectedColor);
+				sync.set('mainImage', context.selectedColor.pictures[0]);
+				sync.set('mainColor', context.selectedColor);
 			}, 4);
 		}
 
@@ -54,12 +54,13 @@
 			return data;
 		}
 
-		function init($mainElement, data) {
+		function init($mainElement, data, synchronizer) {
 			selectedCategoryProductId = storage.retrieve('selectedCategoryProductId');
 			currentCategoryProductsIds = storage.retrieve('currentCategoryProductsIds');
 			context = data;
+			sync = synchronizer;
 
-			context.sync.on({
+			sync.on({
 				updateMainImage: updateMainImage,
 				updateAllImages: updateAllImages,
 				goBack: $.proxy(navigate, null, context.product._id, 'back'),

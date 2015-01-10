@@ -1,0 +1,30 @@
+<nav data-controller="main-navigation-controller">
+	<a href="#" id="toggle-menu" class="mobile"><span>Menu</span></a>
+	<ul id="main-menu" class="accordion">
+		{-#each categories-}
+			<li>
+				<a href="#" class="accordion-button" on-click="selectRootCategory">{-name-}
+					<span>+</span>
+				</a>
+				<div class="accordion-content {-^selected-}invisible{-/selected-}">
+					{-#each subcategories-}
+						{! TODO Mark selected category !}
+						<a href="/catalog/category/{-id-}/{-name-}" class="{-#visiting-}selected{-/visiting-}" on-click="selectSubcategory">{-name-} </a>
+					{-/each-}
+				</div>
+			</li>
+		{-/each-}
+
+		<li><a href="/blogs/news">Blog</a></li>
+		<li><a href="/pages/contact-us">Contact Us</a></li>
+
+	</ul>
+
+	<div id="social">
+		<a href="http://www.facebook.com/" target="_blank" class="facebook "></a>
+		<a href="http://www.twitter.com/" target="_blank" class="twitter "></a>
+		<a href="http://www.instagram.com/" target="_blank" class="instagram "></a>
+		<a href="http://www.pinterest.com/" target="_blank" class="pinterest "></a>
+		<a href="#" class="rss"></a>
+	</div>
+</nav>

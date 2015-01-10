@@ -106,51 +106,11 @@
 		<div class="container">
 
 			<!--START SIDEBAR-->
-			<div id="sidebar" class="three columns" data-controller="main-navigation-controller">
-				<nav>
-					<a href="#" id="toggle-menu" class="mobile"><span>Menu</span></a>
-						<ul id="main-menu" class="accordion">
-							{#categories}
-								<li>
-									<a href="#" class="accordion-button">{name}
-										<span>+</span>
-									</a>
-									<div class="accordion-content {@ne key=_id value=parentCategoryId}invisible{/ne}">
-										{#subcategories}
-											{! TODO Mark selected category !}
-											<a href="/catalog/category/{id}/{name}" class="{?selected}selected{/selected}" >{name} </a>
-										{/subcategories}
-									</div>
-								</li>
-							{/categories}
+			<div id="sidebar" class="three columns">
+				
+				{@clientDataLayer key="main-navigation-controller" attr="categories" data=categories /}
+				{> "partials/navigation-menu" categories=categories /}
 
-							{!
-							<li>
-								<a href="#" class="accordion-button">Mens
-									<span>+</span>
-								</a>
-								<div class="accordion-content" style="display:none" >
-									<a href="/collections/mens-1" class="first">All</a>
-									<a href="/collections/mens-1/jacket" >Jacket </a>
-									<a href="/collections/mens-1/pants" >Pants </a>
-									<a href="/collections/mens-1/sweatshirts" >Sweatshirts </a>
-								</div>
-							</li>
-							!}
-
-							<li><a href="/blogs/news">Blog</a></li>
-							<li><a href="/pages/contact-us">Contact Us</a></li>
-
-						</ul>
-
-						<div id="social">
-							<a href="http://www.facebook.com/" target="_blank" class="facebook "></a>
-							<a href="http://www.twitter.com/" target="_blank" class="twitter "></a>
-							<a href="http://www.instagram.com/" target="_blank" class="instagram "></a>
-							<a href="http://www.pinterest.com/" target="_blank" class="pinterest "></a>
-							<a href="#" class="rss"></a>
-						</div>
-				</nav>
 			</div>
 			<!--END SIDEBAR-->
 
