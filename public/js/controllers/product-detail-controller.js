@@ -6,6 +6,8 @@
 			'models/product', 'stores/shop-cart', 'plugins/templates', 'plugins/router'],
 		function($, R, appContext, events, storage, Product, ShopCart, templates, router) {
 
+		var context;
+		var synchronizer;
 		var selectedCategoryProductId, currentCategoryProductsIds;
 		
 		function navigate(productId, mode) {
@@ -24,10 +26,25 @@
 			}
 		}
 
-		function addProductToCart(product, colorId, sizeId, done) {
-			ShopCart.addProduct(product, colorId, sizeId).done(done);
+		function addProductToCart(rEvent) {
+			rEvent.original.preventDefault();
+			ShopCart.addProduct(context.product, context.selectedColor.id, context.selectedSizeId)
+				.done(function() {
+					console.log('ProductDetailController: Product added to cart!');
+					synchronizer.set('showBuyButton', true);
+				});
 		}
 
+		function updateMainImage(rEvent) {
+			synchronizer.set('mainImage', rEvent.context);
+		}
+
+		function updateAllImages(rEvent) {
+			setTimeout(function() {
+				synchronizer.set('mainImage', context.selectedColor.pictures[0]);
+				synchronizer.set('mainColor', context.selectedColor);
+			}, 4);
+		}
 
 		function configure($mainElement, data) {
 			selectedCategoryProductId = storage.retrieve('selectedCategoryProductId');
@@ -38,42 +55,25 @@
 			data.selectedSizeId = data.product.sizes[0].id;
 			data.showBuyButton = false;
 
+			context = data;
+
 			$(document).ready(function() {
 				
-				var synchronizer = new R({
+				synchronizer = new R({
 					el: $mainElement[0],
 					template: data.template,
-					data: data,
+					data: context,
 					delimiters: ['{-', '-}']
 				});
 
 				$mainElement.css('visibility', 'visible');
 
 				synchronizer.on({
-					updateMainImage: function(rEvent, selectedColor) {
-						this.set('mainImage', rEvent.context);
-					},
-					updateAllImages: function(rEvent) {
-						var self = this;
-						setTimeout(function() {
-							self.set('mainImage', data.selectedColor.pictures[0]);
-							self.set('mainColor', data.selectedColor);
-						}, 4);
-					},
-					goBack: function() {
-						navigate(data.product._id, 'back');
-					},
-					goForward: function() {
-						navigate(data.product._id, 'forward');
-					},
-					addToCart: function(rEvent) {
-						var self = this;
-						rEvent.original.preventDefault();
-						addProductToCart(data.product, data.selectedColor.id, data.selectedSizeId, function() {
-							console.log('ProductDetailController: Product added to cart!');
-							self.set('showBuyButton', true);
-						});
-					}
+					updateMainImage: updateMainImage,
+					updateAllImages: updateAllImages,
+					goBack: $.proxy(navigate, null, context.product._id, 'back'),
+					goForward: $.proxy(navigate, null, context.product._id, 'forward'),
+					addToCart: addProductToCart
 				});
 
 				console.log('ProductDetailController initialized!');
