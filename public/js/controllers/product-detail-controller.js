@@ -7,7 +7,6 @@
 		function($, R, appContext, events, storage, Product, ShopCart, templates, router) {
 
 		var context;
-		var synchronizer;
 		var selectedCategoryProductId, currentCategoryProductsIds;
 		
 		function navigate(productId, mode) {
@@ -31,58 +30,49 @@
 			ShopCart.addProduct(context.product, context.selectedColor.id, context.selectedSizeId)
 				.done(function() {
 					console.log('ProductDetailController: Product added to cart!');
-					synchronizer.set('showBuyButton', true);
+					context.sync.set('showBuyButton', true);
 				});
 		}
 
 		function updateMainImage(rEvent) {
-			synchronizer.set('mainImage', rEvent.context);
+			context.sync.set('mainImage', rEvent.context);
 		}
 
 		function updateAllImages(rEvent) {
 			setTimeout(function() {
-				synchronizer.set('mainImage', context.selectedColor.pictures[0]);
-				synchronizer.set('mainColor', context.selectedColor);
+				context.sync.set('mainImage', context.selectedColor.pictures[0]);
+				context.sync.set('mainColor', context.selectedColor);
 			}, 4);
 		}
 
-		function configure($mainElement, data) {
-			selectedCategoryProductId = storage.retrieve('selectedCategoryProductId');
-			currentCategoryProductsIds = storage.retrieve('currentCategoryProductsIds');
-
+		function setup($mainElement, data) {
 			data.product = new Product(data.product);
 			data.selectedColor = data.product.colors[0];
 			data.selectedSizeId = data.product.sizes[0].id;
 			data.showBuyButton = false;
 
+			return data;
+		}
+
+		function init($mainElement, data) {
+			selectedCategoryProductId = storage.retrieve('selectedCategoryProductId');
+			currentCategoryProductsIds = storage.retrieve('currentCategoryProductsIds');
 			context = data;
 
-			$(document).ready(function() {
-				
-				synchronizer = new R({
-					el: $mainElement[0],
-					template: data.template,
-					data: context,
-					delimiters: ['{-', '-}']
-				});
-
-				$mainElement.css('visibility', 'visible');
-
-				synchronizer.on({
-					updateMainImage: updateMainImage,
-					updateAllImages: updateAllImages,
-					goBack: $.proxy(navigate, null, context.product._id, 'back'),
-					goForward: $.proxy(navigate, null, context.product._id, 'forward'),
-					addToCart: addProductToCart
-				});
-
-				console.log('ProductDetailController initialized!');
-
+			context.sync.on({
+				updateMainImage: updateMainImage,
+				updateAllImages: updateAllImages,
+				goBack: $.proxy(navigate, null, context.product._id, 'back'),
+				goForward: $.proxy(navigate, null, context.product._id, 'forward'),
+				addToCart: addProductToCart
 			});
+
+			console.log('ProductDetailController initialized!');
 		}
 
 		return {
-			init: configure,
+			setup: setup,
+			init: init,
 			templateName: 'product-detail'
 		};
 

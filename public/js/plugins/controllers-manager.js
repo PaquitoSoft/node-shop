@@ -2,7 +2,7 @@
 	'use strict';
 
 	// Controller Manager plugin
-	define(['jquery', 'plugins/data-layer', 'plugins/templates'], function($, dataLayer, templates) {
+	define(['jquery', 'ractive', 'plugins/data-layer', 'plugins/templates'], function($, R, dataLayer, templates) {
 		
 		function config($root, isBootstrap, done) {
 			var controllers = [],
@@ -50,20 +50,42 @@
 			require(controllers, function() {
 				
 				$.each(arguments, function(index, controller) {
-					var controllerData;
+					var controllerData,
+						initializer = isBootstrap ? $(document).ready : function(fn) { fn.call(); },
+						$mainElement = mainElements[index];
 
 					try {
-						controllerData = dataLayer[mainElements[index].attr('data-controller')] || {};
+						controllerData = dataLayer[$mainElement.attr('data-controller')] || {};
 
 						getTemplate(controller.templateName, controllerData, index, function(template) {
+							var synchronizer;
 							controllerData.template = template;
 
-							if (controller.init.length > 2) {
-								controller.init(mainElements[index], controllerData, $.proxy(onControllerInitialized, controllers[index]));
-							} else {
-								controller.init(mainElements[index], controllerData);
-								onControllerInitialized(controllers[index]);
+							if (controller.setup) {
+								controllerData = controller.setup($mainElement, controllerData) || controllerData;
 							}
+							
+							initializer(function() {
+
+								// TODO We still hace controllers with no template bindings
+								if (template) {
+									synchronizer = new R({
+										el: $mainElement[0],
+										template: template,
+										data: controllerData,
+										delimiters: ['{-', '-}']
+									});
+									controllerData.sync = synchronizer;
+									$mainElement.css('visibility', 'visible');
+								}
+
+								if (controller.init.length > 2) {
+									controller.init($mainElement, controllerData, $.proxy(onControllerInitialized, controllers[index]));
+								} else {
+									controller.init($mainElement, controllerData);
+									onControllerInitialized(controllers[index]);
+								}
+							});
 
 						});
 						
