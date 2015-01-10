@@ -24,7 +24,7 @@
 	
 	// Main initialization
 	require(['jquery', 'plugins/controllers-manager', 'plugins/router'], function($, controllersManager, router) {
-		controllersManager.config($(document.body), function (/*err*/) {
+		controllersManager.config($(document.body), true, function (/*err*/) {
 			router.init();
 		});
 	});

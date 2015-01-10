@@ -19,7 +19,7 @@
 								var $html = $(html);
 								$html.find('*[data-controller]').addBack().css('visibility', 'hidden');
 								$mainContainer.empty().html($html);
-								controllersManager.config($mainContainer);
+								controllersManager.config($mainContainer, false);
 								events.trigger('NAVIGATION_DONE', {url: context.path});
 								console.log('Navigation done!');
 							} else {
