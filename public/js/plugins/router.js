@@ -14,12 +14,14 @@
 					.done(function (data) {
 						templates.render(options.template, data, function (html) {
 							if (html) {
-								// $mainContainer.empty().html(html);
-
-								var $html = $(html);
-								$html.find('*[data-controller]').addBack().css('visibility', 'hidden');
+								var $html = $(html),
+									$controllers = $html.data('controller') ? $html : $html.find('[data-controller]');
+								
+								$controllers.css('visibility', 'hidden');
 								$mainContainer.empty().html($html);
-								controllersManager.config($mainContainer, false);
+								controllersManager.config($mainContainer, false, function() {
+									$controllers.css('visibility', 'visible');
+								});
 								events.trigger('NAVIGATION_DONE', {url: context.path});
 								console.log('Navigation done!');
 							} else {

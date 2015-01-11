@@ -31,30 +31,28 @@
 					<!-- END HEADERS-->
 
 					<!-- START ROW-->
-					{#cart.orderItems}
-						<div class="row" data-skuId="{skuId}" data-index="{@idx}{.}{/idx}">
+					{-#each orderItems-}
+						<div class="row">
 							<div class="six columns alpha description">
-								<img src="http://static.zara.net/photos{imageUrl}" alt="{name}">
+								<img src="http://static.zara.net/photos{-imageUrl-}" alt="{-name-}">
 								<div class="info">
-									<h3><a href="/catalog/category/{categoryId}/product/{productId}/{name}">{name}</a></h3>
-									{!<h4>Womens</h4>
-									<p>This area is populated by the product description. If you ever run out of things to say about what you're...</p>!}
+									<h3><a href="/catalog/category/{-categoryId-}/product/{-productId-}/{-name-}">{-name-}</a></h3>
 								</div>
 							</div>
 
-							<div class="two columns price desktop">${price}</div>
+							<div class="two columns price desktop">${-price-}</div>
 							<div class="one columns quantity total tr">
-								{quantity}
-								<p class="mobile">x ${amount}</p>
+								{-quantity-}
+								<p class="mobile">x ${-amount-}</p>
 							</div>
 							<div class="two columns total desktop">
-								<span>${amount} </span>
+								<span>${-amount-} </span>
 							</div>
 							<div class="one column remove omega desktop">
-								<a href="#" class="_removeOrderItemLink">x</a>
+								<a href="#" on-click="deleteOrderItem">x</a>
 							</div>
 						</div>
-					{/cart.orderItems}
+					{-/each-}
 					<!-- END ROW-->
 
 				</div>
@@ -68,7 +66,7 @@
 						<a href="/">« Continue Shopping</a>
 					</div>
 					<div class="six columns omega cart total">
-						<h2>Total $<span class="_orderAmount">{orderTotalAmount}</span></h2>
+						<h2>Total $<span>{-orderTotalAmount-}</span></h2>
 					</div>
 				</div>
 				<!--END TOTAL-->

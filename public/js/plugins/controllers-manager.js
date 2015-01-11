@@ -30,7 +30,14 @@
 
 				if (isBootstrap) {
 					// Get template from plugin
-					templates.render(templateName, context, done);
+					templates.render(templateName, context, function(tpl) {
+						var $tpl = $(tpl).find('[data-controller]');
+						if ($tpl.size()) {
+							done($tpl.html());
+						} else {
+							done(tpl);
+						}
+					});
 				} else {
 					// Get template from root element
 					setTimeout(function() {
@@ -76,8 +83,6 @@
 										data: controllerData,
 										delimiters: ['{-', '-}']
 									});
-									// This is for client-side navigation
-									$mainElement.css('visibility', 'visible');
 								}
 
 								if (controller.init.length > 3) {
