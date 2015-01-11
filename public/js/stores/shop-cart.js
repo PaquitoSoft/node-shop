@@ -10,7 +10,7 @@
 
 		// Computed properties
 		Object.defineProperty(ShopCart.prototype, 'itemsCount', {
-			get: function() { 
+			get: function() {
 				return this.orderItems.length;
 			}
 		});
@@ -24,19 +24,19 @@
 
 		ShopCart.prototype.getOrderItems = function() {
 			return this.orderItems;
-		}
+		};
 
 		ShopCart.prototype.getTotalAmount = function() {
 			return this.orderItems.reduce(function(total, oi) {
 				return total + (oi.quantity * oi.price);
 			}, 0);
-		}
+		};
 
 		ShopCart.prototype.addProduct = function(product, colorId, sizeId) {
 			var deferred = $.Deferred(),
 				self = this;
 
-			$.post('/shop/cart/' + product._id, 
+			$.post('/shop/cart/' + product._id,
 				{
 					colorId: colorId,
 					sizeId: sizeId,
@@ -55,7 +55,7 @@
 							name: product.name,
 							price: product.price,
 							amount: product.price,
-							imageUrl: 'http://static.zara.net/photos' + product.colors[0].pictures[0],
+							imageUrl: product.colors[0].pictures[0],
 							quantity: 1
 						};
 
