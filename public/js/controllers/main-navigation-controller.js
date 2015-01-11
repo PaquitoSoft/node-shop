@@ -22,6 +22,11 @@
 			sync.set('categories', context.categories);
 		}
 
+		function foldMenu() {
+			selectRootCategory({context: {_id: -1}});
+			selectSubcategory({context: {id: -1}});
+		}
+
 		function init($mainEl, data, synchronizer) {
 			context = data;
 			sync = synchronizer;
@@ -30,6 +35,8 @@
 				selectRootCategory: selectRootCategory,
 				selectSubcategory: selectSubcategory
 			});
+
+			events.on('FOLDED_MENU_REQUESTED', foldMenu);
 
 			console.log('MainNavigationController initialized!');
 		}

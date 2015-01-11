@@ -19,10 +19,15 @@
 								
 								$controllers.css('visibility', 'hidden');
 								$mainContainer.empty().html($html);
-								controllersManager.config($mainContainer, false, function() {
+								controllersManager.config($mainContainer, data, false, function() {
 									$controllers.css('visibility', 'visible');
 								});
 								events.trigger('NAVIGATION_DONE', {url: context.path});
+
+								if (options.foldedMenu) {
+									events.trigger('FOLDED_MENU_REQUESTED');
+								}
+
 								console.log('Navigation done!');
 							} else {
 								console.warn('Could not render page (no template)');
@@ -44,7 +49,8 @@
 			$mainContainer = $('#main');
 
 			page('/', handler({
-				template: 'home'
+				template: 'home',
+				foldedMenu: true
 			}));
 			page('/catalog/category/:categoryId/:categoryName', handler({
 				template: 'category'
@@ -53,7 +59,8 @@
 				template: 'product-detail'
 			}));
 			page('/shop/cart', handler({
-				template: 'shop-cart'
+				template: 'shop-cart',
+				foldedMenu: true
 			}));
 
 			/*

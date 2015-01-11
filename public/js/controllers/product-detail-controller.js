@@ -68,6 +68,8 @@
 				addToCart: addProductToCart
 			});
 
+			// TODO Ensure corresponding category selected on navigation menu
+
 			console.log('ProductDetailController initialized!');
 		}
 
