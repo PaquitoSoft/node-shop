@@ -19,7 +19,7 @@
 								
 								$controllers.css('visibility', 'hidden');
 								$mainContainer.empty().html($html);
-								controllersManager.config($mainContainer, data, false, function() {
+								controllersManager.config($mainContainer, false, function() {
 									$controllers.css('visibility', 'visible');
 								});
 								events.trigger('NAVIGATION_DONE', {url: context.path});

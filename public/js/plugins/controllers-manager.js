@@ -4,7 +4,7 @@
 	// Controller Manager plugin
 	define(['jquery', 'ractive', 'plugins/data-layer', 'plugins/templates'], function($, R, dataLayer, templates) {
 		
-		function config($root, serverData, isBootstrap, done) {
+		function config($root, isBootstrap, done) {
 			var controllers = [],
 				mainElements = [],
 				initialized = false,
@@ -63,16 +63,10 @@
 
 					try {
 						console.log('Initializing controller:', $mainElement.attr('data-controller'));
-						// controllerData = dataLayer[$mainElement.attr('data-controller')] || {};
-						if (isBootstrap) {
-							controllerData = dataLayer[$mainElement.attr('data-controller')] || {};
-						} else {
-							controllerData = $.extend(true, {}, serverData) || {};
-						}
+						controllerData = dataLayer[$mainElement.attr('data-controller')] || {};
 
 						getTemplate(controller.templateName, controllerData, index, function(template) {
 							var synchronizer;
-							controllerData.template = template;
 
 							if (controller.setup) {
 								controllerData = controller.setup($mainElement, controllerData) || controllerData;
