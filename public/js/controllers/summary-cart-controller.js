@@ -2,7 +2,7 @@
 	'use strict';
 
 	// SummaryCartController
-	define(['jquery', 'plugins/events-manager', 'plugins/templates', 'stores/shop-cart'], function($, events, templates, ShopCartStore) {
+	define(['jquery', 'plugins/events-manager', 'stores/shop-cart'], function($, events, ShopCartStore) {
 		
 		var $el, context, sync;
 

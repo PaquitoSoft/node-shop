@@ -2,9 +2,9 @@
 	'use strict';
 	// ProductDetailController
 	define(
-		['jquery', 'ractive', 'plugins/app-context', 'plugins/events-manager', 'plugins/local-storage',
-			'models/product', 'stores/shop-cart', 'plugins/templates', 'plugins/router'],
-		function($, R, appContext, events, storage, Product, ShopCart, templates, router) {
+		['jquery', 'plugins/local-storage',
+			'models/product', 'stores/shop-cart', 'plugins/router'],
+		function($, storage, Product, ShopCart, router) {
 
 		var context, sync;
 		var selectedCategoryProductId, currentCategoryProductsIds;

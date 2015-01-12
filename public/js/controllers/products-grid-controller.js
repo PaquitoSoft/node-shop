@@ -2,7 +2,7 @@
 	'use strict';
 
 	// ProductsGridController
-	define(['jquery', 'ractive', 'plugins/local-storage', 'plugins/templates'], function($, R, storage, templates) {
+	define(['jquery', 'plugins/local-storage'], function($, storage) {
 
 		function init($mainEl, data, sync) {
 
