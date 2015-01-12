@@ -4,7 +4,7 @@
 		{-#each orderItems-}
 			<div class="row first" data-index="{@index}.{/index}">
 				<div class="nine columns description">
-					<img src="{-imageUrl-}" alt="{-name-}">
+					<img src="http://static.zara.net/photos{-imageUrl-}" alt="{-name-}">
 					<div class="info col">
 						<h3>
 							<a href="#">{-name-}</a>
