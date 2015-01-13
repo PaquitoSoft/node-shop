@@ -31,7 +31,9 @@
 				if (isBootstrap) {
 					// Get template from plugin
 					templates.render(templateName, context, function(tpl) {
-						var $tpl = $(tpl).find('[data-controller]');
+						var $tpl = $(tpl);
+						$tpl = $tpl.data('controller') ? $tpl : $tpl.find('[data-controller]');
+						
 						if ($tpl.size()) {
 							done($tpl.html());
 						} else {
