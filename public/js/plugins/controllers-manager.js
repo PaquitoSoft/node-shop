@@ -25,32 +25,35 @@
 				}
 			}
 
-			function getTemplate(templateName, context, controllerIndex, done) {
-				if (!templateName) return done(''); // TODO We still have dummy controllers
-
+			function getTemplate(templateName, context, controllerIndex, $el, done) {
+				if (!templateName) return done('', controllerIndex, $el); // TODO We still have dummy controllers
 				if (isBootstrap) {
 					// Get template from plugin
 					templates.render(templateName, context, function(tpl) {
 						var $tpl = $(tpl);
 						$tpl = $tpl.data('controller') ? $tpl : $tpl.find('[data-controller]');
-						
+
 						if ($tpl.size()) {
-							done($tpl.html());
+							done($tpl.html(), controllerIndex, $el);
 						} else {
-							done(tpl);
+							done(tpl, controllerIndex, $el);
 						}
 					});
 				} else {
 					// Get template from root element
 					setTimeout(function() {
-						done(mainElements[controllerIndex].html());
+						done(mainElements[controllerIndex].html(), controllerIndex, $el);
 					}, 4);
 				}
 			}
 
 			$root.find('*[data-controller]').each(function(index, elem) {
-				controllers.push('controllers/' + $(elem).attr('data-controller'));
-				mainElements.push($(elem));
+				var $controller = $(elem),
+					controllerName = $controller.attr('data-controller');
+
+				controllers.push('controllers/' + controllerName);
+				mainElements.push($controller);
+
 				initData[controllers[index + 1]] = false;
 			});
 
@@ -60,39 +63,35 @@
 				
 				$.each(arguments, function(index, controller) {
 					var controllerData,
-						initializer = isBootstrap ? $(document).ready : function(fn) { fn.call(); },
 						$mainElement = mainElements[index];
 
 					try {
-						console.log('Initializing controller:', $mainElement.attr('data-controller'));
+						console.log('1.- Initializing controller:', $mainElement.attr('data-controller'));
 						controllerData = dataLayer[$mainElement.attr('data-controller')] || {};
 
-						getTemplate(controller.templateName, controllerData, index, function(template) {
+						getTemplate(controller.templateName, controllerData, index, $mainElement, function(template, controllerIndex, $el) {
 							var synchronizer;
 
 							if (controller.setup) {
-								controllerData = controller.setup($mainElement, controllerData) || controllerData;
+								controllerData = controller.setup($el, controllerData) || controllerData;
 							}
-							
-							initializer(function() {
 
-								// TODO We still have controllers with no template bindings
-								if (template) {
-									synchronizer = new R({
-										el: $mainElement[0],
-										template: template,
-										data: controllerData,
-										delimiters: ['{-', '-}']
-									});
-								}
+							// TODO We still have controllers with no template bindings
+							if (template) {
+								synchronizer = new R({
+									el: $el[0],
+									template: template,
+									data: controllerData,
+									delimiters: ['{-', '-}']
+								});
+							}
 
-								if (controller.init.length > 3) {
-									controller.init($mainElement, controllerData, synchronizer, $.proxy(onControllerInitialized, controllers[index]));
-								} else {
-									controller.init($mainElement, controllerData, synchronizer);
-									onControllerInitialized(controllers[index]);
-								}
-							});
+							if (controller.init.length > 3) {
+								controller.init($el, controllerData, synchronizer, $.proxy(onControllerInitialized, controllers[controllerIndex]));
+							} else {
+								controller.init($el, controllerData, synchronizer);
+								onControllerInitialized(controllers[controllerIndex]);
+							}
 
 						});
 						
@@ -117,7 +116,7 @@
 							done(err);
 						}
 					}
-				}, 5000);
+				}, 2500);
 			});
 
 		}

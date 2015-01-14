@@ -1,0 +1,5 @@
+<div id="minicart">
+	<a href="/shop/cart" class="toggle-drawer cart desktop" on-click="showSummaryCart">My Cart <span id="cart-target-desktop" class="count cart-target">(<span class="_items-count">{-shoppingCart.unitsCount-}</span>)</span></a>
+	<a href="/shop/cart" class="cart mobile  cart-target">My Cart <span id="cart-target-mobile" class="count cart-target">[{-shoppingCart.unitsCount-}]</span></a>
+	<a href="/shop/cart" class="checkout">Check Out</a>
+</div>

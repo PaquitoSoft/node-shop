@@ -14,6 +14,10 @@
 		<link href="/styles/theme.css" rel="stylesheet" type="text/css"  media="all"  />
 		<link rel="stylesheet" href="/styles/main.css">
 
+		<!--[if lt IE 9]>
+			<script src="/vendor/html5shiv/dist/html5shiv.min.js"></script>
+		<![endif]-->
+
 		<link rel="shortcut icon" href="/images/favicon.ico">
 		<link rel="apple-touch-icon" href="/images/apple-touch-icon.png?2243">
 		<link rel="apple-touch-icon" sizes="72x72" href="/images/apple-touch-icon-72x72.png?2243">
@@ -60,11 +64,7 @@
 
 				<!--START MINICART-->
 				<div class="five columns minicart-wrapper" data-controller="mini-cart-controller">
-					<div id="minicart">
-						<a href="/shop/cart" class="toggle-drawer cart desktop ">My Cart <span id="cart-target-desktop" class="count cart-target">(<span class="_items-count">{shoppingCart.unitsCount}</span>)</span></a>
-						<a href="/shop/cart" class="cart mobile  cart-target">My Cart <span id="cart-target-mobile" class="count cart-target">({shoppingCart.unitsCount})</span></a>
-						<a href="/shop/cart" class="checkout">Check Out</a>
-					</div>
+					{> "partials/mini-cart" /}
 				</div>
 				<!--END MINI CART-->
 

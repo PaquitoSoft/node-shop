@@ -7,8 +7,8 @@
 		var $el, context, sync;
 
 		function _toggle() {
-			if (ShopCartStore.itemsCount) {
-				// TODO I need to know how to maniulate main element from ractive
+			if (ShopCartStore.getUnitsCount()) {
+				// TODO I need to learn how to maniulate main element from ractive
 				// (it seems to affect only to its contents -template-)
 				$el.toggleClass('visible');
 			}

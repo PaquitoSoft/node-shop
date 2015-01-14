@@ -1,27 +1,33 @@
 (function() {
+	'use strict';
+
 	// MiniCartController
 	define(['jquery', 'plugins/events-manager', 'stores/shop-cart'], function($, events, ShopCartStore) {
-		var $itemsCount;
+		var sync;
 
-		function _initUI() {
-			var miniCart = storage.retrieve('mini-cart');
-			if (miniCart) {
-				$itemsCount.text(miniCart.count);	
+		function _onShopCartUpdated() {
+			try {
+				sync.set('shoppingCart.unitsCount', ShopCartStore.getUnitsCount());
+			} catch (err) {
+				console.log('ERRORRRRRR:', err.message);
 			}
 		}
 
-		function _onShopCartUpdated() {
-			$itemsCount.text(ShopCartStore.unitsCount);
+		function setup($mainEl, data) {
+			data.shoppingCart = {
+				unitsCount: ShopCartStore.getUnitsCount()
+			};
+			return data;
 		}
 
-		function configure($mainEl) {
-			$itemsCount = $mainEl.find('._items-count');
-
+		function init($mainEl, data, synchronizer) {
+			sync = synchronizer;
+			
 			events.on('productAddedToCart', _onShopCartUpdated);
 			events.on('productRemovedFromCart', _onShopCartUpdated);
 
-			$mainEl.on('click', '.cart', function(e) {
-				e.preventDefault();
+			sync.on('showSummaryCart', function(e) {
+				e.original.preventDefault();
 				events.trigger('toggleSummaryCartRequested');
 			});
 
@@ -29,7 +35,9 @@
 		}
 
 		return {
-			init: configure
+			setup: setup,
+			init: init,
+			templateName: 'partials/mini-cart'
 		};
 
 	});

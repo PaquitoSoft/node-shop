@@ -9,7 +9,7 @@
 			sync.on('productSelection', function(rEvent) {
 				storage.store('selectedCategoryProductId', rEvent.context._id);
 
-				var categoryProductsIds = data.products.map(function(product) {
+				var categoryProductsIds = $.map(data.products, function(product) {
 					return product._id;
 				});
 

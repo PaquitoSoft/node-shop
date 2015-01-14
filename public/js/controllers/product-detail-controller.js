@@ -35,6 +35,7 @@
 		}
 
 		function updateMainImage(rEvent) {
+			rEvent.original.preventDefault();
 			sync.set('mainImage', rEvent.context);
 		}
 
