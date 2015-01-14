@@ -2,7 +2,7 @@
 	'use strict';
 
 	// Controller Manager plugin
-	define(['jquery', 'ractive', 'plugins/data-layer', 'plugins/templates'], function($, R, dataLayer, templates) {
+	define(['jquery', 'ractive', 'plugins/data-layer', 'plugins/templates', 'plugins/decorators/image-lazy-load'], function($, R, dataLayer, templates) {
 		
 		function config($root, isBootstrap, done) {
 			var controllers = [],

@@ -4,7 +4,7 @@
 	{-#each products:index-}
 		<div class="four columns">
 			<a href="/catalog/category/{-categoryId-}/product/{-_id-}/{-name-}" data-id="{-_id-}" class="__animated __fadeInUpBig _product-summary" on-click="productSelection">
-				<img src="http://static.zara.net/photos{-colors[0].pictures[0]-}" alt="Blue ripped jeans" class="product" />
+				<img decorator="imageLazyLoader" data-src="http://static.zara.net/photos{-colors[0].pictures[0]-}" alt="Blue ripped jeans" class="product" />
 				<h3>{-name-}</h3>
 				<h4>${-price-} </h4>
 			</a>
