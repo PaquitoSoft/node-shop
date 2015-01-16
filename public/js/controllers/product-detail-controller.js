@@ -9,10 +9,12 @@
 		var context, sync;
 		var selectedCategoryProductId, currentCategoryProductsIds;
 		
-		function navigate(productId, mode) {
+		function navigate(productId, mode, rEvent) {
 			var idIndex = currentCategoryProductsIds.indexOf(productId),
 				nextUrl;
 			
+			rEvent.original.preventDefault();
+
 			if (idIndex !== -1) {
 				idIndex = (mode === 'back') ? idIndex - 1 : idIndex + 1;
 				if (idIndex >= 0 && idIndex < currentCategoryProductsIds.length) {
