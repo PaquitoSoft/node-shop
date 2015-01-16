@@ -6,11 +6,7 @@
 		var sync;
 
 		function _onShopCartUpdated() {
-			try {
-				sync.set('shoppingCart.unitsCount', ShopCartStore.getUnitsCount());
-			} catch (err) {
-				console.log('ERRORRRRRR:', err.message);
-			}
+			sync.set('shoppingCart.unitsCount', ShopCartStore.getUnitsCount());
 		}
 
 		function setup($mainEl, data) {
