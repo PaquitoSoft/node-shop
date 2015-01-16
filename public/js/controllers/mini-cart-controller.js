@@ -11,7 +11,7 @@
 		}
 
 		function _onShopCartUpdated() {
-			$itemsCount.text(ShopCartStore.unitsCount);
+			$itemsCount.text(ShopCartStore.getUnitsCount());
 		}
 
 		function configure($mainEl) {

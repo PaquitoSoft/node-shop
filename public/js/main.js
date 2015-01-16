@@ -5,13 +5,20 @@
 	requirejs.config({
 		baseUrl: '/js',
 		paths: {
-			jquery: '/vendor/jquery/dist/jquery.min',
-			handlebars: '/vendor/handlebars/handlebars'
+			jquery: '/vendor/jquery/dist/jquery',
+			handlebars: '/vendor/handlebars/handlebars',
+			es5Shim: '/vendor/es5-shim/es5-shim.min'
 		}
 	});
 	
+	var mainModules = ['jquery'];
+
+	if (!Array.prototype.indexOf) {
+		mainModules.push('es5Shim');
+	}
+
 	// Main initialization
-	require(['jquery'], function($) {
+	require(mainModules, function($) {
 		var controllers = [],
 			mainElements = [],
 			dataLayer = window.NodeShop.dataLayer,
@@ -48,8 +55,9 @@
 					// TODO Maybe we should have a timeout warning if some controller gets stuck
 					//		or someone included callback but forgot to call it
 				} catch (e) {
-					console.log('Error initializing controller %s: %s', controller, e);
+					console.log('Error initializing controller %s: %s', mainElements[index].attr('data-controller'), e);
 					console.log(e.stack);
+					throw e;
 				}
 			});
 		});

@@ -23,7 +23,7 @@
 		}
 
 		function _toggle() {
-			if (ShopCartStore.itemsCount) {
+			if (ShopCartStore.getUnitsCount()) {
 				if (!itemsRendered) {
 					_renderOrderItems(function() {
 						itemsRendered = true;

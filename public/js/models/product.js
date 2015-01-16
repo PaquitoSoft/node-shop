@@ -2,12 +2,13 @@
 	'use strict';
 
 	// Product model
-	define(['jquery', 'plugins/events-manager', 'plugins/app-context'], function($, events, appContext) {
+	define(['jquery'], function($) {
 		
 		function Product(data) {
-			Object.keys(data).forEach(function(key) {
-				this[key] = data[key];
-			}, this);
+			var self = this;
+			$.each(data, function(key, value) {
+				self[key] = data[key];
+			});
 		}
 
 		Product.prototype.getColor = function(colorId) {

@@ -8,20 +8,6 @@
 			this.orderItems = data.orderItems || [];
 		}
 
-		// Computed properties
-		Object.defineProperty(ShopCart.prototype, 'itemsCount', {
-			get: function() { 
-				return this.orderItems.length;
-			}
-		});
-		Object.defineProperty(ShopCart.prototype, 'unitsCount', {
-			get: function() {
-				return this.orderItems.reduce(function(total, orderItem) {
-					return total + orderItem.quantity;
-				}, 0);
-			}
-		});
-
 		ShopCart.prototype.getOrderItems = function() {
 			return this.orderItems;
 		}
@@ -29,6 +15,12 @@
 		ShopCart.prototype.getTotalAmount = function() {
 			return this.orderItems.reduce(function(total, oi) {
 				return total + (oi.quantity * oi.price);
+			}, 0);
+		}
+
+		ShopCart.prototype.getUnitsCount = function() {
+			return this.orderItems.reduce(function(total, orderItem) {
+				return total + orderItem.quantity;
 			}, 0);
 		}
 
