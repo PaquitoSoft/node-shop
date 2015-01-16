@@ -3,9 +3,9 @@
 <!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
 <!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
 <!--[if (gte IE 9)|!(IE)]><!--><html lang="en"> <!--<![endif]-->
-	<head>
+	<head data-controller="doc-header-controller" data-persistent-controller>
 		<title>
-			Simple ecommerce theme demo store
+			{-docTitle-}
 		</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -85,7 +85,7 @@
 
 						<div class="table-cell">
 							<div id="tagline" class="desktop">
-								<h3>Free shipping on all orders over $75</h3>
+								<h3>Free shipping on all orders over $75</h3>		
 							</div>
 						</div>
 					</div>
