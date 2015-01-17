@@ -35,7 +35,7 @@
 			};
 		}
 
-		controllersManager.config($(document.body), true, function (/*err*/) {
+		controllersManager.config($(document), true, function (/*err*/) {
 			router.init();
 		});
 	});

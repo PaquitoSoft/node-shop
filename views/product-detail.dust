@@ -1,10 +1,11 @@
 {@set param="docTitle" value="{product.name}" /}
-{@clientDataLayer key="doc-header-controller" attr="product" data="{docTitle}" /}
 
 {> layout /}
 
 
 {< mainContent}
+
+	{@clientDataLayer key="doc-header-controller" attr="docTitle" data="{product.name}" /}
 
 	<div id="page-content" class="product-detail" data-controller="product-detail-controller">
 
