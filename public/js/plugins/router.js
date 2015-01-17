@@ -2,8 +2,8 @@
 	'use strict';
 
 	// Router plugin
-	define(['pagejs', 'jquery', 'plugins/templates', 'plugins/controllers-manager', 'plugins/events-manager'],
-		function(page, $, templates, controllersManager, events) {
+	define(['pagejs', 'jquery', 'plugins/templates', 'plugins/controllers-manager', 'plugins/events-manager', 'plugins/data-layer'],
+		function(page, $, templates, controllersManager, events, dataLayer) {
 		
 		var $mainContainer;
 
@@ -22,6 +22,13 @@
 								controllersManager.config($mainContainer, false, function() {
 									$controllers.css('visibility', 'visible');
 								});
+
+								// Update document title
+								if (dataLayer.shared && dataLayer.shared.docTitle) {
+									$(document).find('head title').text(dataLayer.shared.docTitle);
+									dataLayer.shared.docTitle = undefined;
+								}
+
 								events.trigger('NAVIGATION_DONE', {url: context.path});
 
 								if (options.foldedMenu) {

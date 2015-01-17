@@ -5,7 +5,7 @@
 
 {< mainContent}
 
-	{@clientDataLayer key="doc-header-controller" attr="docTitle" data="{product.name}" /}
+	{@clientDataLayer key="shared" attr="docTitle" data="{product.name}" /}
 
 	<div id="page-content" class="product-detail" data-controller="product-detail-controller">
 

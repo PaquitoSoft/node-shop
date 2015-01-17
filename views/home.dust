@@ -1,6 +1,11 @@
+{@set param="docTitle" value="Simple ecommerce theme demo store" /}
+
 {> layout /}
 
 {< mainContent}
+
+	{@clientDataLayer key="shared" attr="docTitle" data="Simple ecommerce theme demo store" /}
+
 	<div id="page-content">
 		<br>
 

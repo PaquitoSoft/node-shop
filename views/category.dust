@@ -1,6 +1,10 @@
+{@set param="docTitle" value="{catName}" /}
+
 {>layout/}
 
 {<mainContent}
+
+	{@clientDataLayer key="shared" attr="docTitle" data="{catName}" /}
 
 	<div id="page-content">  
 

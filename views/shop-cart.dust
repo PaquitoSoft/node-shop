@@ -1,7 +1,10 @@
+{@set param="docTitle" value="Simple eCommerce: Shop Cart" /}
 
 {> layout /}
 
 {< mainContent}
+
+	{@clientDataLayer key="shared" attr="docTitle" data="Simple eCommerce: Shop Cart" /}
 
 	<div id="page-content">  
 
