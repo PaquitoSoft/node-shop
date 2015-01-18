@@ -6,37 +6,55 @@
 		var context,
 			sync;
 
-		function selectRootCategory(rEvent) {
-			context.categories.forEach(function(category) {
-				category.selected = (category._id === rEvent.context._id);
-			});
-			sync.set('categories', context.categories);
+		function selectRootCategoryHandler(rEvent) {
+			sync.set('rootCategoryId', rEvent.context._id);
 		}
 
-		function selectSubcategory(rEvent) {
-			context.categories.forEach(function(rootCategory, i) {
-				rootCategory.subcategories.forEach(function(subcat, j) {
-					subcat.visiting = (subcat.id === rEvent.context.id);
-				});
-			});
+		function selectSubcategoryHandler(rEvent) {
+			selectSubcategory(rEvent.context.id);
+		}
+
+		function selectSubcategory(subCatId) {
+			var i, j, jLen, subcat,
+				iLen = context.categories.length;
+
+			outer:
+			for (i = 0; i < iLen; i++) {
+				jLen = context.categories[i].subcategories.length;
+				inner:
+				for (j = 0; j < jLen; j++) {
+					subcat = context.categories[i].subcategories[j];
+					if (subcat.id === subCatId) {
+						sync.set('rootCategoryId', context.categories[i]._id);
+						sync.set('subcategoryId', subcat.id);
+						break outer;
+					}
+				}
+			}
+
 			sync.set('categories', context.categories);
 		}
 
 		function foldMenu() {
-			selectRootCategory({context: {_id: -1}});
-			selectSubcategory({context: {id: -1}});
+			sync.set('rootCategoryId', -1);
+			sync.set('subcategoryId', -1);
 		}
 
 		function init($mainEl, data, synchronizer) {
 			context = data;
 			sync = synchronizer;
 			
+			selectSubcategory(data.currentCategoryId);
+
 			sync.on({
-				selectRootCategory: selectRootCategory,
-				selectSubcategory: selectSubcategory
+				selectRootCategory: selectRootCategoryHandler,
+				selectSubcategory: selectSubcategoryHandler
 			});
 
 			events.on('FOLDED_MENU_REQUESTED', foldMenu);
+			events.on('UNFOLD_MENU_REQUESTED', function (data) {
+				selectSubcategory(data.subcategoryId);
+			});
 
 			console.log('MainNavigationController initialized!');
 		}

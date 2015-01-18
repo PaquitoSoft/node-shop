@@ -6,17 +6,13 @@
 				<a href="#" class="accordion-button" on-click="selectRootCategory">{-name-}
 					<span>+</span>
 				</a>
-				<div class="accordion-content {-^selected-}invisible{-/selected-}">
+				<div class="accordion-content {- (_id === rootCategoryId) ? '' : 'invisible' -}">
 					{-#each subcategories-}
-						{! TODO Mark selected category !}
-						<a href="/catalog/category/{-id-}/{-name-}" class="{-#visiting-}selected{-/visiting-}" on-click="selectSubcategory">{-name-} </a>
+						<a href="/catalog/category/{-id-}/{-name-}" class="{- (id === subcategoryId) ? 'selected' : '' -}" on-click="selectSubcategory">{-name-} </a>
 					{-/each-}
 				</div>
 			</li>
 		{-/each-}
-
-		<li><a href="/blogs/news">Blog</a></li>
-		<li><a href="/pages/contact-us">Contact Us</a></li>
 
 	</ul>
 

@@ -101,6 +101,7 @@
 			<div id="sidebar" class="three columns">
 				
 				{@clientDataLayer key="main-navigation-controller" attr="categories" data=categories /}
+				{@clientDataLayer key="main-navigation-controller" attr="currentCategoryId" data=currentCategoryId /}
 				{> "partials/navigation-menu" categories=categories /}
 
 			</div>
