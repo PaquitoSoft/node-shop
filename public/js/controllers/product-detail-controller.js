@@ -2,9 +2,9 @@
 	'use strict';
 	// ProductDetailController
 	define(
-		['jquery', 'plugins/local-storage',
+		['jquery', 'plugins/local-storage', 'plugins/events-manager',
 			'models/product', 'stores/shop-cart', 'plugins/router'],
-		function($, storage, Product, ShopCart, router) {
+		function($, storage, events, Product, ShopCart, router) {
 
 		var context, sync;
 		var selectedCategoryProductId, currentCategoryProductsIds;
@@ -71,7 +71,10 @@
 				addToCart: addProductToCart
 			});
 
-			// TODO Ensure corresponding category selected on navigation menu
+			// Ensure corresponding category selected on navigation menu
+			events.trigger('UNFOLD_MENU_REQUESTED', {
+				subcategoryId: data.product.categoryId
+			});
 
 			console.log('ProductDetailController initialized!');
 		}
