@@ -116,12 +116,21 @@
 
 							// TODO We still have controllers with no template bindings
 							if (template) {
-								synchronizer = new R({
-									el: info.$mainEl[0],
-									template: template,
-									data: data,
-									delimiters: ['{-', '-}']
-								});
+								if (controllerInfo.isPersistent && !isBootstrap) {
+									controllerInfo.synchronizer.set(data);
+									onControllerInitialized(cont);
+									return false;
+								} else {
+									synchronizer = new R({
+										el: info.$mainEl[0],
+										template: template,
+										data: data,
+										delimiters: ['{-', '-}']
+									});
+									if (controllerInfo.isPersistent) {
+										persistentControllers[$.inArray(controllerInfo, persistentControllers)].synchronizer = synchronizer;
+									}
+								}
 							}
 
 							if (controller.init.length > 3) {

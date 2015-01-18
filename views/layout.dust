@@ -79,12 +79,15 @@
 									<img src="/images/logo.png" alt="Shopify Shirts" />
 								</a>
 							</h1>
+							{! <p>{.|js}</p> !}
 						</div>
 
-						<div class="table-cell">
-							<div id="tagline" class="desktop">
-								<h3>Free shipping on all orders over $75</h3>		
-							</div>
+						{^mainBanner}
+							{@set param="mainBanner" value="Free shipping on all orders over $75" /}
+							{@clientDataLayer key="main-banner-controller" attr="mainBanner" data="{mainBanner}" /}
+						{/mainBanner}
+						<div class="table-cell" data-controller="main-banner-controller" data-persistent-controller="true">
+							{> "partials/main-banner" /}
 						</div>
 					</div>
 				</div>

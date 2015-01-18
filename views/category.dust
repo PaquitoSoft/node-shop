@@ -1,10 +1,12 @@
 {@set param="docTitle" value="{catName}" /}
+{@set param="mainBanner" value="SiMpLe, cares about you." /}
 
 {>layout/}
 
 {<mainContent}
 
 	{@clientDataLayer key="shared" attr="docTitle" data="{catName}" /}
+	{@clientDataLayer key="main-banner-controller" attr="mainBanner" data="SiMpLe, cares about you." /}
 
 	<div id="page-content">  
 
