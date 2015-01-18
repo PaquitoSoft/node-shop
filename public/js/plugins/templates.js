@@ -51,7 +51,7 @@
 
 			function cacheTemplate(templateName, tpl) {
 				cache.templates[templateName] = tpl;
-				storeTemplates();
+				// storeTemplates();
 			}
 
 			function preloadTemplate(templateName) {
@@ -66,15 +66,17 @@
 			function getTemplate(templateName, done) {
 				var tpl;
 
-				if (!cacheLoaded) {
-					cache = loadCachedTemplates();
-					cacheLoaded = true;
-				}
+				// if (!cacheLoaded) {
+				// 	cache = loadCachedTemplates();
+				// 	cacheLoaded = true;
+				// }
 
-				tpl = cache.templates[templateName];
+				// tpl = cache.templates[templateName];
 
-				if (tpl) {
-					done(null, tpl);
+				if (dust.cache[templateName]) {
+					done(null, dust.cache[templateName]);
+				// if (tpl) {
+				// 	done(null, tpl);
 				} else {
 					// TODO Error handling
 					$.get(TEMPLATES_BASE_PATH + templateName + TEMPLATES_EXTENSION, function(raw) {
@@ -98,7 +100,6 @@
 			}
 
 			// Apply custom helpers
-			// viewHelpers.extendeHandlerbars();
 			dustHelpers.registerDustHelpers();
 
 			return {

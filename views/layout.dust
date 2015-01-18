@@ -197,7 +197,7 @@
 					version: '0.1.0',
 					photosBasePath: 'http://static.zara.net/photos',
 					templates: {
-						disableCaching: true
+						disableCaching: false
 					},
 					shopCartData: {shoppingCart|js|s}
 				},
