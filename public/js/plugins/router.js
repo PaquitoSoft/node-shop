@@ -7,12 +7,13 @@
 		
 		var $mainContainer;
 
-		function handler(options) {
+		function defaultHandler(options) {
+			options = options || {};
 			return function(context/*, next*/) {
 				console.log('Navigating to:', context.path);
 				$.getJSON(context.path)
 					.done(function (data) {
-						templates.render(options.template, data, function (html) {
+						templates.render(data.template, data, function (html) {
 							if (html) {
 								var $html = $(html),
 									$controllers = $html.data('controller') ? $html : $html.find('[data-controller]');
@@ -55,18 +56,12 @@
 		function init() {
 			$mainContainer = $('#main');
 
-			page('/', handler({
-				template: 'home',
+			page('/', defaultHandler({
 				foldedMenu: true
 			}));
-			page('/catalog/category/:categoryId/:categoryName', handler({
-				template: 'category'
-			}));
-			page('/catalog/category/:categoryId/product/:productId/:productName?', handler({
-				template: 'product-detail'
-			}));
-			page('/shop/cart', handler({
-				template: 'shop-cart',
+			page('/catalog/category/:categoryId/:categoryName', defaultHandler());
+			page('/catalog/category/:categoryId/product/:productId/:productName?', defaultHandler());
+			page('/shop/cart', defaultHandler({
 				foldedMenu: true
 			}));
 
