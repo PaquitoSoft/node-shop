@@ -3,7 +3,28 @@
 
 	// Controller Manager plugin
 	define(['jquery', 'ractive', 'plugins/data-layer', 'plugins/templates', 'plugins/decorators/image-lazy-load'], function($, R, dataLayer, templates) {
-		var persistentControllers = [];
+		var persistentControllers = [],
+			controllersInterceptors = {};
+
+		function registerInterceptor(controllerName, interceptor) {
+			// var prev = controllersInterceptors[controllerName] || [];
+			// prev.push(interceptor);
+			// controllersInterceptors[controllerName] = prev;
+
+			controllersInterceptors[controllerName] = interceptor;
+		}
+
+		function removeInterceptor(controllerName, interceptor) {
+			// var prev = controllersInterceptors[controllerName] || [],
+			// 	index = $.inArray(interceptor, prev);
+
+			// if (~index) {
+			// 	prev.splice(index, 1);
+			// 	controllersInterceptors = prev;
+			// }
+
+			controllersInterceptors[controllerName] = undefined;
+		}
 
 		function config($root, isBootstrap, done) {
 			var controllers = [],
@@ -29,6 +50,7 @@
 
 			function getTemplate(controller, controllerInfo, controllerData, done) {
 				if (!controller.templateName) return done('', controller, controllerInfo, controllerData); // TODO We still have dummy controllers
+				
 				if (isBootstrap) {
 					// Get template from plugin
 					templates.render(controller.templateName, controllerData, function(tpl) {
@@ -49,8 +71,6 @@
 				} else {
 					// Get template from root element
 					setTimeout(function() {
-						// done(mainElements[controllerIndex].html(), controllerIndex, $el);
-						// done(controllers[controllerIndex].$mainEl.html(), controllerIndex, $el);
 						done(controllerInfo.$mainEl.html(), controller, controllerInfo, controllerData);
 					}, 4);
 				}
@@ -60,7 +80,6 @@
 				var $controller = $(elem),
 					controllerName = $controller.attr('data-controller'),
 					isPersistent = !!$controller.data('persistent-controller'),
-					// controllersGroup = isPersistent ? persistentControllers : controllers;
 					cont = {
 						name: controllerName,
 						$mainEl: $controller,
@@ -70,29 +89,17 @@
 				if (isPersistent) {
 					if (!~$.inArray(cont, persistentControllers)) {
 						persistentControllers.push(cont);
-					// } else {
-						// Si es persistente y ya esta en el array no hago nada
-						// porque se añadirá automáticamente en la siguiente instrucción
 					}
 				} else {
 					controllers.push(cont);
 					dependencies.push('controllers/' + controllerName);
 				}
 
-				// if ($controller.data('persistent-controller')) {
-				// 	persistentControllers['controllers/' + controllerName] = $controller;
-				// } else {
-				// 	controllers.push('controllers/' + controllerName);
-				// 	mainElements.push($controller);
-				// 	initData[controllers[index + 1]] = false;
-				// }
-				
 			});
 
 			$.each(persistentControllers, function(index, controllerInfo) {
 				controllers.push(controllerInfo);
 				dependencies.push('controllers/' + controllerInfo.name);
-				// initData[controllers[controllers.length]] = false;
 			});
 
 			pendingControllers = controllers.length;
@@ -108,10 +115,19 @@
 						controllerData = dataLayer[controllerInfo.name] || {};
 
 						getTemplate(controller, controllerInfo, controllerData, function(template, cont, info, data) {
-							var synchronizer;
+							var synchronizer, interceptor, interceptionResult;
 
 							if (cont.setup) {
 								data = cont.setup(info.$mainEl, data) || data;
+							}
+
+							// Intercept controller update/initialization
+							interceptor = controllersInterceptors[controllerInfo.name];
+							if (interceptor) {
+								interceptionResult = interceptor(data, template, info.$mainEl) || {};
+								data = interceptionResult.data || data;
+								template = interceptionResult.template || template;
+								info.$mainEl = interceptionResult.$mainEl || info.$mainEl;
 							}
 
 							// TODO We still have controllers with no template bindings
@@ -141,32 +157,6 @@
 							}
 						});
 
-						// getTemplate(controller.templateName, controllerData, index, controllerInfo.$mainEl, function(template, controllerIndex, $el) {
-						// 	var synchronizer;
-
-						// 	if (controller.setup) {
-						// 		controllerData = controller.setup($el, controllerData) || controllerData;
-						// 	}
-
-						// 	// TODO We still have controllers with no template bindings
-						// 	if (template) {
-						// 		synchronizer = new R({
-						// 			el: $el[0],
-						// 			template: template,
-						// 			data: controllerData,
-						// 			delimiters: ['{-', '-}']
-						// 		});
-						// 	}
-
-						// 	if (controller.init.length > 3) {
-						// 		controller.init($el, controllerData, synchronizer, $.proxy(onControllerInitialized, controllers[controllerIndex]));
-						// 	} else {
-						// 		controller.init($el, controllerData, synchronizer);
-						// 		onControllerInitialized(controllers[controllerIndex]);
-						// 	}
-
-						// });
-						
 					} catch (e) {
 						console.log('Error initializing controller %s: %s', controller, e);
 						console.log(e.stack);
@@ -194,7 +184,9 @@
 		}
 
 		return {
-			config: config
+			config: config,
+			registerInterceptor: registerInterceptor,
+			removeInterceptor: removeInterceptor
 		};
 	});
 }());

@@ -20,6 +20,12 @@
 		<link rel="apple-touch-icon" href="/images/apple-touch-icon.png?2243">
 		<link rel="apple-touch-icon" sizes="72x72" href="/images/apple-touch-icon-72x72.png?2243">
 		<link rel="apple-touch-icon" sizes="114x114" href="/images/apple-touch-icon-114x114.png?2243">
+
+		<script>
+			window.NodeShop = {
+				extensions: []
+			};
+		</script>
 	</head>
 
 
@@ -192,17 +198,30 @@
 		<!-- END CONTAINER 3-->
 
 		<script>
-			window.NodeShop = {
-				appContext: {
-					version: '0.1.0',
-					photosBasePath: 'http://static.zara.net/photos',
-					templates: {
-						disableCaching: false
-					},
-					shopCartData: {shoppingCart|js|s}
+			window.NodeShop.appContext = {
+				version: '0.1.0',
+				photosBasePath: 'http://static.zara.net/photos',
+				templates: {
+					disableCaching: false
 				},
-				dataLayer: {@clientDataLayer /}
 			};
+			window.NodeShop.dataLayer =  {@clientDataLayer /};
+
+
+			window.NodeShop.extensions.push(function(controllersManager, router) {
+				controllersManager.registerInterceptor('product-detail-controller', function (data, template, $mainEl) {
+					if (data.product.name.length) {
+						var tokens = data.product.name.toLowerCase().split(' ');
+
+						data.product.name = tokens.map(function (token) {
+							return token[0].toUpperCase() + token.substr(1);
+						}).join(' ');
+
+						return { data: data };
+					}					
+				});
+			});
+
 		</script>
 
 		<script data-main="/js/main.js" src="/vendor/requirejs/require.js"></script>

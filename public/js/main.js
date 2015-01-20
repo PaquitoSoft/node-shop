@@ -35,6 +35,10 @@
 			};
 		}
 
+		$.each(window.NodeShop.extensions, function (index, fn) {
+			fn(controllersManager, router);
+		});
+
 		controllersManager.config($(document), true, function (/*err*/) {
 			router.init();
 		});

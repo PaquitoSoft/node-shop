@@ -5,7 +5,7 @@
 	define(['jquery', 'plugins/events-manager', 'plugins/app-context'], function($, events, appContext) {
 		
 		function ShopCart(data) {
-			this.orderItems = data.orderItems || [];
+			this.orderItems = data ? (data.orderItems || []) : [];
 		}
 		
 		ShopCart.prototype.getUnitsCount = function() {
