@@ -26,6 +26,10 @@
 				extensions: []
 			};
 		</script>
+
+		
+		<script type="text/javascript" src="/js/experiments/special-prices-images.js"></script>
+		
 	</head>
 
 
@@ -209,7 +213,7 @@
 
 
 			window.NodeShop.extensions.push(function(controllersManager, router) {
-				controllersManager.registerInterceptor('product-detail-controller', function (data, template, $mainEl) {
+				controllersManager.registerInterceptor('_product-detail-controller', function (data, template, $mainEl) {
 					if (data.product.name.length) {
 						var tokens = data.product.name.toLowerCase().split(' ');
 

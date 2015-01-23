@@ -34,8 +34,11 @@
 				initData = {},
 				pendingControllers;
 			
-			function onControllerInitialized(controllerName) {
-				initData[controllerName] = true;
+			function onControllerInitialized(/*controllerName*/ controllerInfo) {
+				// initData[controllerInfoName] = true;
+				if (controllerInfo.onInitialized) {
+					controllerInfo.onInitialized(controllerInfo.sync);
+				}
 
 				if (pendingControllers > 1) {
 					pendingControllers--;
@@ -128,6 +131,7 @@
 								data = interceptionResult.data || data;
 								template = interceptionResult.template || template;
 								info.$mainEl = interceptionResult.$mainEl || info.$mainEl;
+								cont.onInitialized = interceptionResult.onInitialized;
 							}
 
 							// TODO We still have controllers with no template bindings
@@ -143,6 +147,7 @@
 										data: data,
 										delimiters: ['{-', '-}']
 									});
+									cont.sync = synchronizer;
 									if (controllerInfo.isPersistent) {
 										persistentControllers[$.inArray(controllerInfo, persistentControllers)].synchronizer = synchronizer;
 									}

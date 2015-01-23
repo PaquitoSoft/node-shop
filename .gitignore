@@ -30,4 +30,5 @@ node_modules
 # Front-end dependency directory
 public/vendor
 
-resources
+resources/*
+!resources/experiments/*

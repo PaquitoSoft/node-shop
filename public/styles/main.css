@@ -93,3 +93,7 @@ section#cart form div.row div.price {
 	visibility: visible !important;
 	display: block !important;
 }
+
+#feature-image {
+	min-height: 490px;
+}
