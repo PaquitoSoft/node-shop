@@ -2,27 +2,26 @@
 	'use strict';
 
 	// ProductsGridController
-	define(['jquery', 'plugins/local-storage'], function($, storage) {
+	define(['plugins/local-storage', 'controllers/base-controller'], function(storage, BaseController) {
 
-		function init($mainEl, data, sync) {
+		var ProductsGridController = BaseController.extend({
+			templateName: 'partials/products-grid',
 
-			sync.on('productSelection', function(rEvent) {
+			init: function() {
+				console.log('ProductsGridController initialized!');
+			},
+
+			onProductSelection: function (rEvent) {
 				storage.store('selectedCategoryProductId', rEvent.context._id);
 
-				var categoryProductsIds = $.map(data.products, function(product) {
+				var categoryProductsIds = this.data.products.map(function(product) {
 					return product._id;
 				});
 
 				storage.store('currentCategoryProductsIds', categoryProductsIds);
-			});
+			}
+		});
 
-			console.log('ProductsGridController initialized!');
-		}
-
-		return {
-			init: init,
-			templateName: 'partials/products-grid'
-		};
-
+		return ProductsGridController;
 	});
 }());

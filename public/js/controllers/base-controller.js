@@ -12,10 +12,12 @@
 		}
 		
 		var BaseController = function($mainEl, data, isPersistent) {
-			this.$mainEl = $mainEl;
-			this.data = data;
-			this.isPersistent = !!isPersistent;
-			this.events = {};
+			if ($mainEl) {
+				this.$mainEl = $mainEl;
+				this.data = data;
+				this.isPersistent = !!isPersistent;
+				this.events = {};
+			}
 		};
 
 		BaseController.extend = function _extend(methods) {
@@ -24,7 +26,7 @@
 					BaseController.apply(this, arguments);
 				};
 
-			Klass.prototype = BaseController.prototype;
+			Klass.prototype = new BaseController();
 			Klass.prototype.constructor = Klass;
 
 			$.each(methods || {}, function(key, value) {
@@ -54,7 +56,6 @@
 		};
 
 		BaseController.prototype.start = function _start(synchronizer, done) {
-			console.log('Initializing base controller...');
 			var self = this,
 				_listeners = {};
 			this.sync = synchronizer;
@@ -66,6 +67,7 @@
 					_listeners[key] = $.proxy(value, self);
 				});
 				this.sync.on(_listeners);
+				// TODO Should I remove listeners from the prototype???
 			}
 
 			if (this.init.length > 1) {
@@ -76,7 +78,19 @@
 			}
 		};
 
-		BaseController.prototype.updateTemplate = function _update(template) {
+		BaseController.prototype.update = function _update(data, $el) {
+			// this.$mainEl = $el;
+			this.data = data;
+			this.sync.set(data);
+			// TODO Attach Ractive to the new element
+			// this.sync.insert($el[0]);
+		};
+
+		BaseController.prototype.reset = function _reset() {
+			this.sync.teardown();
+		};
+
+		BaseController.prototype.updateTemplate = function _updateTemplate(template) {
 			console.warn('This function is not yet implemented. Why do you need it?');
 		};
 

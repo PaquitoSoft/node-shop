@@ -1,15 +1,16 @@
 (function() {
+	'use strict';
+	
 	// ProductSearchController
-	define(['jquery'], function($) {
-
+	define(['controllers/base-controller'], function(BaseController) {
 		
-		function configure() {
-			console.log('ProductSearchController initialized!');
-		}
+		var ProductSearchController = BaseController.extend({
+			templateName: '',
+			init: function() {
+				console.log('ProductSearchController initialized!');
+			}
+		});
 
-		return {
-			init: configure
-		};
-
+		return ProductSearchController;
 	});
 }());

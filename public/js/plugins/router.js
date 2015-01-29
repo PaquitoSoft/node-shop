@@ -2,7 +2,7 @@
 	'use strict';
 
 	// Router plugin
-	define(['pagejs', 'jquery', 'plugins/templates', 'plugins/controllers-manager', 'plugins/events-manager', 'plugins/data-layer'],
+	define(['pagejs', 'jquery', 'plugins/templates', 'plugins/controllers-manager-2', 'plugins/events-manager', 'plugins/data-layer'],
 		function(page, $, templates, controllersManager, events, dataLayer) {
 		
 		var $mainContainer;
@@ -16,12 +16,14 @@
 						templates.render(data.template, data, function (html) {
 							if (html) {
 								var $html = $(html),
+									$prevContent = $mainContainer.clone(),
 									$controllers = $html.data('controller') ? $html : $html.find('[data-controller]');
 								
 								$controllers.css('visibility', 'hidden');
 								$mainContainer.empty().html($html);
 								controllersManager.config($mainContainer, false, function() {
 									$controllers.css('visibility', 'visible');
+									controllersManager.cleanup($prevContent, $html);
 								});
 
 								// Update document title

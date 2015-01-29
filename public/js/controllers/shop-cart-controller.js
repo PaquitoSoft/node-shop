@@ -2,38 +2,35 @@
 	'use strict';
 
 	// ShopCartController
-	define(['jquery', 'stores/shop-cart'], function($, ShopCartStore) {
-		var context, sync;
+	define(['stores/shop-cart', 'controllers/base-controller'], function(ShopCartStore, BaseController) {
+		
+		var ShopCartController = BaseController.extend({
+			templateName: 'shop-cart',
 
-		function deleteOrderItem(rEvent) {
-			rEvent.original.preventDefault();
-			ShopCartStore.removeOrderItem(context.orderItems.indexOf(rEvent.context))
-				.done(function (orderItems) {
-					sync.set('ordetItems', orderItems);
-					sync.set('orderTotalAmount', ShopCartStore.getTotalAmount().toFixed(2));
-					
-				});
-		}
+			setup: function() {
+				this.data.orderItems = ShopCartStore.getOrderItems();
+				this.data.orderTotalAmount = ShopCartStore.getTotalAmount().toFixed(2);
+			},
 
-		function setup($mainEl, data) {
-			data.orderItems = ShopCartStore.getOrderItems();
-			data.orderTotalAmount = ShopCartStore.getTotalAmount().toFixed(2);
-		}
+			init: function() {
+				// TODO This message should be emmited by controllers manager component
+				console.log('ShopCartController initialized!');
+			},
 
-		function init($mainEl, data, synchronizer) {
-			context = data;
-			sync = synchronizer;
-			
-			sync.on('deleteOrderItem', deleteOrderItem);
+			onDeleteOrderItem: function(rEvent) {
+				var self = this;
+				rEvent.original.preventDefault();
 
-			console.log('ShopCartController initialized!');
-		}
+				ShopCartStore.removeOrderItem(this.data.orderItems.indexOf(rEvent.context))
+					.done(function (orderItems) {
+						this.sync.set({
+							orderItems: orderItems,
+							orderTotalAmount: ShopCartStore.getTotalAmount().toFixed(2)
+						});
+					});
+			}
+		});
 
-		return {
-			setup: setup,
-			init: init,
-			templateName: 'shop-cart'
-		};
-
+		return ShopCartController;
 	});
 }());

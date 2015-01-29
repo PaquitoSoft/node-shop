@@ -27,9 +27,9 @@
 			};
 		</script>
 
-		
+		<!--
 		<script type="text/javascript" src="/js/experiments/special-prices-images.js"></script>
-		
+		-->
 	</head>
 
 
@@ -210,22 +210,6 @@
 				},
 			};
 			window.NodeShop.dataLayer =  {@clientDataLayer /};
-
-
-			window.NodeShop.extensions.push(function(controllersManager, router) {
-				controllersManager.registerInterceptor('_product-detail-controller', function (data, template, $mainEl) {
-					if (data.product.name.length) {
-						var tokens = data.product.name.toLowerCase().split(' ');
-
-						data.product.name = tokens.map(function (token) {
-							return token[0].toUpperCase() + token.substr(1);
-						}).join(' ');
-
-						return { data: data };
-					}					
-				});
-			});
-
 		</script>
 
 		<script data-main="/js/main.js" src="/vendor/requirejs/require.js"></script>

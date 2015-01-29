@@ -33,8 +33,8 @@
 
 				<!--START: PRODUCTS NAVIGATION-->
 				<div class="products-navigation">
-					<span class="left _nav-link"><a class="product-navigation-link" href="#" on-click="goBack">&lt; Prev.</a></span>
-					<span class="right _nav-link"><a class="product-navigation-link" href="#" on-click="goForward">Next &gt;</a></span>
+					<span class="left _nav-link"><a class="product-navigation-link" href="#" on-click="navigate:back">&lt; Prev.</a></span>
+					<span class="right _nav-link"><a class="product-navigation-link" href="#" on-click="navigate:forward">Next &gt;</a></span>
 				</div>
 				<!--END: PRODUCTS NAVIGATION-->
 

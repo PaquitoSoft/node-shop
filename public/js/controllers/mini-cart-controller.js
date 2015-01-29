@@ -2,51 +2,11 @@
 	'use strict';
 
 	// MiniCartController
-	define(['jquery', 'plugins/events-manager', 'stores/shop-cart', 'controllers/base-controller'], function($, events, ShopCartStore, BaseController) {
-		var sync;
+	define(['plugins/events-manager', 'stores/shop-cart', 'controllers/base-controller'], function(events, ShopCartStore, BaseController) {
 
-		function _onShopCartUpdated() {
-			sync.set('shoppingCart.unitsCount', ShopCartStore.getUnitsCount());
-		}
-
-		function setup($mainEl, data) {
-			data.shoppingCart = {
-				unitsCount: ShopCartStore.getUnitsCount()
-			};
-			return data;
-		}
-
-		function init($mainEl, data, synchronizer) {
-			sync = synchronizer;
-			
-			events.on('productAddedToCart', _onShopCartUpdated);
-			events.on('productRemovedFromCart', _onShopCartUpdated);
-
-			sync.on('showSummaryCart', function(e) {
-				e.original.preventDefault();
-				events.trigger('toggleSummaryCartRequested');
-			});
-
-			console.log('MiniCartController initialized!');
-		}
-
-		return {
-			setup: setup,
-			init: init,
-			templateName: 'partials/mini-cart'
-		};
-
-
-		/*var MiniCartController = BaseController.extend({
+		var MiniCartController = BaseController.extend({
 
 			templateName: 'partials/mini-cart',
-
-			listeners: {
-				showSummaryCart: function (e) {
-					e.original.preventDefault();
-					events.trigger('toggleSummaryCartRequested');
-				}
-			},
 
 			setup: function() {
 				this.data.shoppingCart = {
@@ -64,10 +24,15 @@
 
 			shopCartUpdateHandler: function() {
 				this.sync.set('shoppingCart.unitsCount', ShopCartStore.getUnitsCount());
+			},
+
+			onShowSummaryCart: function (e) {
+				e.original.preventDefault();
+				events.trigger('toggleSummaryCartRequested');
 			}
 		});
 
-		return MiniCartController;*/
+		return MiniCartController;
 	});
 
 }());

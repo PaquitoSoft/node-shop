@@ -6,12 +6,12 @@
 
 		var controllersRegistry = {};
 
-		function _getTemplate(templateName, $controllerMainEl, isBootstrap, done) {
+		function _getTemplate(templateName, $controllerMainEl, controllerData, isBootstrap, done) {
 			if (!templateName) { return done(''); } // TODO We still have dummy controllers
 			
 			if (isBootstrap) {
 				// Get template from plugin
-				templates.render(templateName, function(tpl) {
+				templates.render(templateName, controllerData, function(tpl) {
 					var $tpl = $(tpl);
 					$tpl = $tpl.data('controller') ? $tpl : $tpl.find('[data-controller]');
 
@@ -26,6 +26,16 @@
 				setTimeout(function() {
 					done($controllerMainEl.html());
 				}, 4);
+			}
+		}
+
+		function checkControllersInitialization(controllersNames, initializedControllerName, allDone) {
+			var index = $.inArray(initializedControllerName, controllersNames);
+			if (index !== -1) {
+				controllersNames.splice(index, 1);
+				if (!controllersNames.length) {
+					allDone();
+				}
 			}
 		}
 
@@ -50,55 +60,92 @@
 
 			// Require all controllers at once
 			require(dependencies, function() {
+				var currentControllersNames = $.map(controllersInfo, function(ci) {
+					return ci.name;
+				});
 				
+				// TODO Checking process in case a controller initialization timesout or takes too long
+
 				$.each(arguments, function(index, Controller) {
-					var controllerInfo = controllerInfo[index],
+					var controllerInfo = controllersInfo[index],
 						controllerData = dataLayer[controllerInfo.name] || {},
 						instance;
 
-					if (!controllersRegistry[controllerInfo.name]) {
+					if (controllersRegistry[controllerInfo.name]) {
+						controllersRegistry[controllerInfo.name].reset();
+					}
 
-						// TODO Create controller
+					// if (!controllersRegistry[controllerInfo.name]) {
+
+						// Create controller
 						instance = new Controller(controllerInfo.$mainEl, controllerData, controllerInfo.isPersistent);
 
 						instance.setup();
 
-						_getTemplate(instance.templateName, controllerInfo.$mainEl, isBootstrap, function(tpl) {
+						_getTemplate(instance.templateName, controllerInfo.$mainEl, controllerData, isBootstrap, function(tpl) {
 
-							instance.start(new R({
+							instance.start(new R({ // Are there controllers with no templates??
 									controllerName: controllerInfo.name,
 									el: controllerInfo.$mainEl[0],
 									template: tpl,
 									data: controllerData,
 									delimiters: ['{-', '-}']
 								}), function () {
-									// TODO Check this controller as handled
-									// controllerInitialized(controllerInfo.name);
-
 									controllersRegistry[controllerInfo.name] = instance;
+
+									checkControllersInitialization(currentControllersNames, controllerInfo.name, done);
 								}
 							);
 
 						});
 
-					} else {
+					// } else {
 
-						// TODO Update existing controller
-						controllersRegistry[controllerInfo.name].update(controllerData, controllerInfo.$mainEl);
-					}
+					//	// TODO Update existing controller
+					//	controllersRegistry[controllerInfo.name].update(controllerData, controllerInfo.$mainEl);
+					//	checkControllersInitialization(currentControllersNames, controllerInfo.name, done);
+					// }
 
-					// TODO Teardown unused controllers???
+					// TODO Teardown unused controllers??? (do not teardown persistent ones)
+					/*$.each(controllersRegistry, function (key, controller) {
+						if (!controller.isPersistent && !~$.inArray(key, currentControllersNames)) {
+							controller.reset();
+							delete controllersRegistry[key];
+						}
+					});*/
 				});
 			});
 
 		}
 
+		function _getControllersNames($el) {
+			return $el.find('*[data-controller]').map(function (el) {
+				return $(el).attr('data-controller');
+			});
+		}
+
+		function cleanup($oldContent, $newContent) {
+			console.time('ControllersManager::cleanup');
+			var prevControllers = _getControllersNames($oldContent);
+			var newControllers = _getControllersNames($newContent);
+
+			prevControllers.forEach(function (prevControllerName) {
+				var controller;
+				if (!~newControllers.indexOf(prevControllerName)) {
+					controller = controllersRegistry[prevControllerName];
+					if (controller && !controller.isPersistent) {
+						controller.reset();
+						delete controllersRegistry[prevControllerName];
+					}
+				}
+			});
+			console.timeEnd('ControllersManager::cleanup');
+		}
 
 
 
 
-
-		var persistentControllers = [],
+		/*var persistentControllers = [],
 			controllersInterceptors = {};
 
 		function registerInterceptor(controllerName, interceptor) {
@@ -129,7 +176,7 @@
 				initData = {},
 				pendingControllers;
 			
-			function onControllerInitialized(/*controllerName*/ controllerInfo) {
+			function onControllerInitialized(controllerInfo) {
 				// initData[controllerInfoName] = true;
 				if (controllerInfo.onInitialized) {
 					controllerInfo.onInitialized(controllerInfo.sync);
@@ -263,40 +310,7 @@
 										el: info.$mainEl[0],
 										template: template,
 										data: data,
-										delimiters: ['{-', '-}']/*,
-										onchange: function () {
-											console.log('Ractive data changed!!', controllerInfo.name);
-										},
-										oncomplete: function () {
-											console.log('Ractive transitions completed!', controllerInfo.name);
-										},
-										onconfig: function () {
-											console.log('Ractive configuration options processed!', controllerInfo.name);
-										},
-										onconstruct: function () {
-											console.log('Ractive instance created!', controllerInfo.name);
-										},
-										ondetach: function () {
-											console.log('Ractive detached!', controllerInfo.name);
-										},
-										oninit:  function () {
-											console.log('Ractive is about to bne rendered', controllerInfo.name);
-										},
-										oninsert: function () {
-											console.log('Ractive inserted!', controllerInfo.name);
-										},
-										onrender: function () {
-											console.log('Ractive instance rendered!', controllerInfo.name);
-										},
-										onteardown: function () {
-											console.log('Ractive instance destroyed!!!', controllerInfo.name);
-										},
-										onunrender: function () {
-											console.log('Ractive instance unrendered', controllerInfo.name);
-										},
-										onupdate: function () {
-											console.log('Ractive updated', controllerInfo.name);
-										}*/
+										delimiters: ['{-', '-}']
 									});
 									cont.sync = synchronizer;
 									window.myRegistry[controllerInfo.name] = synchronizer;
@@ -324,12 +338,13 @@
 				// TODO Controllers initialization timeout
 			});
 
-		}
+		}*/
 
 		return {
 			config: config,
+			cleanup: cleanup/*,
 			registerInterceptor: registerInterceptor,
-			removeInterceptor: removeInterceptor
+			removeInterceptor: removeInterceptor*/
 		};
 	});
 }());

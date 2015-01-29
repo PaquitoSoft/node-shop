@@ -2,53 +2,45 @@
 	'use strict';
 
 	// SummaryCartController
-	define(['jquery', 'plugins/events-manager', 'stores/shop-cart'], function($, events, ShopCartStore) {
-		
-		var $el, context, sync;
+	define(['plugins/events-manager', 'stores/shop-cart', 'controllers/base-controller'], function(events, ShopCartStore, BaseController) {
 
-		function _toggle() {
-			if (ShopCartStore.getUnitsCount()) {
-				// TODO I need to learn how to maniulate main element from ractive
-				// (it seems to affect only to its contents -template-)
-				$el.toggleClass('visible');
-			}
-		}
-
-		function _onProductAddedToCart(data) {
-			sync.set('orderItems', data.orderItems);
-		}
-
-		function deleteOrderItem(rEvent) {
-			rEvent.original.preventDefault();
-			ShopCartStore.removeOrderItem(context.orderItems.indexOf(rEvent.context))
-				.done(function (orderItems) {
-					sync.set('ordetItems', orderItems);
-				});
-		}
-
-		function setup($mainEl, data) {
-			data.orderItems = ShopCartStore.getOrderItems();
-			return data;
-		}
-
-		function init($mainEl, data, synchronizer) {
-			$el = $mainEl;
-			context = data;
-			sync = synchronizer;
+		var SummaryCartController = BaseController.extend({
+			templateName: 'partials/mini-shop-cart-items',
 			
-			events.on('toggleSummaryCartRequested', _toggle);
-			events.on('productAddedToCart', _onProductAddedToCart);
+			setup: function() {
+				this.data.orderItems = ShopCartStore.getOrderItems();
+			},
 
-			sync.on('deleteOrderItem', deleteOrderItem);
+			init: function() {
+				events.on('toggleSummaryCartRequested', this.toggle, this);
+				events.on('productAddedToCart', this.productAddedToCartHandler, this);
 
-			console.log('SummaryCartController initialized!');
-		}
+				console.log('SummaryCartController initialized!');
+			},
 
-		return {
-			setup: setup,
-			init: init,
-			templateName: 'partials/mini-shop-cart-items'
-		};
+			onDeleteOrderItem: function(rEvent) {
+				var self = this;
+				rEvent.original.preventDefault();
 
+				ShopCartStore.removeOrderItem(this.data.orderItems.indexOf(rEvent.context))
+					.done(function (orderItems) {
+						self.sync.set('ordetItems', orderItems);
+					});
+			},
+
+			toggle: function() {
+				if (ShopCartStore.getUnitsCount()) {
+					// TODO I need to learn how to maniulate main element from ractive
+					// (it seems to affect only to its contents -template-)
+					this.$mainEl.toggleClass('visible');
+				}
+			},
+
+			productAddedToCartHandler: function(data) {
+				this.sync.set('orderItems', data.orderItems);
+			}
+		});
+
+		return SummaryCartController;
 	});
 }());

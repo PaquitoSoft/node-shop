@@ -2,67 +2,61 @@
 	'use strict';
 
 	// MainNavigationController
-	define(['jquery', 'plugins/events-manager'], function($, events) {
-		var context,
-			sync;
+	define(['plugins/events-manager', 'controllers/base-controller'], function(events, BaseController) {
 
-		function selectRootCategoryHandler(rEvent) {
-			sync.set('rootCategoryId', rEvent.context._id);
-		}
+		var MainNavigationController = BaseController.extend({
 
-		function selectSubcategoryHandler(rEvent) {
-			selectSubcategory(rEvent.context.id);
-		}
+			templateName: 'partials/navigation-menu',
+			
+			init: function() {
+				this.selectSubcategory(this.data.currentCategoryId);
+				
+				events.on('FOLDED_MENU_REQUESTED', this.foldMenu, this);
+				events.on('UNFOLD_MENU_REQUESTED', function (data) {
+					this.selectSubcategory(data.subcategoryId);
+				}, this);
 
-		function selectSubcategory(subCatId) {
-			var i, j, jLen, subcat,
-				iLen = context.categories.length;
+				console.log('MainNavigationController initialized!');
+			},
 
-			outer:
-			for (i = 0; i < iLen; i++) {
-				jLen = context.categories[i].subcategories.length;
-				inner:
-				for (j = 0; j < jLen; j++) {
-					subcat = context.categories[i].subcategories[j];
-					if (subcat.id === subCatId) {
-						sync.set('rootCategoryId', context.categories[i]._id);
-						sync.set('subcategoryId', subcat.id);
-						break outer;
+			onSelectRootCategory: function(rEvent) {
+				this.sync.set('rootCategoryId', rEvent.context._id);
+			},
+
+			onSelectSubcategory: function(rEvent) {
+				this.selectSubcategory(rEvent.context.id);
+			},
+
+			foldMenu: function() {
+				this.sync.set({
+					rootCategoryId: -1,
+					subcategoryId: -1
+				});
+			},
+
+			selectSubcategory: function(subCatId) {
+				var i, j, jLen, subcat,
+					categories = this.data.categories,
+					iLen = categories.length;
+
+				outer:
+				for (i = 0; i < iLen; i++) {
+					jLen = categories[i].subcategories.length;
+					inner:
+					for (j = 0; j < jLen; j++) {
+						subcat = categories[i].subcategories[j];
+						if (subcat.id === subCatId) {
+							this.sync.set('rootCategoryId', categories[i]._id);
+							this.sync.set('subcategoryId', subcat.id);
+							break outer;
+						}
 					}
 				}
+
+				this.sync.set('categories', categories);
 			}
+		});
 
-			sync.set('categories', context.categories);
-		}
-
-		function foldMenu() {
-			sync.set('rootCategoryId', -1);
-			sync.set('subcategoryId', -1);
-		}
-
-		function init($mainEl, data, synchronizer) {
-			context = data;
-			sync = synchronizer;
-			
-			selectSubcategory(data.currentCategoryId);
-
-			sync.on({
-				selectRootCategory: selectRootCategoryHandler,
-				selectSubcategory: selectSubcategoryHandler
-			});
-
-			events.on('FOLDED_MENU_REQUESTED', foldMenu);
-			events.on('UNFOLD_MENU_REQUESTED', function (data) {
-				selectSubcategory(data.subcategoryId);
-			});
-
-			console.log('MainNavigationController initialized!');
-		}
-
-		return {
-			init: init,
-			templateName: 'partials/navigation-menu'
-		};
-
+		return MainNavigationController;
 	});
 }());

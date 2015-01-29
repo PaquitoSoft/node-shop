@@ -2,17 +2,17 @@
 	'use strict';
 
 	// MainBannerController (persistent)
-	define(function() {
+	define(['controllers/base-controller'], function(BaseController) {
 		
-		function init($mainEl, data, synchronizer) {
-			console.log('MainBannerController initialized!');
-			synchronizer.set('mainBanner', data.mainBanner);
-		}
+		var MiniBannerController = BaseController.extend({
 
-		return {
-			init: init,
-			templateName: 'partials/main-banner'
-		};
+			templateName: 'partials/main-banner',
+			
+			init: function() {
+				console.log('MainBannerController initialized!');
+			}
+		});
 
+		return MiniBannerController;
 	});
 }());
