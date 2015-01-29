@@ -208,6 +208,7 @@
 				templates: {
 					disableCaching: false
 				},
+				shopCartData: {shoppingCart|js|s}
 			};
 			window.NodeShop.dataLayer =  {@clientDataLayer /};
 		</script>
