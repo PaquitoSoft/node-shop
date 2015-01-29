@@ -78,7 +78,7 @@
 			}
 		};
 
-		BaseController.prototype.update = function _update(data, $el) {
+		BaseController.prototype.update = function _update(data) {
 			// this.$mainEl = $el;
 			this.data = data;
 			this.sync.set(data);

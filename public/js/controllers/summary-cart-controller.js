@@ -2,7 +2,8 @@
 	'use strict';
 
 	// SummaryCartController
-	define(['plugins/events-manager', 'stores/shop-cart', 'controllers/base-controller'], function(events, ShopCartStore, BaseController) {
+	define(['plugins/events-manager', 'plugins/router', 'stores/shop-cart', 'controllers/base-controller'],
+		function(events, router, ShopCartStore, BaseController) {
 
 		var SummaryCartController = BaseController.extend({
 			templateName: 'partials/mini-shop-cart-items',
@@ -26,6 +27,11 @@
 					.done(function (orderItems) {
 						self.sync.set('ordetItems', orderItems);
 					});
+			},
+
+			onGoToShopCart: function (rContext, shopCartUrl) {
+				rContext.original.preventDefault();
+				router.navTo(shopCartUrl);
 			},
 
 			toggle: function() {

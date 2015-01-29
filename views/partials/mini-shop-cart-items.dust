@@ -22,7 +22,7 @@
 		{-/each-}
 
 		<div class="actions">
-			<input type="submit" value="Check Out">
+			<input type="submit" on-click="goToShopCart:/shop/cart" value="Check Out">
 		</div>
 	</form>
 </div>
