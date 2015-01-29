@@ -10,7 +10,8 @@
 			dustHelpers: '/vendor/dustjs-linkedin-helpers/dist/dust-helpers',
 			pagejs: '/vendor/page.js/page',
 			history: '/vendor/html5-history-api/history.iegte8',
-			ractive: '/vendor/ractive/ractive-legacy'
+			ractive: '/vendor/ractive/ractive-legacy',
+			es5Shim: '/vendor/es5-shim/es5-shim'
 		},
 		shim: {
 			dust: {
@@ -20,21 +21,14 @@
 				deps: ['dust']
 			},
 			pagejs: {
-				deps: ['history']
+				deps: ['history', 'es5Shim']
 			}
 		}
 	});
 	
 	// Main initialization
-	require(['jquery', 'plugins/controllers-manager', 'plugins/router'], function($, controllersManager, router) {
+	require(['jquery', 'plugins/controllers-manager-2', 'plugins/router'], function($, controllersManager, router) {
 		
-		// Hack for IE8
-		if(!Array.isArray) {
-			Array.isArray = function (vArg) {
-				return Object.prototype.toString.call(vArg) === "[object Array]";
-			};
-		}
-
 		$.each(window.NodeShop.extensions, function (index, fn) {
 			fn(controllersManager, router);
 		});
