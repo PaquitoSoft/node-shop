@@ -45,9 +45,10 @@
 		BaseController.prototype.init = function() {};
 		BaseController.prototype.listeners = {};
 
+
 		BaseController.prototype.fire = function _fire(eventName, data) {
 			if (this.events[eventName]) {
-				this.events[eventName](data);
+				this.events[eventName].call(this, data);
 			}
 		};
 

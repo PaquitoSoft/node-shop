@@ -54,290 +54,49 @@
 
 	setStyles();
 
-	App.extensions.push(function(controllersManager, router) {
+	App.extensions.push(function(done) {
 		
-		controllersManager.registerInterceptor('product-detail-controller', function (data, template, $mainEl) {
-			
-			var prod = true;
+		require(['jquery', 'controllers/product-detail-controller'], function ($, ProductDetailController) {
+			console.log(ProductDetailController);
+			console.log(ProductDetailController.prototype.setup);
 
-			if (prod !== null) {
-
-				console.log('Exp: Special Price imgs');
+			var _setup = ProductDetailController.prototype.setup;
+			ProductDetailController.prototype.setup = function() {
+				_setup.call(this);
 
 				// Cambiamos los datos de entrada para la plantilla
-				data.product.colors[0].pictures = getRandomImages(5);
-				data.mainImage = data.product.colors[0].pictures[0];
-				data.mainColor = data.product.colors[0];
+				this.data.product.colors[0].pictures = getRandomImages(5);
+				this.data.mainImage = this.data.product.colors[0].pictures[0];
+				this.data.mainColor = this.data.product.colors[0];
 
 				// Tuneamos la plantilla para incluir el precio sobre las fotos
-				var $tpl = $('<div>' + template + '</div>'),
-					priceTpl = '<div class="imgPrice" on-click="addToCart"><span class="Iprice">{-product.price-}</span><span class="ICurrency">$</span></div>';
+				var $tpl = $('<div>' + this.template + '</div>'),
+					priceTpl = '<div class="imgPrice" on-click="priceClicked"><span class="Iprice">{-product.price-}</span><span class="ICurrency">$</span></div>';
 				
 				$tpl.find('#images').append(priceTpl);
-				
-				// Ejemplo de añadir a la cesta un producto sin stock: en lugar de mostrar popup, desplegar tallas disponibles
-				// Ejemplo de filtrar: al pulsar en ok de los filtros, hacer otra cosa después (o antes)
+				this.template = $tpl.html();
 
-				return {
-					data: data,
-					template: $tpl.html(),
-					onInitialized: function(sync) {
-						$('#images img').css('visibility', 'visible');
-						sync.on('priceClicked', function() {
-							console.log(arguments);
-							alert('Tomaaaa!');
-						});
-						sync.on('updateAllImages', function () {
-							alert('Pues no me da la gana de cambiar');
-						});
-					}
+				this.listeners.priceClicked = function(rEvent) {
+					console.log('onPriceClicked:', rEvent);
+					alert('Tomaaaa!');
 				};
 
-				/*var init = function() {
-
-					$container = dom.findById('main');
-					$imageList = dom.findEls('div.bigImageContainer div.image-wrap');
-
-					if($container && $imageList.length) {
-
-						$imageList.each(function($div,index) {
-
-							var $img = $div.getEl('img');
-							imgInfo = $img.data('src').match(regexpDigits);
-
-							if (imgInfo.length) {
-
-								if(imgInfo[0] === '1_1_1.jpg' || index === 0){
-
-									// cambio ruta añadiendo el directorio exp
-									setNewPath($img,$div);
-
-								} else if(imgInfo[0] === '6_1_1.jpg') {
-
-									//cambia data de img
-									setNewData($img);
-
-									// hacer visible
-									setImgVisibility($img);
-
-								} else {
-									$div.dispose();
-								}
-							}
-						});
-
-					}
-
-				};*/
-
-
-
-
-
-
-				/*function WE_140903_specialprice_imgs_A(ctx) {
-
-					var dom = ctx.dom,
-						listeners = {},
-						$container,
-						$imageList,
-						regexp = new RegExp('(' + ctx.globals.baseImagesUrl + ')'),
-						dirName = 'WE_140903_SPECIAL_PRICES_IMGS',
-						imgInfo,
-						regexpDigits = /\d_\d_\d\.jpg/,
-						isPopUp = function(){
-							return dom.findById('productPopup');
-						};
-
-					// 1.- Modificar las imagenes del producto (para que las recoja de una ubicacion diferente)
-
-
-
-					// función cambio de imágenes a directorio
-					var expImages = function(args) {
-
-						var regexp = new RegExp('(' + ctx.globals.baseImagesUrl + ')'),
-						strExp = '$1exp/' + dirName;
-
-						Object.each(args.xmedias,function(color) {
-							color.xmedias.each(function(xmedia,index) {
-								if (index === 0) {
-									var imgInfo = xmedia.url.match(regexpDigits);
-									if(imgInfo[0] !== '1_1_1.jpg') {
-										xmedia.url = xmedia.url.replace(imgInfo[0], '1_1_1' + imgInfo[0].substr(5));
-									}
-
-									xmedia.url = xmedia.url.replace(regexp, strExp);
-								}
-							});
-						});
-
-						return Object.merge(args, {xmedias : args.xmedias});
-					};
-
-
-					zara.core.setModuleContextInterceptor('ItxCatentryDetailImageModule', function(args) {
-						return expImages(args);
-					});
-
-
-					var setImgPrice = function($div) {
-						var $precio = dom.findEl('p.price span.price').data('price').split('  ');
-						var tpl = '<div class="imgPrice"><span class="Iprice">' + $precio[0] + '</span><span class="ICurrency">' + $precio[1] + '</span></div>';
-						Elements.from(tpl).inject($div,'top');
-
-
-					};
-
-					var setNewPath = function($img,$div) {
-
-						var change = false;
-						var imgSrc = $img.get('data-src');
-						var imgInfo = imgSrc.match(regexpDigits);
-						var $newImg;
-
-						$img.set('src', $img.get('src').replace(imgInfo[0], '1_1_1' + imgInfo[0].substr(5)));
-						$img.set('data-src', imgSrc.replace(imgInfo[0], '1_1_1' + imgInfo[0].substr(5)));
-
-						imgSrc = $img.get('data-src');
-
-						if (~imgSrc.indexOf('WE_140903_SPECIAL_PRICES_IMGS')) {
-							$newImg = imgSrc;
-						} else {
-							$newImg = imgSrc.replace(regexp, '$1exp/' + dirName);
-							change = true;
-						}
-
-						Asset.image($newImg, {
-							onLoad: function() {
-								if(change){
-									$img.set('data-src', $img.get('data-src').replace(regexp, '$1exp/' + dirName));
-									$img.set('src', $img.data('src'));
-									$img.set('data-zoom-url', $img.data('src').replace('1024','1920'));
-									$img.getParent('a').set('href',$img.data('src').replace('1024','1920'));
-								}
-
-								// clono, injecto precio
-								setImgPrice($div);
-
-								setImgVisibility($img);
-
-								change = false;
-
-								// superzoom
-								var zoomUrls = [],
-									$bigImagesContainer = dom.findEl('.bigImageContainer'),
-									$zoomImages = $bigImagesContainer.getEls('.imageZoom img');
-
-								$zoomImages.each(function($img) {
-									zoomUrls.push($img.data('zoom-url'));
-								});
-
-								ctx.product.configureSuperZoom($zoomImages, zoomUrls);
-							},
-							onError: function() {
-								console.log('error');
-							},
-							onAbort: function() {
-							}
-						});
-
-					};
-
-					var setNewData = function($img) {
-						var imgPostIndex = parseInt($img.get('data-zoom-index'), 10);
-
-						$img.set({
-							'data-zoom-index': 1,
-							'alt': $img.get('alt').replace(imgPostIndex + 1, 2)
-						});
-					};
-
-					var setImgVisibility = function($img) {
-						$img.addClass('setVisibility');
-					};
-
-					var init = function() {
-
-						$container = dom.findById('main');
-						$imageList = dom.findEls('div.bigImageContainer div.image-wrap');
-
-						if($container && $imageList.length) {
-
-							$imageList.each(function($div,index) {
-
-								var $img = $div.getEl('img');
-								imgInfo = $img.data('src').match(regexpDigits);
-
-								if (imgInfo.length) {
-
-									if(imgInfo[0] === '1_1_1.jpg' || index === 0){
-
-										// cambio ruta añadiendo el directorio exp
-										setNewPath($img,$div);
-
-									} else if(imgInfo[0] === '6_1_1.jpg') {
-
-										//cambia data de img
-										setNewData($img);
-
-										// hacer visible
-										setImgVisibility($img);
-
-									} else {
-										$div.dispose();
-									}
-								}
-							});
-
-						}
-
-					};
-
-					setTimeout(function() {
-						init();
-					}, 100);
-
-
-					// evento de cambio de color
-					dom.findEl('.colors').addEvents({
-						'click:relay(.colorEl)' : function(e) {
-							setTimeout(function(){
-								init();
-							}, 0);
-						}
-					});
-
-
-					listeners[ctx.eventsTypes.SHOPPING_CART_PRODUCT_ADDED] = function(data) {
-						if (!isPopUp()) {
-							//window.optimizely.push(['trackEvent', 'add_to_cart_2']);
-							console.log('add_to_cart_2');
-						}
-					};
-
-					ctx.eventsManager.registerEventsListeners(listeners);
-
-				}*/
-
-				// zara.extensions.push(function(ctx) {
-				// 	WE_140903_specialprice_imgs_A(ctx);
-				// });
-				
-			}
-
+				// Save initial handler for later use
+				var _original = this.listeners.updateAllImages;
+				this.listeners.updateAllImages = function(rEvent) {
+					console.log('onUpdateAllImages:', rEvent);
+					alert('Me meto en medio!!!');
+					// _original.call(this, rEvent);
+				};
+
+				this.on('postInit', function() {
+					$('#images img').css('visibility', 'visible');
+				});
+			};
+
+			done();
 		});
+
 	});
-
-
-
-
-
-// checkout
-
-/*if (~WE_140908_specialprice_imgs_cats.indexOf(catId) && ~WE_140908_specialprice_imgs_prods.indexOf(productId)) {
-customEvents.include('1885320299_specialpriceimgs_co_event');
-}*/
-
 
 }(window.NodeShop));

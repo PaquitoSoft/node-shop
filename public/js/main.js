@@ -1,4 +1,4 @@
-(function() {
+(function(App) {
 	'use strict';
 
 	// Main configuration
@@ -28,14 +28,28 @@
 	
 	// Main initialization
 	require(['jquery', 'plugins/controllers-manager-2', 'plugins/router'], function($, controllersManager, router) {
-		
-		$.each(window.NodeShop.extensions, function (index, fn) {
-			fn(controllersManager, router);
-		});
+		var counter = App.extensions.length;
 
-		controllersManager.config($(document), true, function (/*err*/) {
-			router.init();
-		});
+		function start() {
+			controllersManager.config($(document), true, function (/*err*/) {
+				router.init();
+			});
+		}
+
+		function checkInitialization() {
+			if (!--counter) {
+				start();
+			}
+		}
+
+		if (counter) {
+			App.extensions.forEach(function(fn) {
+				fn(checkInitialization);
+			});
+		} else {
+			start();
+		}
+				
 	});
 
-}());
+}(window.NodeShop));

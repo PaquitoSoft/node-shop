@@ -93,18 +93,20 @@
 						checkControllersInitialization(currentControllersNames, controllerInfo.name, done);
 
 					} else {
-
+						
 						// Create controller
 						newInstance = new Controller(controllerInfo.$mainEl, controllerData, controllerInfo.isPersistent);
 
-						newInstance.setup();
 
 						_getTemplate(newInstance.templateName, controllerInfo.$mainEl, controllerData, isBootstrap, function(tpl) {
+							
+							newInstance.template = tpl;
+							newInstance.setup();
 
 							newInstance.start(new R({ // Are there controllers with no templates??
 									controllerName: controllerInfo.name,
 									el: controllerInfo.$mainEl[0],
-									template: tpl,
+									template: newInstance.template,
 									data: controllerData,
 									delimiters: ['{-', '-}']
 								}), function () {
