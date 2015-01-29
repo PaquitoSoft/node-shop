@@ -6,10 +6,13 @@
 
 		var eventsMap = {};
 
-		function on(eventName, callback) {
+		function on(eventName, callback, context) {
 			var fns = eventsMap[eventName] || [];
 			if (fns.indexOf(callback) === -1) {
-				fns.push(callback);
+				fns.push({
+					listener: callback,
+					scope: context
+				});
 				eventsMap[eventName] = fns;
 			}
 		}
@@ -20,7 +23,7 @@
 
 			for (; i < len; i++) {
 				try {
-					fns[i](data);
+					fns[i].listener.call(fns[i].scope, data);
 				} catch (e) {
 					console.warn('Error executing event callback:', eventName);
 					console.warn(e.stack);
@@ -32,7 +35,7 @@
 			on: on,
 			// TODO once: once,
 			trigger: trigger
-		}
+		};
 
 	});
 }());
