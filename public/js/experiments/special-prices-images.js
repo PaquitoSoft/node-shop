@@ -17,7 +17,7 @@
 	];
 
 	function setStyles() {
-		if (stylesInjected) return false;
+		if (stylesInjected) { return false; }
 
 		var headStyle =
 			'#products-nav-wrapper{z-index:3;}' +
@@ -54,15 +54,14 @@
 
 	setStyles();
 
-	App.extensions.push(function(done) {
+	App.extensions.push(function() {
 		
 		require(['jquery', 'controllers/product-detail-controller'], function ($, ProductDetailController) {
-			console.log(ProductDetailController);
-			console.log(ProductDetailController.prototype.setup);
-
-			var _setup = ProductDetailController.prototype.setup;
+			var _updateAllImages = ProductDetailController.prototype.listeners.updateAllImages;
+			ProductDetailController.prototype._setup = ProductDetailController.prototype.setup;
+			
 			ProductDetailController.prototype.setup = function() {
-				_setup.call(this);
+				this._setup(this);
 
 				// Cambiamos los datos de entrada para la plantilla
 				this.data.product.colors[0].pictures = getRandomImages(5);
@@ -81,20 +80,16 @@
 					alert('Tomaaaa!');
 				};
 
-				// Save initial handler for later use
-				var _original = this.listeners.updateAllImages;
 				this.listeners.updateAllImages = function(rEvent) {
 					console.log('onUpdateAllImages:', rEvent);
 					alert('Me meto en medio!!!');
-					// _original.call(this, rEvent);
+					_updateAllImages.call(this, rEvent);
 				};
 
 				this.on('postInit', function() {
 					$('#images img').css('visibility', 'visible');
 				});
 			};
-
-			done();
 		});
 
 	});

@@ -44,7 +44,14 @@
 
 		if (counter) {
 			App.extensions.forEach(function(fn) {
-				fn(checkInitialization);
+				if (fn.length > 0) {
+					console.log('Async experiment!');
+					fn(checkInitialization);
+				} else {
+					console.log('Sync experiment!');
+					fn();
+					checkInitialization();
+				}
 			});
 		} else {
 			start();
