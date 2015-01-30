@@ -1,8 +1,11 @@
 (function(App) {
 	'use strict';
 
+	var mainDependencies,
+		requireOptions;
+
 	// Main configuration
-	requirejs.config({
+	requireOptions = {
 		baseUrl: '/js',
 		paths: {
 			jquery: '/vendor/jquery/dist/jquery',
@@ -11,7 +14,8 @@
 			pagejs: '/vendor/page.js/page',
 			history: '/vendor/html5-history-api/history.iegte8',
 			ractive: '/vendor/ractive/ractive-legacy',
-			es5Shim: '/vendor/es5-shim/es5-shim'
+			es5Shim: '/vendor/es5-shim/es5-shim',
+			html5shiv: '/vendor/html5shiv/dist/html5shiv'
 		},
 		shim: {
 			dust: {
@@ -19,15 +23,26 @@
 			},
 			dustHelpers: {
 				deps: ['dust']
-			},
-			pagejs: {
-				deps: ['history', 'es5Shim']
 			}
 		}
-	});
+	};
+
+	// Bootstrap dependencies
+	mainDependencies = ['jquery', 'plugins/controllers-manager-2', 'plugins/router'];
+
+	// Is this an old browser?
+	if (!Array.isArray) {
+		mainDependencies.push('es5Shim', 'history', 'html5shiv');
+		requireOptions.paths.jquery = '/vendor/jquery-legacy/dist/jquery';
+	} else {
+		requireOptions.paths.jquery = '/vendor/jquery-modern/dist/jquery';
+	}
+
+	// Configure RequireJS
+	requirejs.config(requireOptions);
 	
 	// Main initialization
-	require(['jquery', 'plugins/controllers-manager-2', 'plugins/router'], function($, controllersManager, router) {
+	require(mainDependencies, function($, controllersManager, router) {
 		var counter = App.extensions.length;
 
 		function start() {
@@ -45,10 +60,8 @@
 		if (counter) {
 			App.extensions.forEach(function(fn) {
 				if (fn.length > 0) {
-					console.log('Async experiment!');
 					fn(checkInitialization);
 				} else {
-					console.log('Sync experiment!');
 					fn();
 					checkInitialization();
 				}
