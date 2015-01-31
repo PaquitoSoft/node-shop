@@ -1,6 +1,6 @@
 (function() {
 	'use strict';
-	window.myRegistry = {};
+	
 	// Controller Manager plugin
 	define(['jquery', 'ractive', 'plugins/data-layer', 'plugins/templates', 'plugins/decorators/image-lazy-load'], function($, R, dataLayer, templates) {
 
@@ -100,21 +100,13 @@
 
 						_getTemplate(newInstance.templateName, controllerInfo.$mainEl, controllerData, isBootstrap, function(tpl) {
 							
-							newInstance.template = tpl;
-							newInstance.setup();
-
-							newInstance.start(new R({ // Are there controllers with no templates??
-									controllerName: controllerInfo.name,
-									el: controllerInfo.$mainEl[0],
-									template: newInstance.template,
-									data: controllerData,
-									delimiters: ['{-', '-}']
-								}), function () {
+							newInstance.start(tpl, controllerInfo.name, function () {
 									if (oldInstance) { oldInstance.reset(); }
 
 									controllersRegistry[controllerInfo.name] = newInstance;
 
 									checkControllersInitialization(currentControllersNames, controllerInfo.name, done);
+									// checkControllersInitialization2(controllersInfo, controllerInfo, done);
 								}
 							);
 

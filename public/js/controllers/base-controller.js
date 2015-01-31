@@ -2,7 +2,7 @@
 	'use strict';
 
 	// BaseController
-	define(['jquery'], function($) {
+	define(['jquery', 'ractive'], function($, R) {
 
 		function onControllerInitialized(controller, done) {
 			controller.fire('postInit');
@@ -56,15 +56,27 @@
 			this.events[eventName] = handler;
 		};
 
-		BaseController.prototype.start = function _start(synchronizer, done) {
+		BaseController.prototype.start = function _start(template, controllerName, done) {
 			var self = this,
 				_listeners = {};
-			this.sync = synchronizer;
+
+			this.template = template;
+
+			this.setup();
+
+			this.sync = new R({
+				controllerName: controllerName,
+				el: this.$mainEl[0],
+				template: template,
+				data: this.data,
+				delimiters: ['{-', '-}']
+			});
+
 			this.fire('preInit', {el: this.$mainEl, data: this.data});
 
 			if (this.listeners) {
-				// Ractive sets listener scope to itself
 				$.map(this.listeners, function (value, key) {
+					// Ractive sets listener scope to itself so we have to change it
 					_listeners[key] = $.proxy(value, self);
 				});
 				this.sync.on(_listeners);
@@ -72,9 +84,9 @@
 			}
 
 			if (this.init.length > 1) {
-				this.init(synchronizer, $.proxy(onControllerInitialized, this, done));
+				this.init(this.sync, $.proxy(onControllerInitialized, this, done));
 			} else {
-				this.init(synchronizer);
+				this.init(this.sync);
 				onControllerInitialized(this, done);
 			}
 		};
