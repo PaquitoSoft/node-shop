@@ -39,6 +39,24 @@
 			}
 		}
 
+		function checkControllersInitialization2(controllersInfo, initializedController, allDone) {
+			var index = controllersInfo.indexOf(initializedController),
+				finish;
+
+			if (index !== -1) {
+				controllersInfo[index].__initialized = true;
+
+				finish = controllersInfo.every(function(ci) {
+					return ci.__initialized;
+				});
+
+				if (finish) {
+					allDone();
+					cleanup2(controllersInfo);
+				}
+			}
+		}
+
 		function config($root, isBootstrap, done) {
 			var controllersInfo = [],
 				dependencies = [];
@@ -91,6 +109,7 @@
 
 						oldInstance.update(controllerData);
 						checkControllersInitialization(currentControllersNames, controllerInfo.name, done);
+						// checkControllersInitialization2(controllersInfo, controllerInfo, done);
 
 					} else {
 						
@@ -144,6 +163,24 @@
 				}
 			});
 			console.timeEnd('ControllersManager::cleanup');
+		}
+
+		function cleanup2(newControllersInfo) {
+			console.time('cleanup2');
+			var deprecatedControllers;
+			Object.keys(controllersRegistry).forEach(function(controllerName) {
+				if (!controllersRegistry[controllerName].isPersistent) {
+					deprecatedControllers = newControllersInfo.filter(function(ci) {
+						return ci.name === controllerName;
+					});
+					if (!deprecatedControllers.length) {
+						console.log('Destroying deprecated controller:', controllerName);
+						controllersRegistry[controllerName].reset();
+						delete controllersRegistry[controllerName];
+					}
+				}
+			});
+			console.timeEnd('cleanup2');
 		}
 
 		return {
