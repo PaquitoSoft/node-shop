@@ -27,9 +27,9 @@
 			};
 		</script>
 
-		
+		<!--		
 		<script type="text/javascript" src="/js/experiments/special-prices-images.js"></script>
-		
+		-->
 	</head>
 
 
@@ -40,8 +40,6 @@
 
 		<!--START DRAWER-->
 		<div id="drawer" data-controller="summary-cart-controller" data-dummy="{-orderItems-}">
-
-			{@clientDataLayer key="summary-cart-controller" attr="shopCart" data=shoppingCart /}
 
 			{> "partials/mini-shop-cart-items" /}
 			
@@ -211,6 +209,8 @@
 				shopCartData: {shoppingCart|js|s}
 			};
 			window.NodeShop.dataLayer =  {@clientDataLayer /};
+			window.NodeShop._dataLayer = {dataLayer|js|s};
+			window.NodeShop._rdl = {- JSON.stringify(rDataLayer) -};
 		</script>
 
 		<script data-main="/js/main.js" src="/vendor/requirejs/require.js"></script>

@@ -8,6 +8,8 @@
 
 			templateName: 'partials/main-banner',
 			
+			props: ['mainBanner'],
+
 			init: function() {
 				console.log('MainBannerController initialized!');
 			}

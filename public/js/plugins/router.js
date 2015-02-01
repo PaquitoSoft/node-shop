@@ -5,7 +5,26 @@
 	define(['pagejs', 'jquery', 'plugins/templates', 'plugins/controllers-manager-2', 'plugins/events-manager', 'plugins/data-layer'],
 		function(page, $, templates, controllersManager, events, dataLayer) {
 		
-		var $mainContainer;
+		var $mainContainer,
+			lastUsedTemplate;
+
+		function pageTransitionHandled(url, currentTemplateName, routeOptions) {
+			lastUsedTemplate = currentTemplateName;
+
+			// Update document title
+			if (dataLayer.shared && dataLayer.shared.docTitle) {
+				$(document).find('head title').text(dataLayer.shared.docTitle);
+				dataLayer.shared.docTitle = undefined;
+			}
+
+			events.trigger('NAVIGATION_DONE', {url: url});
+
+			if (routeOptions.foldedMenu) {
+				events.trigger('FOLDED_MENU_REQUESTED');
+			}
+
+			console.log('Navigation done!');
+		}
 
 		function defaultHandler(options) {
 			options = options || {};
@@ -13,36 +32,81 @@
 				console.log('Navigating to:', context.path);
 				$.getJSON(context.path)
 					.done(function (data) {
-						templates.render(data.template, data, function (html) {
-							if (html) {
-								var $html = $(html),
-									$prevContent = $mainContainer.clone(),
-									$controllers = $html.data('controller') ? $html : $html.find('[data-controller]');
+
+						var isSameView = data.template === lastUsedTemplate;
+
+						if (isSameView) {
+							
+							controllersManager.config($mainContainer, data, {
+								isBootstrap: false,
+								isUpdateOnly: true
+							});
+
+							pageTransitionHandled(context.path, data.template, options);
+
+						} else {
+							templates.render(data.template, data, function (html) {
+								if (html) {
+									var $html = $(html),
+										$prevContent = $mainContainer.clone(),
+										$controllers = $html.data('controller') ? $html : $html.find('[data-controller]');
+									
+									$controllers.css('visibility', 'hidden');
+									$mainContainer.empty().html($html);
+
+									controllersManager.config($mainContainer, data, {
+										isBootstrap: false,
+										isUpdateOnly: false,
+										done: function() {
+											$controllers.css('visibility', 'visible');
+											controllersManager.cleanup($prevContent, $html);
+										}
+									});
+
+									pageTransitionHandled(context.path, data.template, options);
+								} else {
+									console.warn('Could not render page (no template)');
+								}
+							});
+						}
+
+						// templates.render(data.template, data, function (html) {
+						// 	if (html) {
+						// 		var $html = $(html),
+						// 			$prevContent = $mainContainer.clone(),
+						// 			$controllers = $html.data('controller') ? $html : $html.find('[data-controller]');
 								
-								$controllers.css('visibility', 'hidden');
-								$mainContainer.empty().html($html);
-								controllersManager.config($mainContainer, false, function() {
-									$controllers.css('visibility', 'visible');
-									controllersManager.cleanup($prevContent, $html);
-								});
+						// 		$controllers.css('visibility', 'hidden');
+						// 		$mainContainer.empty().html($html);
 
-								// Update document title
-								if (dataLayer.shared && dataLayer.shared.docTitle) {
-									$(document).find('head title').text(dataLayer.shared.docTitle);
-									dataLayer.shared.docTitle = undefined;
-								}
+						// 		controllersManager.config($mainContainer, {
+						// 			isBootstrap: false,
+						// 			isUpdateOnly: data.template === lastUsedTemplate,
+						// 			done: function() {
+						// 				$controllers.css('visibility', 'visible');
+						// 				controllersManager.cleanup($prevContent, $html);
+						// 			}
+						// 		});
 
-								events.trigger('NAVIGATION_DONE', {url: context.path});
+						// 		lastUsedTemplate = data.template;
 
-								if (options.foldedMenu) {
-									events.trigger('FOLDED_MENU_REQUESTED');
-								}
+						// 		// Update document title
+						// 		if (dataLayer.shared && dataLayer.shared.docTitle) {
+						// 			$(document).find('head title').text(dataLayer.shared.docTitle);
+						// 			dataLayer.shared.docTitle = undefined;
+						// 		}
 
-								console.log('Navigation done!');
-							} else {
-								console.warn('Could not render page (no template)');
-							}
-						});
+						// 		events.trigger('NAVIGATION_DONE', {url: context.path});
+
+						// 		if (options.foldedMenu) {
+						// 			events.trigger('FOLDED_MENU_REQUESTED');
+						// 		}
+
+						// 		console.log('Navigation done!');
+						// 	} else {
+						// 		console.warn('Could not render page (no template)');
+						// 	}
+						// });
 					})
 					.fail(function (xhr, textStatus, err) {
 						// TODO Handle error properly

@@ -1,4 +1,6 @@
 
+{- clientDataLayer("products-grid-controller", "products", products) -}
+
 <section class="product-grid twelve columns alpha omega" data-controller="products-grid-controller">
 	
 	{-#each products:index-}

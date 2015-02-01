@@ -5,12 +5,10 @@
 
 {<mainContent}
 
-	{@clientDataLayer key="shared" attr="docTitle" data="{catName}" /}
-	{@clientDataLayer key="main-banner-controller" attr="mainBanner" data="SiMpLe, cares about you." /}
+	{- clientDataLayer("shared", "docTitle", "{catName}" -}
+	{- clientDataLayer("main-banner-controller", "mainBanner", "SiMpLe, cares about you.") -}
 
 	<div id="page-content">  
-
-		{@clientDataLayer key="products-grid-controller" attr="products" data=products /}
 
 		<!--START BREADCRUMB-->
 		{!

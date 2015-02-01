@@ -5,7 +5,10 @@
 	define(['plugins/local-storage', 'controllers/base-controller'], function(storage, BaseController) {
 
 		var ProductsGridController = BaseController.extend({
+
 			templateName: 'partials/products-grid',
+
+			props: ['products'],
 
 			init: function() {
 				console.log('ProductsGridController initialized!');

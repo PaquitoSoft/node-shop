@@ -1,18 +1,14 @@
-{@set param="docTitle" value="Simple ecommerce theme demo store" /}
-{@set param="mainBanner" value="Free shipping on all orders over $75" /}
 
 {> layout /}
 
 {< mainContent}
-
-	{@clientDataLayer key="shared" attr="docTitle" data="Simple ecommerce theme demo store" /}
-	{@clientDataLayer key="main-banner-controller" attr="mainBanner" data="Free shipping on all orders over $75" /}
+	
+	{- clientDataLayer('shared', 'docTitle', 'Simple ecommerce demo store') -}
+	{- clientDataLayer("products-grid-controller", "products", products) -}
 
 	<div id="page-content">
 		<br>
 
-		{@clientDataLayer key="products-grid-controller" attr="products" data=products /}
-		
 		<!--START PRODUCT GRID-->
 		{>"partials/products-grid" products=products/}
 		<!--END PRODUCT GRID-->

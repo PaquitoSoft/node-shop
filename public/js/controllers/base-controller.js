@@ -11,12 +11,19 @@
 			}
 		}
 		
-		var BaseController = function($mainEl, data, isPersistent) {
-			if ($mainEl) {
+		var BaseController = function(controllerName, $mainEl, serverResponse, isPersistent) {
+			if (controllerName) {
+				this.controllerName = controllerName;
 				this.$mainEl = $mainEl;
-				this.data = data;
 				this.isPersistent = !!isPersistent;
+				this.data = {};
 				this.events = {};
+
+				if (this.props && this.props.length) {
+					this.props.forEach(function(key) {
+						this.data[key] = serverResponse[key];
+					}, this);
+				}
 			}
 		};
 
@@ -56,7 +63,7 @@
 			this.events[eventName] = handler;
 		};
 
-		BaseController.prototype.start = function _start(template, controllerName, done) {
+		BaseController.prototype.start = function _start(template, done) {
 			var self = this,
 				_listeners = {};
 
@@ -65,7 +72,7 @@
 			this.setup();
 
 			this.sync = new R({
-				controllerName: controllerName,
+				controllerName: this.controllerName,
 				el: this.$mainEl[0],
 				template: template,
 				data: this.data,
@@ -92,8 +99,12 @@
 		};
 
 		BaseController.prototype.update = function _update(data) {
-			// this.$mainEl = $el;
-			this.data = data;
+			// this.data = data;
+			if (this.props && this.props.length) {
+				this.props.forEach(function(key) {
+					this.data[key] = data[key];
+				}, this);
+			}
 			this.sync.set(data);
 			// TODO Attach Ractive to the new element
 			// this.sync.insert($el[0]);

@@ -23,7 +23,10 @@
 			},
 			dustHelpers: {
 				deps: ['dust']
-			}
+			}/*,
+			ractive: {
+				deps: ['plugins/ractive-view-helpers']
+			}*/
 		}
 	};
 
@@ -34,8 +37,10 @@
 	if (!Array.isArray) {
 		mainDependencies.push('es5Shim', 'history', 'html5shiv');
 		requireOptions.paths.jquery = '/vendor/jquery-legacy/dist/jquery';
+		requireOptions.paths.ractive = '/vendor/ractive/ractive-legacy';
 	} else {
 		requireOptions.paths.jquery = '/vendor/jquery-modern/dist/jquery';
+		requireOptions.paths.ractive = '/vendor/ractive/ractive';
 	}
 
 	// Configure RequireJS
@@ -46,8 +51,12 @@
 		var counter = App.extensions.length;
 
 		function start() {
-			controllersManager.config($(document), true, function (/*err*/) {
-				router.init();
+			// TODO Get dataLayer from a plugin
+			controllersManager.config($(document), window.NodeShop._dataLayer, {
+				isBootstrap: true,
+				done: function() {
+					router.init();
+				}
 			});
 		}
 

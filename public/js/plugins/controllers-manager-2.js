@@ -2,16 +2,17 @@
 	'use strict';
 	
 	// Controller Manager plugin
-	define(['jquery', 'ractive', 'plugins/data-layer', 'plugins/templates', 'plugins/decorators/image-lazy-load'], function($, R, dataLayer, templates) {
+	// TODO A couple of dependencies loaded but not used. How do I should do this??
+	define(['jquery', 'ractive', 'plugins/data-layer', 'plugins/templates', 'plugins/ractive-view-helpers', 'plugins/decorators/image-lazy-load'], function($, R, dataLayer, templates) {
 
 		var controllersRegistry = {};
 
-		function _getTemplate(templateName, $controllerMainEl, controllerData, isBootstrap, done) {
-			if (!templateName) { return done(''); } // TODO We still have dummy controllers
+		function _getTemplate(controller, isBootstrap, done) {
+			if (!controller.templateName) { return done(''); } // TODO We still have dummy controllers
 			
 			if (isBootstrap) {
 				// Get template from plugin
-				templates.render(templateName, controllerData, function(tpl) {
+				templates.render(controller.templateName, controller.data, function(tpl) {
 					var $tpl = $(tpl);
 					$tpl = $tpl.data('controller') ? $tpl : $tpl.find('[data-controller]');
 
@@ -24,7 +25,7 @@
 			} else {
 				// Get template from root element
 				setTimeout(function() {
-					done($controllerMainEl.html());
+					done(controller.$mainEl.html());
 				}, 4);
 			}
 		}
@@ -57,10 +58,18 @@
 			}
 		}
 
-		function config($root, isBootstrap, done) {
+		function config($root, serverResponse, options) {
 			var controllersInfo = [],
-				dependencies = [];
+				dependencies = [],
+				_options = $.extend({
+					isBootstrap: false,
+					isUpdateOnly: false,
+					done: function() {}
+				}, options);
 		
+			console.log('IS BOOTSTRAPPING?:', _options.isBootstrap);
+			console.log('IS UPDATE ONLY?:', _options.isUpdateOnly);
+
 			// Find which controllers we need to manage
 			$root.find('*[data-controller]').each(function(index, elem) {
 				var $el = $(elem),
@@ -105,26 +114,27 @@
 						oldInstance = controllersRegistry[controllerInfo.name],
 						newInstance;
 
-					if (oldInstance && oldInstance.isPersistent) {
+					if (_options.isUpdateOnly || (oldInstance && oldInstance.isPersistent) ) {
 
-						oldInstance.update(controllerData);
-						checkControllersInitialization(currentControllersNames, controllerInfo.name, done);
+						// TODO Needs to use serverResponse
+						oldInstance.update(serverResponse);
+						checkControllersInitialization(currentControllersNames, controllerInfo.name, _options.done);
 						// checkControllersInitialization2(controllersInfo, controllerInfo, done);
 
 					} else {
 						
 						// Create controller
-						newInstance = new Controller(controllerInfo.$mainEl, controllerData, controllerInfo.isPersistent);
+						newInstance = new Controller(controllerInfo.name, controllerInfo.$mainEl,
+							serverResponse, controllerInfo.isPersistent);
 
-
-						_getTemplate(newInstance.templateName, controllerInfo.$mainEl, controllerData, isBootstrap, function(tpl) {
+						_getTemplate(newInstance, _options.isBootstrap, function(tpl) {
 							
-							newInstance.start(tpl, controllerInfo.name, function () {
+							newInstance.start(tpl, function () {
 									if (oldInstance) { oldInstance.reset(); }
 
 									controllersRegistry[controllerInfo.name] = newInstance;
 
-									checkControllersInitialization(currentControllersNames, controllerInfo.name, done);
+									checkControllersInitialization(currentControllersNames, controllerInfo.name, _options.done);
 									// checkControllersInitialization2(controllersInfo, controllerInfo, done);
 								}
 							);

@@ -9,6 +9,8 @@
 		var ProductDetailController = BaseController.extend({
 			templateName: 'product-detail',
 
+			props: ['product', 'mainImage', 'mainColor'],
+
 			setup: function() {
 				this.data.product = new Product(this.data.product);
 				this.data.selectedColor = this.data.product.colors[0];

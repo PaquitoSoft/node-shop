@@ -7,6 +7,8 @@
 		var MainNavigationController = BaseController.extend({
 
 			templateName: 'partials/navigation-menu',
+
+			props: ['categories', 'currentCategoryId'],
 			
 			init: function() {
 				this.selectSubcategory(this.data.currentCategoryId);
