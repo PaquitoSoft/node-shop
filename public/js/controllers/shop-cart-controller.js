@@ -23,7 +23,7 @@
 
 				ShopCartStore.removeOrderItem(this.data.orderItems.indexOf(rEvent.context))
 					.done(function (orderItems) {
-						this.sync.set({
+						self.sync.set({
 							orderItems: orderItems,
 							orderTotalAmount: ShopCartStore.getTotalAmount().toFixed(2)
 						});

@@ -1,12 +1,7 @@
-{@set param="docTitle" value="Simple ecommerce theme demo store" /}
-{@set param="mainBanner" value="Free shipping on all orders over $75" /}
 
 {> layout /}
 
 {< mainContent}
-
-	{@clientDataLayer key="shared" attr="docTitle" data="Simple ecommerce theme demo store" /}
-	{@clientDataLayer key="main-banner-controller" attr="mainBanner" data="Free shipping on all orders over $75" /}
 
 	<div id="page-content">
 		<br>

@@ -1,14 +1,7 @@
-{@set param="docTitle" value="{product.name}" /}
-{@set param="mainBanner" value="You may return purchased products with no costs." /}
-
 
 {> layout /}
 
-
 {< mainContent}
-
-	{@clientDataLayer key="shared" attr="docTitle" data="{product.name}" /}
-	{@clientDataLayer key="main-banner-controller" attr="mainBanner" data="You may return purchased products with no costs." /}
 
 	<div id="page-content" class="product-detail" data-controller="product-detail-controller">
 

@@ -30,7 +30,7 @@
 			},
 
 			_onPostUpdate: function() {
-				console.log('Datos de producto actualizados!!!');
+				this.sync.set('showBuyButton', false);
 				events.trigger('UNFOLD_MENU_REQUESTED', {
 					subcategoryId: this.data.product.categoryId
 				});
