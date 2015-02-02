@@ -14,8 +14,7 @@
 			pagejs: '/vendor/page.js/page',
 			history: '/vendor/html5-history-api/history.iegte8',
 			ractive: '/vendor/ractive/ractive-legacy',
-			es5Shim: '/vendor/es5-shim/es5-shim',
-			html5shiv: '/vendor/html5shiv/dist/html5shiv'
+			es5Shim: '/vendor/es5-shim/es5-shim'
 		},
 		shim: {
 			dust: {
@@ -30,9 +29,9 @@
 	// Bootstrap dependencies
 	mainDependencies = ['jquery', 'plugins/controllers-manager-2', 'plugins/router'];
 
-	// Is this an old browser?
+	// Is this an old browser? -- TODO We need to decide what condition is enough for us
 	if (!Array.isArray) {
-		mainDependencies.push('es5Shim', 'history', 'html5shiv');
+		mainDependencies.push('es5Shim', 'history');
 		requireOptions.paths.jquery = '/vendor/jquery-legacy/dist/jquery';
 	} else {
 		requireOptions.paths.jquery = '/vendor/jquery-modern/dist/jquery';
