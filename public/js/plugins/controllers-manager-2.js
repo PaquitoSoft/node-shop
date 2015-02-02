@@ -13,7 +13,7 @@
 			if (isBootstrap) {
 				// Get template from plugin
 				templates.render(controller.templateName, controller.data, function(tpl) {
-					var $tpl = $(tpl);
+					var $tpl = $($.parseHTML(tpl));
 					$tpl = $tpl.data('controller') ? $tpl : $tpl.find('[data-controller]');
 
 					if ($tpl.size()) {

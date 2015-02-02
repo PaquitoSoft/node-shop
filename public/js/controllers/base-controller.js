@@ -39,7 +39,10 @@
 			$.each(methods || {}, function(key, value) {
 				if (/^on.*/.test(key) && key.length > 2) {
 					key = key[2].toLowerCase() + key.substr(3);
-					Klass.prototype.listeners[key] = value;
+					Klass.prototype.domListeners[key] = value;
+				} else if (/^_on.*/.test(key)) {
+					key = key[3].toLowerCase() + key.substr(4);
+					Klass.prototype.innerListeners[key] = value;
 				} else {
 					Klass.prototype[key] = value;
 				}
@@ -50,8 +53,8 @@
 
 		BaseController.prototype.setup = function() {};
 		BaseController.prototype.init = function() {};
-		BaseController.prototype.listeners = {};
-
+		BaseController.prototype.domListeners = {};
+		BaseController.prototype.innerListeners = {};
 
 		BaseController.prototype.fire = function _fire(eventName, data) {
 			if (this.events[eventName]) {
@@ -65,7 +68,7 @@
 
 		BaseController.prototype.start = function _start(template, done) {
 			var self = this,
-				_listeners = {};
+				_domListeners = {};
 
 			this.template = template;
 
@@ -81,14 +84,18 @@
 
 			this.fire('preInit', {el: this.$mainEl, data: this.data});
 
-			if (this.listeners) {
-				$.map(this.listeners, function (value, key) {
-					// Ractive sets listener scope to itself so we have to change it
-					_listeners[key] = $.proxy(value, self);
-				});
-				this.sync.on(_listeners);
-				// TODO Should I remove listeners from the prototype???
-			}
+			// Set up ractive (DOM) listeners
+			$.map(this.domListeners, function (value, key) {
+				// Ractive sets listener scope to itself so we have to change it
+				_domListeners[key] = $.proxy(value, self);
+			});
+			this.sync.on(_domListeners);
+			// TODO Should I remove domListeners from the prototype???
+
+			// Setup controller inner listeners
+			$.map(this.innerListeners, function (value, key) {
+				self.on(key, value);
+			});
 
 			if (this.init.length > 1) {
 				this.init(this.sync, $.proxy(onControllerInitialized, this, done));
@@ -100,12 +107,14 @@
 
 		BaseController.prototype.update = function _update(data) {
 			// this.data = data;
+			this.fire('preUpdate', {data: data});
 			if (this.props && this.props.length) {
 				this.props.forEach(function(key) {
 					this.data[key] = data[key];
 				}, this);
 			}
 			this.sync.set(data);
+			this.fire('postUpdate');
 			// TODO Attach Ractive to the new element
 			// this.sync.insert($el[0]);
 		};

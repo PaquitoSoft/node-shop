@@ -18,8 +18,7 @@
 				this.data.showBuyButton = false;
 			},
 
-			init: function (sync) {
-				this.selectedCategoryProductId = storage.retrieve('selectedCategoryProductId');
+			init: function () {
 				this.currentCategoryProductsIds = storage.retrieve('currentCategoryProductsIds');
 				
 				// Ensure corresponding category selected on navigation menu
@@ -28,6 +27,13 @@
 				});
 
 				console.log('ProductDetailController initialized!');
+			},
+
+			_onPostUpdate: function() {
+				console.log('Datos de producto actualizados!!!');
+				events.trigger('UNFOLD_MENU_REQUESTED', {
+					subcategoryId: this.data.product.categoryId
+				});
 			},
 
 			onNavigate: function(rEvent, mode) {

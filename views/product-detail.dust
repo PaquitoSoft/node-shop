@@ -12,10 +12,6 @@
 
 	<div id="page-content" class="product-detail" data-controller="product-detail-controller">
 
-		{@clientDataLayer key="product-detail-controller" attr="product" data=product /}
-		{@clientDataLayer key="product-detail-controller" attr="mainImage" data=mainImage /}
-		{@clientDataLayer key="product-detail-controller" attr="mainColor" data=mainColor /}
-		
 		<!--START BREADCRUMB-->
 		<div id="breadcrumb" class="desktop">
 			<a href="/" >Home</a> &mdash;

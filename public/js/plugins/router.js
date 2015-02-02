@@ -47,7 +47,7 @@
 						} else {
 							templates.render(data.template, data, function (html) {
 								if (html) {
-									var $html = $(html),
+									var $html = $($.parseHTML(html)),
 										$prevContent = $mainContainer.clone(),
 										$controllers = $html.data('controller') ? $html : $html.find('[data-controller]');
 									
@@ -70,43 +70,6 @@
 							});
 						}
 
-						// templates.render(data.template, data, function (html) {
-						// 	if (html) {
-						// 		var $html = $(html),
-						// 			$prevContent = $mainContainer.clone(),
-						// 			$controllers = $html.data('controller') ? $html : $html.find('[data-controller]');
-								
-						// 		$controllers.css('visibility', 'hidden');
-						// 		$mainContainer.empty().html($html);
-
-						// 		controllersManager.config($mainContainer, {
-						// 			isBootstrap: false,
-						// 			isUpdateOnly: data.template === lastUsedTemplate,
-						// 			done: function() {
-						// 				$controllers.css('visibility', 'visible');
-						// 				controllersManager.cleanup($prevContent, $html);
-						// 			}
-						// 		});
-
-						// 		lastUsedTemplate = data.template;
-
-						// 		// Update document title
-						// 		if (dataLayer.shared && dataLayer.shared.docTitle) {
-						// 			$(document).find('head title').text(dataLayer.shared.docTitle);
-						// 			dataLayer.shared.docTitle = undefined;
-						// 		}
-
-						// 		events.trigger('NAVIGATION_DONE', {url: context.path});
-
-						// 		if (options.foldedMenu) {
-						// 			events.trigger('FOLDED_MENU_REQUESTED');
-						// 		}
-
-						// 		console.log('Navigation done!');
-						// 	} else {
-						// 		console.warn('Could not render page (no template)');
-						// 	}
-						// });
 					})
 					.fail(function (xhr, textStatus, err) {
 						// TODO Handle error properly

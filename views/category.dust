@@ -5,8 +5,8 @@
 
 {<mainContent}
 
-	{- clientDataLayer("shared", "docTitle", "{catName}" -}
-	{- clientDataLayer("main-banner-controller", "mainBanner", "SiMpLe, cares about you.") -}
+	{@clientDataLayer key="shared" attr="docTitle" data="{catName}" /}
+	{@clientDataLayer key="main-banner-controller" attr="mainBanner" data="Free shipping on all orders over $75" /}
 
 	<div id="page-content">  
 

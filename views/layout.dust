@@ -208,9 +208,8 @@
 				},
 				shopCartData: {shoppingCart|js|s}
 			};
-			window.NodeShop.dataLayer =  {@clientDataLayer /};
-			window.NodeShop._dataLayer = {dataLayer|js|s};
-			window.NodeShop._rdl = {- JSON.stringify(rDataLayer) -};
+			{! window.NodeShop.dataLayer = {@clientDataLayer /}; !}
+			window.NodeShop.dataLayer = {dataLayer|js|s};
 		</script>
 
 		<script data-main="/js/main.js" src="/vendor/requirejs/require.js"></script>

@@ -31,7 +31,7 @@
 	};
 
 	// Bootstrap dependencies
-	mainDependencies = ['jquery', 'plugins/controllers-manager-2', 'plugins/router'];
+	mainDependencies = ['jquery', 'plugins/controllers-manager-2', 'plugins/router', 'plugins/data-layer'];
 
 	// Is this an old browser?
 	if (!Array.isArray) {
@@ -47,12 +47,12 @@
 	requirejs.config(requireOptions);
 	
 	// Main initialization
-	require(mainDependencies, function($, controllersManager, router) {
+	require(mainDependencies, function($, controllersManager, router, dataLayer) {
 		var counter = App.extensions.length;
 
 		function start() {
 			// TODO Get dataLayer from a plugin
-			controllersManager.config($(document), window.NodeShop._dataLayer, {
+			controllersManager.config($(document), dataLayer, {
 				isBootstrap: true,
 				done: function() {
 					router.init();
