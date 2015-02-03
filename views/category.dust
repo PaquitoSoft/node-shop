@@ -1,14 +1,9 @@
-{@set param="docTitle" value="{catName}" /}
-{@set param="mainBanner" value="SiMpLe, cares about you." /}
 
 {>layout/}
 
 {<mainContent}
 
-	{@clientDataLayer key="shared" attr="docTitle" data="{catName}" /}
-	{@clientDataLayer key="main-banner-controller" attr="mainBanner" data="Free shipping on all orders over $75" /}
-
-	<div id="page-content">  
+	<div id="page-content" data-controller="products-category-controller">
 
 		<!--START BREADCRUMB-->
 		{!
@@ -19,11 +14,12 @@
 		!}
 		<!--END BREADCRUMB-->
 
-		<h1>{catName}</h1>
-		<span class="products-count">Products: {@size key=products/}</span>
+		<h1>{- catName -}</h1>
+		<span class="products-count">Products: {- products.length -}</span>
 
 		<!--START PRODUCT GRID-->
-		{>"partials/products-grid" products=products categoryId=_id/}
+		{! {>"partials/products-grid" products=products categoryId=_id/} !}
+		<ProductsGrid />
 		<!--END PRODUCT GRID-->
 
 		<br class="clear">

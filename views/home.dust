@@ -3,11 +3,11 @@
 
 {< mainContent}
 
-	<div id="page-content">
+	<div id="page-content" data-controller="home-controller">
 		<br>
 
 		<!--START PRODUCT GRID-->
-		{>"partials/products-grid" products=products/}
+		<ProductsGrid />
 		<!--END PRODUCT GRID-->
 
 		<br class="clear">

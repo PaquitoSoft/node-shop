@@ -8,6 +8,7 @@
 	requireOptions = {
 		baseUrl: '/js',
 		paths: {
+			text: '/vendor/requirejs-text/text',
 			jquery: '/vendor/jquery/dist/jquery',
 			dust: '/vendor/dustjs-linkedin/dist/dust-full',
 			dustHelpers: '/vendor/dustjs-linkedin-helpers/dist/dust-helpers',

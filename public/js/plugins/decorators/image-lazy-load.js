@@ -15,13 +15,17 @@
 			);
 		}
 
-		var imageLazyLoadDecorator = function(node, content) {
-			var $el = $(node);
+		var imageLazyLoadDecorator = function(node, imageUrl) {
+			var $el = $(node),
+				r = this;
+
+			// Reset element (use case: when we reuse elements and only update data)
+			$el.data('loaded', false);
 
 			var handlers = {
 				loadElementImage: function() {
 					if (!$el.data('loaded') && isElementInViewport($el[0])) {
-						$el.attr('src', $el.data('src'));
+						$el.attr('src', imageUrl);
 						$el.data('loaded', true);
 					}
 				}

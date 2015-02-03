@@ -35,6 +35,10 @@
 
 			Klass.prototype = new BaseController();
 			Klass.prototype.constructor = Klass;
+			Klass.prototype.setup = function() {};
+			Klass.prototype.init = function() {};
+			Klass.prototype.domListeners = {};
+			Klass.prototype.innerListeners = {};
 
 			$.each(methods || {}, function(key, value) {
 				if (/^on.*/.test(key) && key.length > 2) {
@@ -50,12 +54,7 @@
 
 			return Klass;
 		};
-
-		BaseController.prototype.setup = function() {};
-		BaseController.prototype.init = function() {};
-		BaseController.prototype.domListeners = {};
-		BaseController.prototype.innerListeners = {};
-
+		
 		BaseController.prototype.fire = function _fire(eventName, data) {
 			if (this.events[eventName]) {
 				this.events[eventName].call(this, data);
@@ -79,7 +78,7 @@
 				el: this.$mainEl[0],
 				template: template,
 				data: this.data,
-				delimiters: ['{-', '-}']
+				components: this.components || {}
 			});
 
 			this.fire('preInit', {el: this.$mainEl, data: this.data});
