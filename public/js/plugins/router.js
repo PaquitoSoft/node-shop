@@ -47,7 +47,7 @@
 						} else {
 							templates.getTemplate(data.template, function (err, html) {
 								if (html) {
-									var $html = $($.parseHTML(html)),
+									var $html = $($.parseHTML(html.trim())),
 										$prevContent = $mainContainer.clone(),
 										$controllers = $html.data('controller') ? $html : $html.find('[data-controller]');
 									
