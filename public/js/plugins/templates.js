@@ -3,8 +3,8 @@
 
 	// Client side rendering plugin
 	define(
-		['plugins/app-context', 'plugins/local-storage', 'jquery', 'dust', 'plugins/dust-custom-helpers'],
-		function(appContext, storage, $, dust, dustHelpers) {
+		['plugins/app-context', 'plugins/local-storage', 'jquery', 'dust', 'plugins/dust-custom-helpers', 'ractive'],
+		function(appContext, storage, $, dust, dustHelpers, R) {
 
 			var cache;
 			var cacheLoaded = false;
@@ -12,12 +12,16 @@
 			var TEMPLATES_EXTENSION = '.dust';
 
 			function registerTemplates(templatesData, mainTemplateName) {
-				var tpl = dust.compile(templatesData.template, mainTemplateName);
-				dust.loadSource(tpl);
+				// var tpl = dust.compile(templatesData.template, mainTemplateName);
+				// dust.loadSource(tpl);
+
+				// Object.keys(templatesData.partials).forEach(function(partName) {
+				// 	tpl = dust.compile(templatesData.partials[partName], partName);
+				// 	dust.loadSource(tpl);
+				// });
 
 				Object.keys(templatesData.partials).forEach(function(partName) {
-					tpl = dust.compile(templatesData.partials[partName], partName);
-					dust.loadSource(tpl);
+					R.partials[partName] = templatesData.partials[partName];
 				});
 
 				return templatesData.template;

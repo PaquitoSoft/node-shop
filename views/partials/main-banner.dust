@@ -1,3 +1,3 @@
 <div id="tagline" class="desktop">
-	<h3>{-mainBanner-}</h3>
+	<h3>{{mainBanner}}</h3>
 </div>

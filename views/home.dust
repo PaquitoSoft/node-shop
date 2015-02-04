@@ -1,15 +1,21 @@
 
-{> layout /}
+<MainLayout>
 
-{< mainContent}
+	{{#partial customStyles}}
+		<meta name="custom-meta" content="Welcome to the jungle" />
+	{{/partial}}
 
-	<div id="page-content" data-controller="home-controller">
-		<br>
+	{{#partial mainContent}}
 
-		<!--START PRODUCT GRID-->
-		<ProductsGrid />
-		<!--END PRODUCT GRID-->
+		<div id="page-content" data-controller="home-controller">
+			<br>
 
-		<br class="clear">
-	</div>
-{/ mainContent}
+			<!--START PRODUCT GRID-->
+			<products-grid />
+			<!--END PRODUCT GRID-->
+
+			<br class="clear">
+		</div>
+	{{/partial}}
+
+</MainLayout>

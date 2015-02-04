@@ -9,7 +9,7 @@
 			templateName: 'category',
 
 			components: {
-				productsgrid: ProductsGridComponent
+				'products-grid': ProductsGridComponent
 			},
 
 			props: ['catName', 'products'],

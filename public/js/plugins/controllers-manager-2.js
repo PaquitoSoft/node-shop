@@ -6,7 +6,7 @@
 	define(['jquery', 'ractive', 'plugins/data-layer', 'plugins/templates', 'plugins/ractive-view-helpers', 'plugins/decorators/image-lazy-load'], function($, R, dataLayer, templates) {
 
 		// TODO This does not fit here
-		R.defaults.delimiters = ['{-', '-}'];
+		// R.defaults.delimiters = ['{-', '-}'];
 
 		var controllersRegistry = {};
 
@@ -15,7 +15,7 @@
 			
 			if (isBootstrap) {
 				// Get template from plugin
-				templates.render(controller.templateName, controller.data, function(tpl) {
+				templates.getTemplate(controller.templateName, function(err, tpl) {
 					var $tpl = $($.parseHTML(tpl));
 					$tpl = $tpl.data('controller') ? $tpl : $tpl.find('[data-controller]');
 

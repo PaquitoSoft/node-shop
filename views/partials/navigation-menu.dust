@@ -1,18 +1,18 @@
 <nav data-controller="main-navigation-controller">
 	<a href="#" id="toggle-menu" class="mobile"><span>Menu</span></a>
 	<ul id="main-menu" class="accordion">
-		{-#each categories-}
+		{{#each categories}}
 			<li>
-				<a href="#" class="accordion-button" on-click="selectRootCategory">{-name-}
+				<a href="#" class="accordion-button" on-click="selectRootCategory">{{name}}
 					<span>+</span>
 				</a>
-				<div class="accordion-content {- (_id === rootCategoryId) ? '' : 'invisible' -}">
-					{-#each subcategories-}
-						<a href="/catalog/category/{-id-}/{-name-}" class="{- (id === subcategoryId) ? 'selected' : '' -}" on-click="selectSubcategory">{-name-} </a>
-					{-/each-}
+				<div class="accordion-content {{ (_id === rootCategoryId) ? '' : 'invisible' }}">
+					{{#each subcategories}}
+						<a href="/catalog/category/{{id}}/{{name}}" class="{{ (id === subcategoryId) ? 'selected' : '' }}" on-click="selectSubcategory">{{name}} </a>
+					{{/each}}
 				</div>
 			</li>
-		{-/each-}
+		{{/each}}
 
 	</ul>
 

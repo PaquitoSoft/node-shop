@@ -1,28 +1,23 @@
 
-{>layout/}
+<MainLayout>
 
-{<mainContent}
+	{{#partial customStyles}}
+		<meta name="custom-meta" content="Paradise city" />
+	{{/partial}}
 
-	<div id="page-content" data-controller="products-category-controller">
+	{{#partial mainContent}}
 
-		<!--START BREADCRUMB-->
-		{!
-		<div id="breadcrumb" class="desktop">
-			<a href="/">Home</a> —
-			<a href="/collections/mens-1">Mens</a>  —  <a href="/collections/mens-1/jacket" class="active">Jacket</a>
+		<div id="page-content" data-controller="products-category-controller">
+			
+			<h1>{{catName}}</h1>
+			<span class="products-count">Products: {{products.length}}</span>
+
+			<!--START PRODUCT GRID-->
+			<products-grid />
+			<!--END PRODUCT GRID-->
+
+			<br class="clear">
 		</div>
-		!}
-		<!--END BREADCRUMB-->
+	{{/partial}}
 
-		<h1>{- catName -}</h1>
-		<span class="products-count">Products: {- products.length -}</span>
-
-		<!--START PRODUCT GRID-->
-		{! {>"partials/products-grid" products=products categoryId=_id/} !}
-		<ProductsGrid />
-		<!--END PRODUCT GRID-->
-
-		<br class="clear">
-	</div>
-
-{/mainContent}
+</MainLayout>

@@ -1,93 +1,98 @@
 
-{> layout /}
+<MainLayout>
 
-{< mainContent}
-	
-	<div id="page-content">  
+	{{#partial customStyles}}
+		<meta name="custom-meta" content="Civil war" />
+	{{/partial}}
 
-		<!--START BREADCRUMB-->
-		<div id="breadcrumb" class="desktop">
-			<a href="/">Home</a> — <a href="/shop/cart" class="active">Cart</a>
-		</div>
-		<!--END BREADCRUMB-->
 
-		<h1>My Cart</h1>
+	{{#partial mainContent}}	
+		<div id="page-content">  
 
-		<section id="cart" data-controller="shop-cart-controller">
+			<!--START BREADCRUMB-->
+			<div id="breadcrumb" class="desktop">
+				<a href="/">Home</a> — <a href="/shop/cart" class="active">Cart</a>
+			</div>
+			<!--END BREADCRUMB-->
 
-			<form action="/" method="get">
-				<!--START CART CONTENTS-->
-				<div class="twelve columns alpha omega">
-				
-					<!-- START HEADERS-->
-					<div class="headers clearfix">
-						<div class="six columns alpha description">Description</div>
-						<div class="two columns price desktop">Price</div>
-						<div class="one columns quantity desktop">Qty</div>
-						<div class="two columns total desktop">
-							<span>Total</span>
+			<h1>My Cart</h1>
+
+			<section id="cart" data-controller="shop-cart-controller">
+
+				<form action="/" method="get">
+					<!--START CART CONTENTS-->
+					<div class="twelve columns alpha omega">
+					
+						<!-- START HEADERS-->
+						<div class="headers clearfix">
+							<div class="six columns alpha description">Description</div>
+							<div class="two columns price desktop">Price</div>
+							<div class="one columns quantity desktop">Qty</div>
+							<div class="two columns total desktop">
+								<span>Total</span>
+							</div>
 						</div>
-					</div>
-					<!-- END HEADERS-->
+						<!-- END HEADERS-->
 
-					<!-- START ROW-->
-					{-#each orderItems-}
-						<div class="row">
-							<div class="six columns alpha description">
-								<img src="http://static.zara.net/photos{-imageUrl-}" alt="{-name-}">
-								<div class="info">
-									<h3><a href="/catalog/category/{-categoryId-}/product/{-productId-}/{-name-}">{-name-}</a></h3>
+						<!-- START ROW-->
+						{{#each orderItems}}
+							<div class="row">
+								<div class="six columns alpha description">
+									<img src="http://static.zara.net/photos{{imageUrl}}" alt="{{name}}">
+									<div class="info">
+										<h3><a href="/catalog/category/{{categoryId}}/product/{{productId}}/{{name}}">{{name}}</a></h3>
+									</div>
+								</div>
+
+								<div class="two columns price desktop">${{price}}</div>
+								<div class="one columns quantity total tr">
+									{{quantity}}
+									<p class="mobile">x ${{amount}}</p>
+								</div>
+								<div class="two columns total desktop">
+									<span>${{amount}} </span>
+								</div>
+								<div class="one column remove omega desktop">
+									<a href="#" on-click="deleteOrderItem">x</a>
 								</div>
 							</div>
+						{{/each}}
+						<!-- END ROW-->
 
-							<div class="two columns price desktop">${-price-}</div>
-							<div class="one columns quantity total tr">
-								{-quantity-}
-								<p class="mobile">x ${-amount-}</p>
-							</div>
-							<div class="two columns total desktop">
-								<span>${-amount-} </span>
-							</div>
-							<div class="one column remove omega desktop">
-								<a href="#" on-click="deleteOrderItem">x</a>
-							</div>
+					</div>
+					<!--END CART CONTENTS-->
+
+					<br class="clear">
+
+					<!--START TOTAL-->
+					<div class="twelve columns alpha omega row">
+						<div class="six columns alpha continue-shopping">
+							<a href="/">« Continue Shopping</a>
 						</div>
-					{-/each-}
-					<!-- END ROW-->
-
-				</div>
-				<!--END CART CONTENTS-->
-
-				<br class="clear">
-
-				<!--START TOTAL-->
-				<div class="twelve columns alpha omega row">
-					<div class="six columns alpha continue-shopping">
-						<a href="/">« Continue Shopping</a>
+						<div class="six columns omega cart total">
+							<h2>Total $<span>{{orderTotalAmount}}</span></h2>
+						</div>
 					</div>
-					<div class="six columns omega cart total">
-						<h2>Total $<span>{-orderTotalAmount-}</span></h2>
+					<!--END TOTAL-->
+
+					<br class="clear">
+
+					<!-- START ACTIONS -->
+					<div class="twelve columns alpha omega">
+						<div class="six columns alpha hidden">
+							<textarea id="note" name="note" placeholder="Add a note to your order..."></textarea>
+						</div>
+						<div class="six columns omega actions">
+							<input type="submit" id="update" name="update" value="Update" class="hidden">
+							<input type="submit" id="checkout" name="checkout" value="Check Out">
+						</div>
 					</div>
-				</div>
-				<!--END TOTAL-->
+					<!-- END ACTIONS -->
+				</form>
 
-				<br class="clear">
+			</section>
+			<br class="clear">
+		</div>
+	{{/partial}}
 
-				<!-- START ACTIONS -->
-				<div class="twelve columns alpha omega">
-					<div class="six columns alpha hidden">
-						<textarea id="note" name="note" placeholder="Add a note to your order..."></textarea>
-					</div>
-					<div class="six columns omega actions">
-						<input type="submit" id="update" name="update" value="Update" class="hidden">
-						<input type="submit" id="checkout" name="checkout" value="Check Out">
-					</div>
-				</div>
-				<!-- END ACTIONS -->
-			</form>
-
-		</section>
-		<br class="clear">
-	</div>
-
-{/ mainContent}
+</MainLayout>

@@ -45,7 +45,7 @@
 							pageTransitionHandled(context.path, data.template, options);
 
 						} else {
-							templates.render(data.template, data, function (html) {
+							templates.getTemplate(data.template, function (err, html) {
 								if (html) {
 									var $html = $($.parseHTML(html)),
 										$prevContent = $mainContainer.clone(),

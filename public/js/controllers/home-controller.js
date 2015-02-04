@@ -9,7 +9,7 @@
 			templateName: 'home',
 
 			components: {
-				productsgrid: ProductsGridComponent
+				'products-grid': ProductsGridComponent
 			},
 
 			props: ['products'],
