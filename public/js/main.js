@@ -32,7 +32,7 @@
 	};
 
 	// Bootstrap dependencies
-	mainDependencies = ['jquery', 'plugins/controllers-manager-2', 'plugins/router', 'plugins/data-layer'];
+	mainDependencies = ['jquery', 'plugins/controllers-manager-2', 'plugins/router', 'plugins/data-layer', 'plugins/events-manager'];
 
 	// Is this an old browser?
 	if (!Array.isArray) {
@@ -48,7 +48,7 @@
 	requirejs.config(requireOptions);
 	
 	// Main initialization
-	require(mainDependencies, function($, controllersManager, router, dataLayer) {
+	require(mainDependencies, function($, controllersManager, router, dataLayer, events) {
 		var counter = App.extensions.length;
 
 		function start() {
@@ -57,6 +57,7 @@
 				isBootstrap: true,
 				done: function() {
 					router.init();
+					events.trigger('APP_INITIALIZED');
 				}
 			});
 		}
@@ -67,6 +68,7 @@
 			}
 		}
 
+		events.trigger('APP_INITIALIZING');
 		if (counter) {
 			App.extensions.forEach(function(fn) {
 				if (fn.length > 0) {
