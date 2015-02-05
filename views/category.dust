@@ -13,7 +13,7 @@
 			<span class="products-count">Products: {{products.length}}</span>
 
 			<!--START PRODUCT GRID-->
-			<products-grid />
+			<products-grid products="{{products}}"/>
 			<!--END PRODUCT GRID-->
 
 			<br class="clear">
