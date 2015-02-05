@@ -5,9 +5,6 @@
 	// TODO A couple of dependencies loaded but not used. How do I should do this??
 	define(['jquery', 'ractive', 'plugins/data-layer', 'plugins/templates', 'plugins/ractive-view-helpers', 'plugins/decorators/image-lazy-load'], function($, R, dataLayer, templates) {
 
-		// TODO This does not fit here
-		// R.defaults.delimiters = ['{-', '-}'];
-
 		var controllersRegistry = {};
 
 		function _getTemplate(controller, isBootstrap, done) {
@@ -119,7 +116,6 @@
 
 					if (_options.isUpdateOnly || (oldInstance && oldInstance.isPersistent) ) {
 
-						// TODO Needs to use serverResponse
 						oldInstance.update(serverResponse);
 						checkControllersInitialization(currentControllersNames, controllerInfo.name, _options.done);
 						// checkControllersInitialization2(controllersInfo, controllerInfo, done);

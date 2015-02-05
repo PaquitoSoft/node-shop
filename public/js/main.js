@@ -83,7 +83,7 @@
 		} else {
 			start();
 		}
-				
+		
 	});
 
-}(window.zara));
+}(window.NodeShop));

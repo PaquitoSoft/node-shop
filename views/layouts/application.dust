@@ -29,7 +29,28 @@
 			};
 		</script>
 
-		<!--		
+		<script>
+			(function() {
+				window.NodeShop.extensions.push(function() {
+					require(['plugins/router'], function(router) {
+						router.registerMiddleware('beforeShow', function (url, serverData, done) {
+							console.info('Executing middleware...');
+							if (/product/.test(url)) {
+								setTimeout(function() {
+									$('#page-content').css('border', '2px solid red');
+									done();
+								}, 1000);
+							} else {
+								done();
+							}
+						});
+					});
+				});
+			}());
+		</script>
+
+		<!--
+		<script src="//cdn.optimizely.com/js/220840725.js"></script>
 		<script type="text/javascript" src="/js/experiments/special-prices-images.js"></script>
 		-->
 	</head>
