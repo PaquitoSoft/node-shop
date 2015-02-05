@@ -8,7 +8,7 @@
 		var $mainContainer,
 			lastUsedTemplate;
 
-		function pageTransitionHandled(url, currentTemplateName, routeOptions) {
+		function pageTransitionHandled(url, currentTemplateName, routeOptions, serverData) {
 			lastUsedTemplate = currentTemplateName;
 
 			// Update document title
@@ -17,7 +17,7 @@
 				dataLayer.shared.docTitle = undefined;
 			}
 
-			events.trigger('NAVIGATION_DONE', {url: url});
+			events.trigger('NAVIGATION_DONE', {url: url, serverData: serverData});
 
 			if (routeOptions.foldedMenu) {
 				events.trigger('FOLDED_MENU_REQUESTED');
@@ -30,21 +30,23 @@
 			options = options || {};
 			return function(context/*, next*/) {
 				console.log('Navigating to:', context.path);
+				events.trigger('NAVIGATION_START', {url: context.path});
 				$.getJSON(context.path)
 					.done(function (data) {
-
+						events.trigger('NAVIGATION_CHANGING', {url: context.path, serverData: data});
 						var isSameView = data.template === lastUsedTemplate;
 
 						if (isSameView) {
-							
+							console.log('Router# only update data');
 							controllersManager.config($mainContainer, data, {
 								isBootstrap: false,
 								isUpdateOnly: true
 							});
 
-							pageTransitionHandled(context.path, data.template, options);
+							pageTransitionHandled(context.path, data.template, options, data);
 
 						} else {
+							console.log('Router# Change view');
 							templates.getTemplate(data.template, function (err, html) {
 								if (html) {
 									var $html = $($.parseHTML(html.trim())),
@@ -63,7 +65,7 @@
 										}
 									});
 
-									pageTransitionHandled(context.path, data.template, options);
+									pageTransitionHandled(context.path, data.template, options, data);
 								} else {
 									console.warn('Could not render page (no template)');
 								}
@@ -82,8 +84,9 @@
 			page(path);
 		}
 
-		function init() {
+		function init(options) {
 			$mainContainer = $('#main');
+			lastUsedTemplate = options.viewName;
 
 			page('/', defaultHandler({
 				foldedMenu: true

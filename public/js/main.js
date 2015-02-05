@@ -56,7 +56,9 @@
 			controllersManager.config($(document), dataLayer, {
 				isBootstrap: true,
 				done: function() {
-					router.init();
+					router.init({
+						viewName: dataLayer.template
+					});
 					events.trigger('APP_INITIALIZED');
 				}
 			});
@@ -84,4 +86,4 @@
 				
 	});
 
-}(window.NodeShop));
+}(window.zara));
