@@ -18,7 +18,7 @@
 			var deferred = $.Deferred();
 
 			console.log('Router# only update data');
-			controllersManager.config($mainContainer, serverData, {
+			controllersManager.config($mainContainer, context.path, serverData, {
 				isBootstrap: false,
 				isUpdateOnly: true,
 				done: $.proxy(deferred.resolve, null, context, routeOptions, serverData)
@@ -36,28 +36,33 @@
 						$prevContent = $mainContainer.clone(),
 						$controllers = $html.data('controller') ? $html : $html.find('[data-controller]');
 					
-					$controllers.css('visibility', 'hidden');
-					$mainContainer.empty().html($html);
+					async.pParallel(externalMiddleware.beforeRender, [context.path, serverData, $html], 150)
+						.then( function() {
+							
+							$controllers.css('visibility', 'hidden');
+							$mainContainer.empty().html($html);
 
-					controllersManager.config($mainContainer, serverData, {
-						isBootstrap: false,
-						isUpdateOnly: false,
-						done: function() {
+							controllersManager.config($mainContainer, context.path, serverData, {
+								isBootstrap: false,
+								isUpdateOnly: false,
+								done: function() {
 
-							// async.parallel(externalMiddleware.beforeShow, [context.path, serverData], 500, function() {
-							//	$controllers.css('visibility', 'visible');
-							//	deferred.resolve(context, routeOptions, serverData);
-							//	controllersManager.cleanup($prevContent, $html);
-							// });
+									// async.parallel(externalMiddleware.beforeShow, [context.path, serverData], 500, function() {
+									//	$controllers.css('visibility', 'visible');
+									//	deferred.resolve(context, routeOptions, serverData);
+									//	controllersManager.cleanup($prevContent, $html);
+									// });
 
-							async.pParallel(externalMiddleware.beforeShow, [context.path, serverData], 1500)
-								.then( function() {
-									$controllers.css('visibility', 'visible');
-									deferred.resolve(context, routeOptions, serverData);
-									controllersManager.cleanup($prevContent, $html);
-								});
-						}
-					});
+									async.pParallel(externalMiddleware.beforeShow, [context.path, serverData], 1500)
+										.then( function() {
+											$controllers.css('visibility', 'visible');
+											deferred.resolve(context, routeOptions, serverData);
+											controllersManager.cleanup($prevContent, $html);
+										});
+								}
+							});
+
+						});
 
 				} else {
 					console.warn('Could not render page (no template)');
@@ -74,13 +79,7 @@
 			$.getJSON(context.path)
 				.done(function (data) {
 					console.timeEnd('Navigation::loadServerData');
-					// deferred.resolve(context, routeOptions, data);
-
-					async.pParallel(externalMiddleware.beforeRender, [context.path, data], 1500)
-						.then( function() {
-							deferred.resolve(context, routeOptions, data);
-						});
-
+					deferred.resolve(context, routeOptions, data);
 				})
 				.fail(deferred.reject);
 
