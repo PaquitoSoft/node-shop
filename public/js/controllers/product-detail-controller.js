@@ -14,7 +14,9 @@
 			setup: function() {
 				this.data.product = new Product(this.data.product);
 				this.data.selectedColor = this.data.product.colors[0];
-				this.data.selectedSizeId = this.data.product.sizes[0].id;
+				if (this.data.product.sizes.length) {
+					this.data.selectedSizeId = this.data.product.sizes[0].id;
+				}
 				this.data.showBuyButton = false;
 			},
 

@@ -2,8 +2,8 @@
 	'use strict';
 
 	// Router plugin
-	define(['pagejs', 'jquery', 'plugins/templates', 'plugins/controllers-manager-2', 'plugins/events-manager', 'plugins/data-layer'],
-		function(page, $, templates, controllersManager, events, dataLayer) {
+	define(['pagejs', 'jquery', 'plugins/templates', 'plugins/controllers-manager-2', 'plugins/events-manager', 'plugins/data-layer', 'plugins/async'],
+		function(page, $, templates, controllersManager, events, dataLayer, async) {
 		
 		var $mainContainer,
 			lastUsedTemplate,
@@ -13,119 +13,7 @@
 				beforeShow: []
 			};
 
-		function pageTransitionHandled(url, currentTemplateName, routeOptions, serverData) {
-			lastUsedTemplate = currentTemplateName;
-
-			// Update document title
-			if (dataLayer.shared && dataLayer.shared.docTitle) {
-				$(document).find('head title').text(dataLayer.shared.docTitle);
-				dataLayer.shared.docTitle = undefined;
-			}
-
-			events.trigger('NAVIGATION_DONE', {url: url, serverData: serverData});
-
-			if (routeOptions.foldedMenu) {
-				events.trigger('FOLDED_MENU_REQUESTED');
-			}
-
-			console.log('Navigation done!');
-		}
-
-		function defaultHandler(options) {
-			options = options || {};
-			return function(context/*, next*/) {
-				console.log('Navigating to:', context.path, context);
-				events.trigger('NAVIGATION_START', {url: context.path});
-				$.getJSON(context.path)
-					.done(function (data) {
-						events.trigger('NAVIGATION_CHANGING', {url: context.path, serverData: data});
-						var isSameView = data.template === lastUsedTemplate;
-
-						if (isSameView) {
-							console.log('Router# only update data');
-							controllersManager.config($mainContainer, data, {
-								isBootstrap: false,
-								isUpdateOnly: true
-							});
-
-							pageTransitionHandled(context.path, data.template, options, data);
-
-						} else {
-							console.log('Router# Change view');
-							templates.getTemplate(data.template, function (err, html) {
-								if (html) {
-									var $html = $($.parseHTML(html.trim())),
-										$prevContent = $mainContainer.clone(),
-										$controllers = $html.data('controller') ? $html : $html.find('[data-controller]');
-									
-									$controllers.css('visibility', 'hidden');
-									$mainContainer.empty().html($html);
-
-									controllersManager.config($mainContainer, data, {
-										isBootstrap: false,
-										isUpdateOnly: false,
-										done: function() {
-											$controllers.css('visibility', 'visible');
-											controllersManager.cleanup($prevContent, $html);
-										}
-									});
-
-									pageTransitionHandled(context.path, data.template, options, data);
-								} else {
-									console.warn('Could not render page (no template)');
-								}
-							});
-						}
-
-					})
-					.fail(function (xhr, textStatus, err) {
-						// TODO Handle error properly
-						console.error('Error handling ' + context.path + ' route:', textStatus);
-					});
-			};
-		}
-
-
-
-		function executeMiddleware(middlewareType, context, serverData) {
-			var deferred = $.Deferred(),
-				fns = externalMiddleware[middlewareType] || [],
-				count = fns.length,
-				to, checker;
-
-			if (count) {
 				
-				checker = function() {
-					if (--count <= 0) {
-						clearTimeout(to);
-						deferred.resolve();
-					}
-				};
-
-				externalMiddleware[middlewareType].forEach(function(fn) {
-					if (fn.length > 2) {
-						fn.call(null, context.path, serverData, checker);
-					} else {
-						fn.call(null, context.path, serverData);
-						checker();
-					}
-				});
-
-				to = setTimeout(function() {
-					if (count > 0) {
-						count = -1;
-						deferred.resolve();
-					}
-				}, 5000);
-
-			} else {
-				deferred.resolve();
-			}
-
-			return deferred.promise();
-		}
-
-
 		function updateState(context, routeOptions, serverData) {
 			var deferred = $.Deferred();
 
@@ -134,11 +22,6 @@
 				isBootstrap: false,
 				isUpdateOnly: true,
 				done: $.proxy(deferred.resolve, null, context, routeOptions, serverData)
-				// done: function() {
-				//	executeMiddleware('beforeShow', context, serverData).then(function () {
-				//		deferred.resolve(context, routeOptions, serverData);
-				//	});
-				// }
 			});
 
 			return deferred.promise();
@@ -161,12 +44,18 @@
 						isUpdateOnly: false,
 						done: function() {
 
-							executeMiddleware('beforeShow', context, serverData).then(function () {
-								$controllers.css('visibility', 'visible');
-								deferred.resolve(context, routeOptions, serverData);
-								controllersManager.cleanup($prevContent, $html);
-							});
-							
+							// async.parallel(externalMiddleware.beforeShow, [context.path, serverData], 500, function() {
+							//	$controllers.css('visibility', 'visible');
+							//	deferred.resolve(context, routeOptions, serverData);
+							//	controllersManager.cleanup($prevContent, $html);
+							// });
+
+							async.pParallel(externalMiddleware.beforeShow, [context.path, serverData], 1500)
+								.then( function() {
+									$controllers.css('visibility', 'visible');
+									deferred.resolve(context, routeOptions, serverData);
+									controllersManager.cleanup($prevContent, $html);
+								});
 						}
 					});
 
@@ -181,10 +70,17 @@
 
 		function loadServerData(context, routeOptions) {
 			var deferred = $.Deferred();
-
+			console.time('Navigation::loadServerData');
 			$.getJSON(context.path)
 				.done(function (data) {
-					deferred.resolve(context, routeOptions, data);
+					console.timeEnd('Navigation::loadServerData');
+					// deferred.resolve(context, routeOptions, data);
+
+					async.pParallel(externalMiddleware.beforeRender, [context.path, data], 1500)
+						.then( function() {
+							deferred.resolve(context, routeOptions, data);
+						});
+
 				})
 				.fail(deferred.reject);
 
@@ -193,12 +89,13 @@
 
 		function transitionPage(context, routeOptions, serverData) {
 
-			if (serverData.template === lastUsedTemplate) {
-				return updateState(context, routeOptions, serverData);
-			} else {
-				return transitionView(context, routeOptions, serverData);
-			}
+			// if (serverData.template === lastUsedTemplate) {
+			//	return updateState(context, routeOptions, serverData);
+			// } else {
+			//	return transitionView(context, routeOptions, serverData);
+			// }
 
+			return transitionView(context, routeOptions, serverData);
 		}
 
 		function updateDocumentMetadata(context, routeOptions, serverData) {
@@ -208,9 +105,8 @@
 				$(document).find('head title').text(dataLayer.shared.docTitle);
 				dataLayer.shared.docTitle = undefined;
 			}
-			setTimeout(function() {
-				deferred.resolve(context, routeOptions, serverData);
-			}, 4);
+			
+			deferred.resolve(context, routeOptions, serverData);
 
 			return deferred.promise();
 		}
@@ -219,31 +115,30 @@
 			var deferred = $.Deferred();
 
 			events.trigger('NAVIGATION_DONE', {url: context.path, serverData: serverData});
-			setTimeout(function() {
-				deferred.resolve(context, routeOptions, serverData);
-			}, 4);
+
+			deferred.resolve(context, routeOptions, serverData);
 
 			return deferred.promise();
 		}
 
 		function processRouteOptions(context, routeOptions, serverData) {
 			var deferred = $.Deferred();
-			console.log('Change URL context:', context);
+			// console.log('Change URL context:', context);
 			if (routeOptions.foldedMenu) {
 				events.trigger('FOLDED_MENU_REQUESTED');
 			}
-			setTimeout(function() {
-				deferred.resolve(context, routeOptions, serverData);
-			}, 4);
+			
+			deferred.resolve(context, routeOptions, serverData);
 
 			return deferred.promise();
 		}
 
-		function defaultHandler2(routeOptions) {
+		
+		function defaultHandler(routeOptions) {
 			var _options = routeOptions || {};
 
 			return function(context/*, next*/) {
-				console.time('Nagivation');
+				console.time('Navigation');
 				events.trigger('NAVIGATION_START', {url: context.path});
 				loadServerData(context, _options)
 					.then(transitionPage)
@@ -253,17 +148,11 @@
 					.then(function(context, routeOptions, serverData) {
 						lastUsedTemplate = serverData.template;
 						console.timeEnd('Navigation');
+						console.log('Navigation ended!');
 					})
 					.fail(function () {
 						console.log('Router# Error navigating', arguments);
 					});
-				// loadServerData(context, _options)
-				// 	.done(function(data) {
-				// 		console.log('OK');
-				// 	})
-				// 	.fail(function() {
-				// 		console.log('KO');
-				// 	});
 			};
 		}
 
@@ -280,11 +169,11 @@
 			$mainContainer = $('#main');
 			lastUsedTemplate = options.viewName;
 
-			page('/', defaultHandler2({
+			page('/', defaultHandler({
 				foldedMenu: true
 			}));
-			page('/catalog/category/:categoryId/:categoryName', defaultHandler2());
-			page('/catalog/category/:categoryId/product/:productId/:productName?', defaultHandler2());
+			page('/catalog/category/:categoryId/:categoryName', defaultHandler());
+			page('/catalog/category/:categoryId/product/:productId/:productName?', defaultHandler());
 			page('/shop/cart', defaultHandler({
 				foldedMenu: true
 			}));
