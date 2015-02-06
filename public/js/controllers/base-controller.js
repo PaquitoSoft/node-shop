@@ -11,9 +11,9 @@
 			}
 		}
 		
-		var BaseController = function(controllerName, $mainEl, serverResponse, isPersistent) {
-			if (controllerName) {
-				this.controllerName = controllerName;
+		var BaseController = function(name, $mainEl, serverResponse, isPersistent) {
+			if (name) {
+				this.name = name;
 				this.$mainEl = $mainEl;
 				this.isPersistent = !!isPersistent;
 				this.data = {};
@@ -65,18 +65,18 @@
 			this.events[eventName] = handler;
 		};
 
-		BaseController.prototype.start = function _start(template, done) {
+		BaseController.prototype.start = function _start(/*template,*/ done) {
 			var self = this,
 				_domListeners = {};
 
-			this.template = template;
+			// this.template = template;
 
 			this.setup();
 
 			this.sync = new R({
-				controllerName: this.controllerName,
+				name: this.controllerName,
 				el: this.$mainEl[0],
-				template: template,
+				template: this.template,
 				data: this.data,
 				components: this.components || {}
 			});
@@ -86,9 +86,8 @@
 			// Set up ractive (DOM) listeners
 			$.map(this.domListeners, function (value, key) {
 				// Ractive sets listener scope to itself so we have to change it
-				_domListeners[key] = $.proxy(value, self);
+				self.sync.on(key, $.proxy(value, self));
 			});
-			this.sync.on(_domListeners);
 			// TODO Should I remove domListeners from the prototype???
 
 			// Setup controller inner listeners
@@ -105,7 +104,6 @@
 		};
 
 		BaseController.prototype.update = function _update(data) {
-			// this.data = data;
 			this.fire('preUpdate', {data: data});
 			if (this.props && this.props.length) {
 				this.props.forEach(function(key) {
@@ -114,13 +112,31 @@
 			}
 			this.sync.set(data);
 			this.fire('postUpdate');
-			// TODO Attach Ractive to the new element
-			// this.sync.insert($el[0]);
 		};
 
 		BaseController.prototype.reset = function _reset() {
 			this.sync.teardown();
 		};
+
+		BaseController.prototype.addDomListener = function(eventName, listener) {
+			var sync = this.sync,
+				prev = sync._subs[eventName],
+				self;
+
+			if (prev && prev.length) {
+				self = $.extend(true, {}, this);
+				self._super = prev[0];
+				sync.off(eventName, prev[0]);
+				sync.on(eventName, function() {
+					listener.apply(self, Array.prototype.slice.call(arguments));
+				});
+			} else {
+				sync.on(eventName, $.proxy(listener, this));
+			}
+		};
+
+		// TODO Maybe it's better to have an extendDomListener to show intent of altering
+		// the function (so there can be several listeners for the same event???)
 
 		BaseController.prototype.updateTemplate = function _updateTemplate(template) {
 			console.warn('This function is not yet implemented. Why do you need it?');

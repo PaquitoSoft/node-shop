@@ -56,40 +56,51 @@
 
 	App.extensions.push(function() {
 		
-		require(['jquery', 'controllers/product-detail-controller'], function ($, ProductDetailController) {
-			var _updateAllImages = ProductDetailController.prototype.listeners.updateAllImages;
-			ProductDetailController.prototype._setup = ProductDetailController.prototype.setup;
-			
-			ProductDetailController.prototype.setup = function() {
-				this._setup(this);
+		require(['jquery', 'plugins/controllers-manager-2'], function($, controllersManager) {
+			controllersManager.registerInterceptor('product-detail-controller', function(controller, url) {
+				console.log('Running interceptor...');
+				if (/catalog\/category\/269189\/product/.test(url)) {
+					console.log('Altering ProductDetailController...');
+					var _setup = controller.setup,
+						_updateAllImages = controller.domListeners.onUpdateAllImages;
 
-				// Cambiamos los datos de entrada para la plantilla
-				this.data.product.colors[0].pictures = getRandomImages(5);
-				this.data.mainImage = this.data.product.colors[0].pictures[0];
-				this.data.mainColor = this.data.product.colors[0];
+					controller.setup = function() {
+						_setup.call(this);
 
-				// Tuneamos la plantilla para incluir el precio sobre las fotos
-				var $tpl = $('<div>' + this.template + '</div>'),
-					priceTpl = '<div class="imgPrice" on-click="priceClicked"><span class="Iprice">{-product.price-}</span><span class="ICurrency">$</span></div>';
-				
-				$tpl.find('#images').append(priceTpl);
-				this.template = $tpl.html();
+						// Cambiamos los datos de entrada para la plantilla
+						this.data.product.colors[0].pictures = getRandomImages(5);
+						this.data.mainImage = this.data.product.colors[0].pictures[0];
+						this.data.mainColor = this.data.product.colors[0];
 
-				this.listeners.priceClicked = function(rEvent) {
-					console.log('onPriceClicked:', rEvent);
-					alert('Tomaaaa!');
-				};
+						// Tuneamos la plantilla para incluir el precio sobre las fotos
+						var $tpl = $('<div>' + this.template + '</div>'),
+							priceTpl = '<div class="imgPrice" on-click="priceClicked"><span class="Iprice">{{product.price}}</span><span class="ICurrency">$</span></div>';
+						
+						$tpl.find('#images').append(priceTpl);
+						this.template = $tpl.html();
+					};
 
-				this.listeners.updateAllImages = function(rEvent) {
-					console.log('onUpdateAllImages:', rEvent);
-					alert('Me meto en medio!!!');
-					_updateAllImages.call(this, rEvent);
-				};
+					controller.on('postInit', function() {
+						console.log('POST INIT:', this.$mainEl);
+						this.$mainEl.find('#images img').css('visibility', 'visible');
 
-				this.on('postInit', function() {
-					$('#images img').css('visibility', 'visible');
-				});
-			};
+						this.addDomListener('priceClicked', function(rEvent) {
+							console.log('onPriceClicked:', rEvent);
+							this.$mainEl.find('.product-price').css('border', '2px solid blue');
+						});
+
+						this.addDomListener('updateAllImages', function(rEvent) {
+							this.$mainEl.find('#feature-image').css('border', '2px solid blue');
+							this._super();
+						});
+					});
+
+				} else {
+					controller.on('postInit', function() {
+						$('#images img').css('visibility', 'visible');
+					});
+				}
+			});
 		});
 
 	});

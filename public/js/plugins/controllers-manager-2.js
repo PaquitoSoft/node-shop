@@ -5,7 +5,8 @@
 	// TODO A couple of dependencies loaded but not used. How do I should do this??
 	define(['jquery', 'ractive', 'plugins/data-layer', 'plugins/templates', 'plugins/ractive-view-helpers', 'plugins/decorators/image-lazy-load'], function($, R, dataLayer, templates) {
 
-		var controllersRegistry = {};
+		var controllersRegistry = {},
+			controllersInterceptors = {};
 
 		function _getTemplate(controller, isBootstrap, done) {
 			if (!controller.templateName) { return done(''); } // TODO We still have dummy controllers
@@ -27,6 +28,24 @@
 				setTimeout(function() {
 					done(controller.$mainEl.html());
 				}, 4);
+			}
+		}
+
+		function registerInterceptor(controllerName, interceptor) {
+			controllersInterceptors[controllerName] = interceptor;
+		}
+
+		function runInterceptor(controller, url, done) {
+			var interceptor = controllersInterceptors[controller.name];
+			if (interceptor) {
+				if (interceptor.length > 2) {
+					interceptor(controller, url, done);
+				} else {
+					interceptor(controller, url);
+					done();
+				}
+			} else {
+				done();
 			}
 		}
 
@@ -58,7 +77,7 @@
 			}
 		}
 
-		function config($root, serverResponse, options) {
+		function config($root, url, serverResponse, options) {
 			var controllersInfo = [],
 				dependencies = [],
 				_options = $.extend({
@@ -106,7 +125,7 @@
 					return ci.name;
 				});
 				
-				// TODO Checking process in case a controller initialization timesout or takes too long
+				// TODO Checking process in case a controller initialization times out or takes too long
 
 				$.each(arguments, function(index, Controller) {
 					var controllerInfo = controllersInfo[index],
@@ -128,15 +147,19 @@
 
 						_getTemplate(newInstance, _options.isBootstrap, function(tpl) {
 							
-							newInstance.start(tpl, function () {
-									if (oldInstance) { oldInstance.reset(); }
+							newInstance.template = tpl;
+							
+							runInterceptor(newInstance, url, function() {
+								newInstance.start(function () {
+										if (oldInstance) { oldInstance.reset(); }
 
-									controllersRegistry[controllerInfo.name] = newInstance;
+										controllersRegistry[controllerInfo.name] = newInstance;
 
-									checkControllersInitialization(currentControllersNames, controllerInfo.name, _options.done);
-									// checkControllersInitialization2(controllersInfo, controllerInfo, done);
-								}
-							);
+										checkControllersInitialization(currentControllersNames, controllerInfo.name, _options.done);
+										// checkControllersInitialization2(controllersInfo, controllerInfo, done);
+									}
+								);
+							});
 
 						});
 
@@ -194,8 +217,8 @@
 
 		return {
 			config: config,
-			cleanup: cleanup/*,
-			registerInterceptor: registerInterceptor,
+			cleanup: cleanup,
+			registerInterceptor: registerInterceptor/*,
 			removeInterceptor: removeInterceptor*/
 		};
 	});

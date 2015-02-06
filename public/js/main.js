@@ -53,7 +53,7 @@
 
 		function start() {
 			// TODO Get dataLayer from a plugin
-			controllersManager.config($(document), dataLayer, {
+			controllersManager.config($(document), window.location.pathname, dataLayer, {
 				isBootstrap: true,
 				done: function() {
 					router.init({

@@ -32,7 +32,7 @@
 		<script>
 			(function() {
 				window.NodeShop.extensions.push(function() {
-					require(['plugins/router'], function(router) {
+					/*require(['plugins/router'], function(router) {
 						router.registerMiddleware('beforeShow', function (url, serverData, done) {
 							console.info('Executing middleware...');
 							if (/product/.test(url)) {
@@ -44,15 +44,25 @@
 								done();
 							}
 						});
+					});*/
+
+					/*require(['plugins/controllers-manager-2'], function(controllersManager) {
+						controllersManager.registerInterceptor('product-detail-controller', function(controller, url) {
+							if (/catalog\/category\/269185\/product/.test(url)) {
+								console.info('Tuning controller:', controller);
+							}
+						});
 					});
+					*/
 				});
 			}());
 		</script>
 
 		<!--
 		<script src="//cdn.optimizely.com/js/220840725.js"></script>
-		<script type="text/javascript" src="/js/experiments/special-prices-images.js"></script>
 		-->
+		<script type="text/javascript" src="/js/experiments/special-prices-images.js"></script>
+		
 	</head>
 
 
