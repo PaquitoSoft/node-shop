@@ -103,7 +103,12 @@
 				};
 
 				externalMiddleware[middlewareType].forEach(function(fn) {
-					fn.call(null, context.path, serverData, checker);
+					if (fn.length > 2) {
+						fn.call(null, context.path, serverData, checker);
+					} else {
+						fn.call(null, context.path, serverData);
+						checker();
+					}
 				});
 
 				to = setTimeout(function() {
