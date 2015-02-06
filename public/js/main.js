@@ -57,7 +57,8 @@
 				isBootstrap: true,
 				done: function() {
 					router.init({
-						viewName: dataLayer.template
+						viewName: dataLayer.template,
+						serverData: dataLayer
 					});
 					events.trigger('APP_INITIALIZED');
 				}

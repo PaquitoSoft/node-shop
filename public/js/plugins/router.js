@@ -79,6 +79,10 @@
 			$.getJSON(context.path)
 				.done(function (data) {
 					console.timeEnd('Navigation::loadServerData');
+					events.trigger('NAVIGATION_CHANGING', {url: context.path, serverData: data});
+					// window["optimizely"].push["activate"];
+					window.optimizely.push(["activate"]);
+					// window.optimizely.activate();
 					deferred.resolve(context, routeOptions, data);
 				})
 				.fail(deferred.reject);
@@ -165,6 +169,7 @@
 		}
 
 		function init(options) {
+			var path = window.location.pathname;
 			$mainContainer = $('#main');
 			lastUsedTemplate = options.viewName;
 
@@ -191,6 +196,12 @@
 				If you wish to load serve initial content from the server you likely will want to set dispatch to false.
 			*/
 			page({ dispatch: false });
+
+			// We need to publish navigation events for the experiments to fire
+			// (also for analytics?)
+			// events.trigger('NAVIGATION_START', {url: path});
+			// events.trigger('NAVIGATION_CHANGING', {url: path, serverData: options.serverData});
+			// events.trigger('NAVIGATION_DONE', {url: path, serverData: options.serverData});
 
 			console.log('Router configured!');
 		}

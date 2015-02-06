@@ -1,3 +1,4 @@
+/* _optimizely_evaluate=force */
 (function(App) {
 	'use strict';
 
@@ -27,20 +28,28 @@
 			'div.imgPrice{position:absolute;top:30px;right:10px;z-index:10;overflow:hidden;}' +
 			'div.imgPrice span{display:inline-block;}' +
 			'div.imgPrice span.Iprice{font-size:2em;}' +
-			'div.imgPrice span.ICurrency{font-size:1.2em;text-decoration:none;margin:7px 0 0 5px;}' +
-			'#images img {visibility: hidden;}';
+			'div.imgPrice span.ICurrency{font-size:1.2em;text-decoration:none;margin:7px 0 0 5px;}';
+
+		var blockingStyle = '#images img {visibility: hidden;}';
 
 		var ss1 = document.createElement('style');
 		ss1.setAttribute("type", "text/css");
 
+		var ss2 = document.createElement('style');
+		ss2.setAttribute('id', 'exp-styles');
+		ss2.setAttribute("type", "text/css");
+
 		if (navigator.userAgent.match(/MSIE 8.0/i)){
 			ss1.styleSheet.cssText = headStyle;
+			ss2.styleSheet.cssText = blockingStyle;
 		}else{
 			ss1.appendChild(document.createTextNode(headStyle));
+			ss2.appendChild(document.createTextNode(blockingStyle));
 		}
 
 		var hh1 = document.getElementsByTagName('head')[0];
 		hh1.appendChild(ss1);
+		hh1.appendChild(ss2);
 		stylesInjected = true;
 	}
 
@@ -54,12 +63,21 @@
 
 	setStyles();
 
-	App.extensions.push(function() {
+	function loader(fn) {
+		if (document.readyState !== 'complete') {
+			App.extensions.push(fn);
+		} else {
+			fn();
+		}
+	}
+  
+	loader(function() {
 		
-		require(['jquery', 'plugins/controllers-manager-2'], function($, controllersManager) {
+		require(['jquery', 'plugins/controllers-manager-2', 'plugins/events-manager'], function($, controllersManager, events) {
+      
 			controllersManager.registerInterceptor('product-detail-controller', function(controller, url) {
 				console.log('Running interceptor...');
-				if (/catalog\/category\/269189\/product/.test(url)) {
+				//if (/catalog\/category\/269189\/product/.test(url)) {
 					console.log('Altering ProductDetailController...');
 					var _setup = controller.setup,
 						_updateAllImages = controller.domListeners.onUpdateAllImages;
@@ -80,9 +98,10 @@
 						this.template = $tpl.html();
 					};
 
-					controller.on('postInit', function() {
+        			controller.on('postInit', function() {
 						console.log('POST INIT:', this.$mainEl);
 						this.$mainEl.find('#images img').css('visibility', 'visible');
+						$('#exp-styles').remove();
 
 						this.addDomListener('priceClicked', function(rEvent) {
 							console.log('onPriceClicked:', rEvent);
@@ -95,14 +114,15 @@
 						});
 					});
 
-				} else {
+				/*} else {
 					controller.on('postInit', function() {
 						$('#images img').css('visibility', 'visible');
 					});
-				}
+				}*/
 			});
 		});
 
 	});
 
-}(window.NodeShop));
+}(window.zara));
+/* _optimizely_evaluate=safe */

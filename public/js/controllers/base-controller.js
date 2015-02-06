@@ -4,6 +4,8 @@
 	// BaseController
 	define(['jquery', 'ractive'], function($, R) {
 
+		var _ids = 1;
+
 		function onControllerInitialized(controller, done) {
 			controller.fire('postInit');
 			if (done) {
@@ -13,6 +15,7 @@
 		
 		var BaseController = function(name, $mainEl, serverResponse, isPersistent) {
 			if (name) {
+				this.id = _ids++;
 				this.name = name;
 				this.$mainEl = $mainEl;
 				this.isPersistent = !!isPersistent;

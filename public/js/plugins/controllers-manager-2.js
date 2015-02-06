@@ -39,9 +39,13 @@
 			var interceptor = controllersInterceptors[controller.name];
 			if (interceptor) {
 				if (interceptor.length > 2) {
-					interceptor(controller, url, done);
+					interceptor(controller, url, function() {
+						controllersInterceptors[controller.name] = undefined;
+						done();
+					});
 				} else {
 					interceptor(controller, url);
+					controllersInterceptors[controller.name] = undefined;
 					done();
 				}
 			} else {
@@ -148,7 +152,7 @@
 						_getTemplate(newInstance, _options.isBootstrap, function(tpl) {
 							
 							newInstance.template = tpl;
-							
+
 							runInterceptor(newInstance, url, function() {
 								newInstance.start(function () {
 										if (oldInstance) { oldInstance.reset(); }

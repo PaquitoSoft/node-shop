@@ -50,7 +50,7 @@
 						nextUrl = window.location.pathname.replace(
 							/(product\/)(\d*)(\/)(.*)/, '$1' +
 							this.currentCategoryProductsIds[idIndex] +
-							'$3');
+							'$3?optimizely_log=true');
 						router.navTo(nextUrl);
 					}
 				}
