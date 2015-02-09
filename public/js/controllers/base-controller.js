@@ -73,8 +73,9 @@
 				_domListeners = {};
 
 			// this.template = template;
-
+			this.fire('preSetup');
 			this.setup();
+			this.fire('postSetup');
 
 			this.sync = new R({
 				name: this.controllerName,

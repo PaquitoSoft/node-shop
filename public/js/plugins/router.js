@@ -81,6 +81,7 @@
 					console.timeEnd('Navigation::loadServerData');
 					events.trigger('NAVIGATION_CHANGING', {url: context.path, serverData: data});
 					// window["optimizely"].push["activate"];
+					window.optimizely = window.optimizely || [];
 					window.optimizely.push(["activate"]);
 					// window.optimizely.activate();
 					deferred.resolve(context, routeOptions, data);

@@ -17,42 +17,43 @@
 		'/2014/I/0/1/p/1551/203/250/2/w/560/1551203250_2_2_1.jpg?ts=1401098919760'
 	];
 
-	function setStyles() {
-		if (stylesInjected) { return false; }
-
-		var headStyle =
-			'#products-nav-wrapper{z-index:3;}' +
+	var expStyles = {
+		'block-images-exp': '#images img {visibility: hidden;}',
+		'special-prices-exp': '#products-nav-wrapper{z-index:3;}' +
 			'#header{z-index:2;}' +
 			'a .image-big{visibility:hidden !important;}' +
 			'a .setVisibility{visibility:visible !important;}' +
 			'div.imgPrice{position:absolute;top:30px;right:10px;z-index:10;overflow:hidden;}' +
 			'div.imgPrice span{display:inline-block;}' +
 			'div.imgPrice span.Iprice{font-size:2em;}' +
-			'div.imgPrice span.ICurrency{font-size:1.2em;text-decoration:none;margin:7px 0 0 5px;}';
+			'div.imgPrice span.ICurrency{font-size:1.2em;text-decoration:none;margin:7px 0 0 5px;}'
+	};
 
-		var blockingStyle = '#images img {visibility: hidden;}';
+	function injectStyles(tagId, styles) {
+		var styleEl = document.getElementById(tagId);
 
-		var ss1 = document.createElement('style');
-		ss1.setAttribute("type", "text/css");
+		if (!styleEl) {
+			styleEl = document.createElement('style');
+			styleEl.setAttribute('id', tagId);
+			styleEl.setAttribute("type", "text/css");
 
-		var ss2 = document.createElement('style');
-		ss2.setAttribute('id', 'exp-styles');
-		ss2.setAttribute("type", "text/css");
+			if (navigator.userAgent.match(/MSIE 8.0/i)){
+				styleEl.styleSheet.cssText = styles;
+			} else{
+				styleEl.appendChild(document.createTextNode(styles));
+			}
 
-		if (navigator.userAgent.match(/MSIE 8.0/i)){
-			ss1.styleSheet.cssText = headStyle;
-			ss2.styleSheet.cssText = blockingStyle;
-		}else{
-			ss1.appendChild(document.createTextNode(headStyle));
-			ss2.appendChild(document.createTextNode(blockingStyle));
+			document.getElementsByTagName('head')[0].appendChild(styleEl);
 		}
-
-		var hh1 = document.getElementsByTagName('head')[0];
-		hh1.appendChild(ss1);
-		hh1.appendChild(ss2);
-		stylesInjected = true;
 	}
 
+	function removeStyles(tagId) {
+		var styleEl = document.getElementById(tagId);
+
+		if (styleEl) {
+			styleEl.parentNode.removeChild(styleEl);
+		}
+	}
 
 	function getRandomImages(count) {
 		var images = alternateImages.sort(function() {
@@ -61,7 +62,8 @@
 		return images.slice(0, count);
 	}
 
-	setStyles();
+	injectStyles('block-images-exp', expStyles['block-images-exp']);
+	injectStyles('special-prices-exp', expStyles['special-prices-exp']);
 
 	function loader(fn) {
 		if (document.readyState !== 'complete') {
@@ -73,52 +75,43 @@
   
 	loader(function() {
 		
-		require(['jquery', 'plugins/controllers-manager-2', 'plugins/events-manager'], function($, controllersManager, events) {
+		require(['jquery', 'plugins/controllers-manager-2'], function($, controllersManager) {
       
 			controllersManager.registerInterceptor('product-detail-controller', function(controller, url) {
-				console.log('Running interceptor...');
-				//if (/catalog\/category\/269189\/product/.test(url)) {
-					console.log('Altering ProductDetailController...');
-					var _setup = controller.setup,
-						_updateAllImages = controller.domListeners.onUpdateAllImages;
+				
+				console.log('Altering ProductDetailController...');
+				
+				controller.setup = function() {
 
-					controller.setup = function() {
-						_setup.call(this);
+					// Cambiamos los datos de entrada para la plantilla
+					this.data.product.colors[0].pictures = getRandomImages(5);
+					this.data.mainImage = this.data.product.colors[0].pictures[0];
+					this.data.mainColor = this.data.product.colors[0];
 
-						// Cambiamos los datos de entrada para la plantilla
-						this.data.product.colors[0].pictures = getRandomImages(5);
-						this.data.mainImage = this.data.product.colors[0].pictures[0];
-						this.data.mainColor = this.data.product.colors[0];
+					// Tuneamos la plantilla para incluir el precio sobre las fotos
+					var $tpl = $('<div>' + this.template + '</div>'),
+						priceTpl = '<div class="imgPrice" on-click="priceClicked"><span class="Iprice">{{product.price}}</span><span class="ICurrency">$</span></div>';
+					
+					$tpl.find('#images').append(priceTpl);
+					this.template = $tpl.html();
+				};
 
-						// Tuneamos la plantilla para incluir el precio sobre las fotos
-						var $tpl = $('<div>' + this.template + '</div>'),
-							priceTpl = '<div class="imgPrice" on-click="priceClicked"><span class="Iprice">{{product.price}}</span><span class="ICurrency">$</span></div>';
-						
-						$tpl.find('#images').append(priceTpl);
-						this.template = $tpl.html();
-					};
+				controller.on('postInit', function() {
+					console.log('POST INIT:', this.$mainEl);
+					this.$mainEl.find('#images img').css('visibility', 'visible');
+					removeStyles('block-images-exp');
 
-        			controller.on('postInit', function() {
-						console.log('POST INIT:', this.$mainEl);
-						this.$mainEl.find('#images img').css('visibility', 'visible');
-						$('#exp-styles').remove();
-
-						this.addDomListener('priceClicked', function(rEvent) {
-							console.log('onPriceClicked:', rEvent);
-							this.$mainEl.find('.product-price').css('border', '2px solid blue');
-						});
-
-						this.addDomListener('updateAllImages', function(rEvent) {
-							this.$mainEl.find('#feature-image').css('border', '2px solid blue');
-							this._super();
-						});
+					this.addDomListener('priceClicked', function(rEvent) {
+						console.log('onPriceClicked:', rEvent);
+						this.$mainEl.find('.product-price').css('border', '2px solid blue');
 					});
 
-				/*} else {
-					controller.on('postInit', function() {
-						$('#images img').css('visibility', 'visible');
+					this.addDomListener('updateAllImages', function(rEvent) {
+						this.$mainEl.find('#feature-image').css('border', '2px solid blue');
+						this._super();
 					});
-				}*/
+				});
+				
 			});
 		});
 
