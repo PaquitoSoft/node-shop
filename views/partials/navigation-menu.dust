@@ -1,4 +1,4 @@
-<nav data-controller="main-navigation-controller">
+<nav data-controller="main-navigation-controller" data-controller-type="static">
 	<a href="#" id="toggle-menu" class="mobile"><span>Menu</span></a>
 	<ul id="main-menu" class="accordion">
 		{{#each categories}}

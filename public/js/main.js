@@ -10,33 +10,25 @@
 		paths: {
 			text: '/vendor/requirejs-text/text',
 			jquery: '/vendor/jquery/dist/jquery',
-			dust: '/vendor/dustjs-linkedin/dist/dust-full',
-			dustHelpers: '/vendor/dustjs-linkedin-helpers/dist/dust-helpers',
 			pagejs: '/vendor/page.js/page',
 			history: '/vendor/html5-history-api/history.iegte8',
 			ractive: '/vendor/ractive/ractive-legacy',
-			es5Shim: '/vendor/es5-shim/es5-shim',
-			html5shiv: '/vendor/html5shiv/dist/html5shiv'
+			es5Shim: '/vendor/es5-shim/es5-shim'
 		},
 		shim: {
-			dust: {
-				exports: 'dust'
-			},
-			dustHelpers: {
-				deps: ['dust']
-			}/*,
+			/*,
 			ractive: {
 				deps: ['plugins/ractive-view-helpers']
 			}*/
 		}
 	};
 
-	// Bootstrap dependencies
+	// Main dependencies
 	mainDependencies = ['jquery', 'plugins/controllers-manager-2', 'plugins/router', 'plugins/data-layer', 'plugins/events-manager'];
 
 	// Is this an old browser?
 	if (!Array.isArray) {
-		mainDependencies.push('es5Shim', 'history', 'html5shiv');
+		mainDependencies.push('es5Shim', 'history');
 		requireOptions.paths.jquery = '/vendor/jquery-legacy/dist/jquery';
 		requireOptions.paths.ractive = '/vendor/ractive/ractive-legacy';
 	} else {
@@ -47,11 +39,17 @@
 	// Configure RequireJS
 	requirejs.config(requireOptions);
 	
+	// mainDependencies.push('bundles/' + window.NodeShop.dataLayer.template);
+
 	// Main initialization
-	require(mainDependencies, function($, controllersManager, router, dataLayer, events) {
+	define(mainDependencies, function($, controllersManager, router, dataLayer, events) {
 		var counter = App.extensions.length;
 
-		function start() {
+		require(['./bundles/' + dataLayer.template], function(bundle) {
+			console.log('Bundle loaded:', bundle);
+		});
+
+		function startApp() {
 			// TODO Get dataLayer from a plugin
 			controllersManager.config($(document), window.location.pathname, dataLayer, {
 				isBootstrap: true,
@@ -67,24 +65,27 @@
 
 		function checkInitialization() {
 			if (!--counter) {
-				start();
+				startApp();
 			}
 		}
-
-		events.trigger('APP_INITIALIZING');
-		if (counter) {
-			App.extensions.forEach(function(fn) {
-				if (fn.length > 0) {
-					fn(checkInitialization);
-				} else {
-					fn();
-					checkInitialization();
-				}
-			});
-		} else {
-			start();
-		}
 		
+		return {
+			start: function() {
+				events.trigger('APP_INITIALIZING');
+				if (counter) {
+					App.extensions.forEach(function(fn) {
+						if (fn.length > 0) {
+							fn(checkInitialization);
+						} else {
+							fn();
+							checkInitialization();
+						}
+					});
+				} else {
+					startApp();
+				}
+			}
+		};
 	});
 
 }(window.NodeShop));

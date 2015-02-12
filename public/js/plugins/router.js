@@ -53,7 +53,7 @@
 									//	controllersManager.cleanup($prevContent, $html);
 									// });
 
-									async.pParallel(externalMiddleware.beforeShow, [context.path, serverData], 1500)
+									async.pParallel(externalMiddleware.beforeShow, [context.path, serverData], 150)
 										.then( function() {
 											$controllers.css('visibility', 'visible');
 											deferred.resolve(context, routeOptions, serverData);

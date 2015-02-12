@@ -25,44 +25,50 @@
 
 		<script>
 			window.zara = window.NodeShop = {
-				extensions: []
+				extensions: [],
+				expApi: {
+					activatedExperiments: [],
+					injectStyles: function(tagId, styles) {
+						var styleEl = document.getElementById(tagId);
+
+						if (!styleEl) {
+							styleEl = document.createElement('style');
+							styleEl.setAttribute('id', tagId);
+							styleEl.setAttribute("type", "text/css");
+
+							if (navigator.userAgent.match(/MSIE 8.0/i)){
+								styleEl.styleSheet.cssText = styles;
+							} else{
+								styleEl.appendChild(document.createTextNode(styles));
+							}
+
+							document.getElementsByTagName('head')[0].appendChild(styleEl);
+						}
+					},
+					removeStyles: function(tagId) {
+						var styleEl = document.getElementById(tagId);
+
+						if (styleEl) {
+							styleEl.parentNode.removeChild(styleEl);
+						}
+					},
+					loader: function(fn) {
+						if (document.readyState !== 'complete') {
+							window.NodeShop.extensions.push(fn);
+						} else {
+							fn();
+						}
+					}
+				}
 			};
 		</script>
 
-		<script>
-			(function() {
-				window.NodeShop.extensions.push(function() {
-					/*require(['plugins/router'], function(router) {
-						router.registerMiddleware('beforeShow', function (url, serverData, done) {
-							console.info('Executing middleware...');
-							if (/product/.test(url)) {
-								setTimeout(function() {
-									$('#page-content').css('border', '2px solid red');
-									done();
-								}, 1000);
-							} else {
-								done();
-							}
-						});
-					});*/
-
-					/*require(['plugins/controllers-manager-2'], function(controllersManager) {
-						controllersManager.registerInterceptor('product-detail-controller', function(controller, url) {
-							if (/catalog\/category\/269185\/product/.test(url)) {
-								console.info('Tuning controller:', controller);
-							}
-						});
-					});
-					*/
-				});
-			}());
-		</script>
-
+		<!--
 		<script src="//cdn.optimizely.com/js/220840725.js"></script>
 		<script type="text/javascript">
 			window.optimizely.push(["activate"]);
 		</script>
-		<!--		
+		
 		<script type="text/javascript" src="/js/experiments/special-prices-images.js"></script>
 		-->
 		
@@ -75,7 +81,7 @@
 
 
 		<!--START DRAWER-->
-		<div id="drawer" data-controller="summary-cart-controller" data-dummy="{-orderItems-}">
+		<div id="drawer" data-controller="summary-cart-controller" data-controller-type="static">
 
 			{{>"partials/mini-shop-cart-items"}}
 			
@@ -105,7 +111,7 @@
 				<!--END TOP NAV-->
 
 				<!--START MINICART-->
-				<div class="five columns minicart-wrapper" data-controller="mini-cart-controller">
+				<div class="five columns minicart-wrapper" data-controller="mini-cart-controller" data-controller-type="static">
 					{{>"partials/mini-cart"}}
 				</div>
 				<!--END MINI CART-->
@@ -125,7 +131,7 @@
 							</h1>
 						</div>
 
-						<div class="table-cell" data-controller="main-banner-controller" data-persistent-controller="true">
+						<div class="table-cell" data-controller="main-banner-controller" data-persistent-controller="true" data-controller-type="dynamic">
 							{{>"partials/main-banner"}}
 						</div>
 					</div>
@@ -241,6 +247,17 @@
 		</script>
 
 		<script data-main="/js/main.js" src="/vendor/requirejs/require.js"></script>
+		<!--
+		<script type="text/javascript" src="/js/bundle/common.js"></script>
+		<script type="text/javascript" src="/js/bundle/{{viewname}}.js"></script>
+		-->
+		<script type="text/javascript">
+			(function() {
+				require(['main'], function(main) {
+					main.start();
+				});
+			}());
+		</script>
 
 	</body>
 </html>

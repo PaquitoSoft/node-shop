@@ -3,8 +3,8 @@
 
 	// Client side rendering plugin
 	define(
-		['plugins/app-context', 'plugins/local-storage', 'jquery', 'dust', 'plugins/dust-custom-helpers', 'ractive'],
-		function(appContext, storage, $, dust, dustHelpers, R) {
+		['plugins/app-context', 'plugins/local-storage', 'jquery', 'ractive'],
+		function(appContext, storage, $, R) {
 
 			var cache;
 			var cacheLoaded = false;
@@ -12,14 +12,6 @@
 			var TEMPLATES_EXTENSION = '.dust';
 
 			function registerTemplates(templatesData, mainTemplateName) {
-				// var tpl = dust.compile(templatesData.template, mainTemplateName);
-				// dust.loadSource(tpl);
-
-				// Object.keys(templatesData.partials).forEach(function(partName) {
-				// 	tpl = dust.compile(templatesData.partials[partName], partName);
-				// 	dust.loadSource(tpl);
-				// });
-
 				Object.keys(templatesData.partials).forEach(function(partName) {
 					R.partials[partName] = templatesData.partials[partName];
 				});
@@ -77,39 +69,21 @@
 
 				// tpl = cache.templates[templateName];
 
-				if (dust.cache[templateName]) {
-					done(null, dust.cache[templateName]);
+				
 				// if (tpl) {
 				// 	done(null, tpl);
-				} else {
+				// } else {
 					// TODO Error handling
 					$.get(TEMPLATES_BASE_PATH + templateName + TEMPLATES_EXTENSION, function(raw) {
 						var mainTemplate = registerTemplates(raw, templateName);
 						done(null, mainTemplate);
 					});
-				}
+				// }
 			}
-
-			function render(templateName, context, done) {
-				getTemplate(templateName, function(err, tpl) {
-					// TODO Error handling
-					dust.render(templateName, context, function (err, html) {
-						if (err) {
-							console.warn('Error rendering template ', templateName, ':', err);
-							console.warn(err.stack);
-						}
-						done(html);
-					});
-				});
-			}
-
-			// Apply custom helpers
-			dustHelpers.registerDustHelpers();
 
 			return {
 				preloadTemplate: preloadTemplate,
-				getTemplate: getTemplate,
-				render: render
+				getTemplate: getTemplate
 			};
 
 		}

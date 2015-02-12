@@ -93,6 +93,8 @@
 			// console.log('IS BOOTSTRAPPING?:', _options.isBootstrap);
 			// console.log('IS UPDATE ONLY?:', _options.isUpdateOnly);
 
+			if (/nojs/.test(window.location.search)) return false;
+
 			// Find which controllers we need to manage
 			$root.find('*[data-controller]').each(function(index, elem) {
 				var $el = $(elem),
