@@ -2,8 +2,8 @@
 	'use strict';
 
 	// Router plugin
-	define(['pagejs', 'jquery', 'plugins/templates', 'plugins/controllers-manager-2', 'plugins/events-manager', 'plugins/data-layer', 'plugins/async'],
-		function(page, $, templates, controllersManager, events, dataLayer, async) {
+	define(['pagejs', 'jquery', 'plugins/templates', 'plugins/controllers-manager-2', 'plugins/events-manager', 'plugins/app-context', 'plugins/async'],
+		function(page, $, templates, controllersManager, events, appContext, async) {
 		
 		var $mainContainer,
 			lastUsedTemplate,
@@ -91,6 +91,18 @@
 			return deferred.promise();
 		}
 
+		function loadDependencies(context, routeOptions, serverData) {
+			var deferred = $.Deferred();
+			if (appContext.isProductionMode && serverData.template !== appContext.initialBundle) {
+				require(['bundles/' + serverData.template + '_xhr'], function() {
+					deferred.resolve(context, routeOptions, serverData);
+				});
+			} else {
+				deferred.resolve(context, routeOptions, serverData);
+			}
+			return deferred.promise();
+		}
+
 		function transitionPage(context, routeOptions, serverData) {
 
 			// if (serverData.template === lastUsedTemplate) {
@@ -105,9 +117,8 @@
 		function updateDocumentMetadata(context, routeOptions, serverData) {
 			var deferred = $.Deferred();
 
-			if (dataLayer.shared && dataLayer.shared.docTitle) {
-				$(document).find('head title').text(dataLayer.shared.docTitle);
-				dataLayer.shared.docTitle = undefined;
+			if (serverData.docTitle) {
+				$(document).find('head title').text(serverData.docTitle);
 			}
 			
 			deferred.resolve(context, routeOptions, serverData);
@@ -145,6 +156,7 @@
 				console.time('Navigation');
 				events.trigger('NAVIGATION_START', {url: context.path});
 				loadServerData(context, _options)
+					.then(loadDependencies)
 					.then(transitionPage)
 					.then(updateDocumentMetadata)
 					.then(notify)

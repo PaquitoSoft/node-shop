@@ -28,23 +28,30 @@ module.exports = function(grunt) {
 			}
 		},
 
+		extendRjsConfig: {
+			all: {
+				configFilePath: './tools/requirejs/build.json',
+				bundlesDirectory: './public/js/bundles'
+			}
+		},
+
 		// Optimizador de codigo JS cliente para entorno de produccion
 		requirejs: {
-			mobile: {
-				configFile: 'tools/requirejs/build-mobile.json'
+			all: {
+				configFile: 'tools/requirejs/build_extended.json'
 			}
 		},
 
 		
 		// Tareas de limpieza de archivos
 		clean: {
-			jsBundles: ['public/js/bundles/**/*']/*,
-			mobilePreBuild: {
+			jsBundles: ['public/js/bundles/**/*'],
+			preBuild: {
 				options: {
 					force: true
 				},
-				src: ['public_dist/m']
-			}*/
+				src: ['public_dist']
+			}
 		},
 		
 		// Minimiza el codigo JS cliente inline en las plantillas dust indicadas
@@ -72,7 +79,14 @@ module.exports = function(grunt) {
 	// grunt.loadNpmTasks('grunt-plato');
 	// grunt.loadNpmTasks('grunt-karma');
 
-	
-	grunt.registerTask('default', ['clean:jsBundles', 'createJsBundles']);
+	grunt.registerTask('build', [
+		'clean:jsBundles',
+		'createJsBundles',
+		'extendRjsConfig',
+		'clean:preBuild',
+		'requirejs'
+	]);
+
+	grunt.registerTask('default', ['build']);
 
 };

@@ -30,6 +30,7 @@ node_modules
 # Front-end dependency directory
 public/vendor
 public/js/bundles
+public_dist
 
 resources/*
 !resources/experiments/*

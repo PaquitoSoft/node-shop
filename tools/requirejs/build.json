@@ -1,360 +1,55 @@
 {
 	"appDir": "../../public",
 
-	"baseUrl": "js/",
+	"baseUrl": "./js",
 
 	"dir": "../../public_dist/",
 
 	"paths": {
-		"text": "/vendor/requirejs-text/text",
-		"jquery": "/vendor/jquery/dist/jquery",
-		"dust": "/vendor/dustjs-linkedin/dist/dust-full",
-		"dustHelpers": "/vendor/dustjs-linkedin-helpers/dist/dust-helpers",
-		"pagejs": "/vendor/page.js/page",
-		"history": "/vendor/html5-history-api/history.iegte8",
-		"ractive": "/vendor/ractive/ractive-legacy",
-		"es5Shim": "/vendor/es5-shim/es5-shim"
-	},
-
-	"shim": {
-		"handlebars.runtime": {
-			"exports": "Handlebars"
-		},
-		"jquery-core":{
-			"exports":"Zepto"
-		},
-		"zepto-fx":{
-			"deps":["jquery-core"]
-		},
-		"zepto-selector":{
-			"deps":["jquery-core"]
-		},
-		"zepto-detect":{
-			"deps":["jquery-core"]
-		}
-
+		"requirejs": "../vendor/requirejs/require",
+		"text": "../vendor/requirejs-text/text",
+		"jquery": "../vendor/jquery/dist/jquery",
+		"pagejs": "../vendor/page.js/page",
+		"history": "../vendor/html5-history-api/history.iegte8",
+		"ractive": "../vendor/ractive/ractive",
+		"es5Shim": "../vendor/es5-shim/es5-shim",
+		"templates": "../../views"
 	},
 
 	"modules": [
 		{
-			"name": "common",
-			"include": ["jquery-core", "zepto-fx", "zepto-selector", "zepto-detect", "jquery",
-					"hammer-jquery",
-					"hammer-fakemultitouch",
-					"hammer-showtouches",
-					"html5-history-api",
-					"handlebars.runtime",
-					"handlebars",
-					"manager",
-					"router",
-					"basket",
-					"basket-storage",
-					"main-navigation-menu",
-					"helper",
-					"error",
-					"imagecache",
-					"menuwidget",
-					"order",
-					"product",
-					"product-utils",
-					"utils",
-					"form-validator",
-					"topbar",
-					"searcher",
-					"plugin/cookies-policy",
-					"web-analytics"
+			"name": "main",
+			"include": [
+				"requirejs",
+				"text",
+				"jquery",
+				"ractive",
+				"plugins/controllers-manager-2",
+				"plugins/router",
+				"plugins/data-layer",
+				"plugins/events-manager",
+				"plugins/templates",
+				"plugins/ractive-view-helpers",
+				"plugins/decorators/image-lazy-load",
+				"plugins/async",
+				"plugins/app-context",
+				"plugins/local-storage",
+				"controllers/base-controller"
 			]
-		},
-
-		{
-			"name": "app/worldwide",
-			"exclude": ["common"]
-		},
-
-		{
-			"name": "app/buying-guide",
-			"exclude": ["common"]
-		},
-
-		{
-			"name": "app/languages",
-			"exclude": ["common"]
-		},
-
-		{
-			"name": "app/contact/contact",
-			"exclude": ["common"]
-		},
-
-		{
-			"name": "page/catalog/newsletter",
-			"include": [
-				"app/catalog/newsletter",
-				"app/catalog/newsletter-subscribe-unsubscribe",
-				],
-			"exclude": ["common"]
-		},
-
-		{
-			"name": "page/catalog/gift-card-activation",
-			"include": ["app/catalog/gift-card-activation", "app/catalog/gift-card-activation-confirm"],
-			"exclude": ["common"]
-		},
-		
-		{
-			"name": "page/catalog/gift-card-balance",
-			"include": ["app/catalog/gift-card-balance", "app/catalog/gift-card-balance-confirm"],
-			"exclude": ["common"]
-		},
-
-		{
-			"name": "plugin/image-zoom",
-			"exclude": ["common"]
-		},
-
-		{
-			"name": "app/catalog/products-category",
-			"include": [
-					"app/catalog/products-category"
-					],
-			"exclude": ["common", "plugin/image-zoom"]
-		},
-
-		{
-			"name": "page/catalog/catentry-detail",
-			"include": [
-					"app/catalog/catentry-detail",
-					"partials/catalog/catentry-detail-top",
-					"partials/catalog/catentry-detail-side",
-					"partials/catalog/catentry-detail-bottom",
-					"plugin/cis-messaging"
-					],
-			"exclude": ["common", "plugin/image-zoom"]
-		},
-
-		{
-			"name": "app/shared/gift-card",
-			"exclude": ["common"]
-		},
-
-		{
-			"name": "app/order/gift-ticket",
-			"exclude": ["common"]
-		},
-		
-		{
-			"name": "app/order/shop-cart",
-			"include": [
-				"app/order/gift-ticket"
-				],
-			"exclude": ["common"]
-		},		
-		
-		{
-			"name": "app/user/logon",
-			"exclude": ["common"]
-		},
-
-		{
-			"name": "partials/order/transport-options",
-			"exclude": ["common"]
-		},
-		
-		{
-			"name": "partials/order/shipping-method-selection",
-			"exclude": ["common"]
-		},
-
-		{
-			"name": "partials/order/verify-payment",
-			"exclude": ["common"]
-		},
-
-		{
-			"name": "partials/order/payment-affinity-card",
-			"exclude": ["common"]
-		},
-
-		{
-			"name": "partials/order/payment-affinity-modes",
-			"exclude": ["common"]
-		},
-
-		{
-			"name": "partials/order/payment-confirmation",
-			"exclude": ["common"]
-		},
-
-		{
-			"name": "partials/order/payment-credit-card",
-			"exclude": ["common"]
-		},
-
-		{
-			"name": "partials/order/payment-ideal",
-			"exclude": ["common"]
-		},
-
-		{
-			"name": "partials/order/payment-qiwi",
-			"exclude": ["common"]
-		},
-
-		{
-			"name": "partials/order/payment-klarna",
-			"exclude": ["common"]
-		},
-		
-		{
-			"name": "partials/order/payment-method-selection",
-			"exclude": ["common"]
-		},
-		
-		{
-			"name": "page/order/summary",
-			"include": ["app/order/summary",
-						"partials/user/update-password",
-						"partials/order/payment-method-selection",
-						"partials/order/payment-giftcard",
-						"partials/order/payment-qiwi",
-						"partials/order/payment-ideal",
-						"partials/order/payment-klarna",
-						"partials/order/payment-credit-card",
-						"partials/order/payment-confirmation",
-						"partials/order/payment-affinity-card",
-						"partials/order/verify-payment",
-						"partials/order/shipping-method-selection",
-						"partials/order/transport-options",
-						"app/order/gift-ticket"
-						],
-			"exclude": ["common"]
-		},
-		
-		{
-			"name": "app/order/order-confirmation",
-			"include": ["app/order/order-confirmation",
-						"partials/user/update-password"
-						],
-			"exclude": ["common"]
-		},
-		
-		{
-			"name": "app/user/account",
-			"exclude": ["common"]
-		},
-
-		{
-			"name": "partials/user/orders-list",
-			"exclude": ["common"]
-		},
-
-		{
-			"name": "app/user/order-detail",
-			"exclude": ["common"]
-		},
-
-		{
-			"name": "app/user/returns",
-			"include": ["app/user/returns",
-						"partials/user/return-type"],
-			"exclude": ["common"]
-		},
-
-		{
-			"name": "page/user/order-return",
-			"include": ["app/user/order-return", "partials/user/orders-list", "partials/user/order-return-item-list",
-						"partials/user/order-refund","partials/user/order-refund-bank",
-						"partials/user/order-refund-postal", "app/shared/address", "app/user/address-list",
-						"template/transport-option"],
-			"exclude": ["common"]
-		},
-
-		{
-			"name": "partials/user/return-confirmation",
-			"exclude": ["common"]
-		},
-
-		{
-			"name": "page/user/order-refund",
-			"include": ["app/user/order-refund",
-						"partials/user/order-refund",
-						"partials/user/order-refund-bank",
-						"partials/user/order-refund-postal"],
-			"exclude": ["common"]
-		},
-
-		{
-			"name": "page/user/order-invoice",
-			"include": ["app/user/order-invoice",
-						"partials/user/order-invoice-rfc",
-						"partials/user/return-confirmation"],
-			"exclude": ["common"]
-		},
-
-		{
-			"name":  "plugin/address-autocomplete",
-			"exclude": ["common"]
-		},
-		
-		{
-			"name": "page/user/address-list",
-			"include": ["app/user/address-list",
-						"app/shared/address"],
-			"exclude": ["common"]
-		},
-
-		{
-			"name": "app/user/payment-data",
-			"exclude": ["common"]
-		},
-
-		{
-			"name": "page/user/personal-info",
-			"include": ["app/user/personal-info",
-						"app/shared/address"],
-			"exclude": ["common"]
-		},
-
-		{
-			"name": "page/user/access-data",
-			"include": ["app/user/access-data",
-						"partials/user/update-email",
-						"partials/user/update-password"],
-			"exclude": ["common"]
-		},
-
-		{
-			"name": "partials/user/update-password",
-			"exclude": ["common"]
-		},
-
-		{
-			"name": "partials/user/update-email",
-			"exclude": ["common"]
-		},
-
-		{
-			"name": "app/user/newsletter",
-			"exclude": ["common"]
-		},		
-		
-		{
-			"name": "page/store",
-			"include": ["app/store/stores"],
-			"exclude": ["common"]
 		}
 	],
-	
+
 	"removeCombined": true,
 	
 	"optimize": "uglify",
 	
 	"uglify": {
 		"max_line_length": 200,
-		"beautify": false
+		"beautify": true
 	},
 	
 	"optimizeCss": "standard",
 
-	
+	"skipDirOptimize": true
+
 }

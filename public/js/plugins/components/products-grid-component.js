@@ -2,7 +2,7 @@
 	'use strict';
 
 	// Data layer plugin
-	define(['ractive', 'text!/templates/partials/products-grid.dust', 'plugins/local-storage'], function(R, productsGridTemplate, storage) {
+	define(['ractive', 'text!templates/partials/products-grid.dust', 'plugins/local-storage'], function(R, productsGridTemplate, storage) {
 
 		var ProductsGridComponent = R.extend({
 			isolated: true,

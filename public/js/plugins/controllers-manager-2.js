@@ -3,7 +3,7 @@
 	
 	// Controller Manager plugin
 	// TODO A couple of dependencies loaded but not used. How do I should do this??
-	define(['jquery', 'ractive', 'plugins/data-layer', 'plugins/templates', 'plugins/ractive-view-helpers', 'plugins/decorators/image-lazy-load'], function($, R, dataLayer, templates) {
+	define(['jquery', 'plugins/data-layer', 'plugins/templates', 'plugins/ractive-view-helpers', 'plugins/decorators/image-lazy-load'], function($, dataLayer, templates) {
 
 		var controllersRegistry = {},
 			controllersInterceptors = {};

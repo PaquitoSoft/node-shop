@@ -8,6 +8,7 @@
 	requireOptions = {
 		baseUrl: '/js',
 		paths: {
+			templates: '/templates',
 			text: '/vendor/requirejs-text/text',
 			jquery: '/vendor/jquery/dist/jquery',
 			pagejs: '/vendor/page.js/page',
@@ -39,15 +40,9 @@
 	// Configure RequireJS
 	requirejs.config(requireOptions);
 	
-	// mainDependencies.push('bundles/' + window.NodeShop.dataLayer.template);
-
 	// Main initialization
-	define(mainDependencies, function($, controllersManager, router, dataLayer, events) {
+	define('main', mainDependencies, function($, controllersManager, router, dataLayer, events) {
 		var counter = App.extensions.length;
-
-		require(['./bundles/' + dataLayer.template], function(bundle) {
-			console.log('Bundle loaded:', bundle);
-		});
 
 		function startApp() {
 			// TODO Get dataLayer from a plugin

@@ -237,7 +237,9 @@
 		<script>
 			window.NodeShop.appContext = {
 				version: '0.1.0',
-				photosBasePath: 'http://static.zara.net/photos',
+				isProductionMode: {{settings.isProductionMode}},
+				initialBundle: '{{dataLayer.template}}',
+				photosBasePath: 'http://static.zara.net/photos',				
 				templates: {
 					disableCaching: false
 				},
@@ -246,11 +248,13 @@
 			window.NodeShop.dataLayer = {{JSON.stringify(dataLayer)}};
 		</script>
 
-		<script data-main="/js/main.js" src="/vendor/requirejs/require.js"></script>
-		<!--
-		<script type="text/javascript" src="/js/bundle/common.js"></script>
-		<script type="text/javascript" src="/js/bundle/{{viewname}}.js"></script>
-		-->
+		{{#settings.isProductionMode}}
+			<script type="text/javascript" src="/js/main.js?v={{settings.appConfig.version}}"></script>
+			<script type="text/javascript" src="/js/bundles/{{dataLayer.template}}.js?v={{settings.appConfig.version}}"></script>
+		{{else}}
+			<script data-main="/js/main.js" src="/vendor/requirejs/require.js?v={{settings.appConfig.version}}"></script>
+		{{/settings.isProductionMode}}
+
 		<script type="text/javascript">
 			(function() {
 				require(['main'], function(main) {
@@ -258,6 +262,6 @@
 				});
 			}());
 		</script>
-
+		
 	</body>
 </html>
