@@ -1,30 +1,29 @@
-(function() {
-	// ShopCartController
-	define(['jquery', 'stores/shop-cart'], function($, ShopCartStore) {
-		var $orderTotalAmount;
+'use strict';
 
-		function _deleteOrderItem(event) {
-			event.preventDefault();
-			var $orderItem = $(this).parents('.row'),
-				orderItemIndex = $orderItem.attr('data-index');
+var $ = require('jquery'),
+	ShopCartStore = require('../stores/shop-cart');
 
-			ShopCartStore.removeOrderItem(orderItemIndex).then(function() {
-				$orderItem.remove();
-				$orderTotalAmount.text(ShopCartStore.getTotalAmount().toFixed(2));
-			});
-		}
+var $orderTotalAmount;
 
-		function configure($mainEl) {
-			$orderTotalAmount = $mainEl.find('._orderAmount');
-			
-			$mainEl.on('click', '._removeOrderItemLink', _deleteOrderItem);
-			
-			console.log('ShopCartController initialized!');
-		}
+function _deleteOrderItem(event) {
+	event.preventDefault();
+	var $orderItem = $(this).parents('.row'),
+		orderItemIndex = $orderItem.attr('data-index');
 
-		return {
-			init: configure
-		};
-
+	ShopCartStore.removeOrderItem(orderItemIndex).then(function() {
+		$orderItem.remove();
+		$orderTotalAmount.text(ShopCartStore.getTotalAmount().toFixed(2));
 	});
-}());
+}
+
+function configure($mainEl) {
+	$orderTotalAmount = $mainEl.find('._orderAmount');
+	
+	$mainEl.on('click', '._removeOrderItemLink', _deleteOrderItem);
+	
+	console.log('ShopCartController initialized!');
+}
+
+module.exports = {
+	init: configure
+};

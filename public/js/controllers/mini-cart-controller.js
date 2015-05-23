@@ -1,36 +1,39 @@
-(function() {
-	// MiniCartController
-	define(['jquery', 'plugins/events-manager', 'stores/shop-cart'], function($, events, ShopCartStore) {
-		var $itemsCount;
+'use strict';
 
-		function _initUI() {
-			var miniCart = storage.retrieve('mini-cart');
-			if (miniCart) {
-				$itemsCount.text(miniCart.count);	
-			}
-		}
+// MiniCartController
 
-		function _onShopCartUpdated() {
-			$itemsCount.text(ShopCartStore.unitsCount);
-		}
+var $ = require('jquery'),
+	storage = require('../plugins/local-storage'),
+	events = require('../plugins/events-manager'),
+	ShopCartStore = require('../stores/shop-cart');
 
-		function configure($mainEl) {
-			$itemsCount = $mainEl.find('._items-count');
+var $itemsCount;
 
-			events.on('productAddedToCart', _onShopCartUpdated);
-			events.on('productRemovedFromCart', _onShopCartUpdated);
+function _initUI() {
+	var miniCart = storage.retrieve('mini-cart');
+	if (miniCart) {
+		$itemsCount.text(miniCart.count);	
+	}
+}
 
-			$mainEl.on('click', '.cart', function(e) {
-				e.preventDefault();
-				events.trigger('toggleSummaryCartRequested');
-			});
+function _onShopCartUpdated() {
+	$itemsCount.text(ShopCartStore.unitsCount);
+}
 
-			console.log('MiniCartController initialized!');
-		}
+function configure($mainEl) {
+	$itemsCount = $mainEl.find('._items-count');
 
-		return {
-			init: configure
-		};
+	events.on('productAddedToCart', _onShopCartUpdated);
+	events.on('productRemovedFromCart', _onShopCartUpdated);
 
+	$mainEl.on('click', '.cart', function(e) {
+		e.preventDefault();
+		events.trigger('toggleSummaryCartRequested');
 	});
-}());
+
+	console.log('MiniCartController initialized!');
+}
+
+module.exports = {
+	init: configure
+};

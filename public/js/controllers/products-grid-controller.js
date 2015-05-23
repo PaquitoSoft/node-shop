@@ -1,26 +1,24 @@
-(function() {
-	// ProductsGridController
-	define(['jquery', 'plugins/local-storage'], function($, storage) {
+'use strict';
 
-		function configure($mainEl) {
-			console.log('ProductsGridController initialized!');
+var $ = require('jquery'),
+	storage = require('../plugins/local-storage');
 
-			$mainEl.on('click', '._product-summary', function(e) {
-				
-				storage.store('selectedCategoryProductId', $(this).attr('data-id'));
+function configure($mainEl) {
+	console.log('ProductsGridController initialized!');
 
-				// TODO Should read products ids from an app context repository
-				var categoryProductsIds = $mainEl.find('._product-summary').map(function() {
-					return $(this).attr('data-id');
-				});
-				storage.store('currentCategoryProductsIds', categoryProductsIds.toArray());
-			});
+	$mainEl.on('click', '._product-summary', function(e) {
+		
+		storage.store('selectedCategoryProductId', $(this).attr('data-id'));
 
-		}
-
-		return {
-			init: configure
-		};
-
+		// TODO Should read products ids from an app context repository
+		var categoryProductsIds = $mainEl.find('._product-summary').map(function() {
+			return $(this).attr('data-id');
+		});
+		storage.store('currentCategoryProductsIds', categoryProductsIds.toArray());
 	});
-}());
+
+}
+
+module.exports = {
+	init: configure
+};

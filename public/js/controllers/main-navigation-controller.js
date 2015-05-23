@@ -1,47 +1,45 @@
-(function() {
-	'use strict';
+'use strict';
 
-	// MainNavigationController
-	define(['jquery', 'plugins/events-manager'], function($, events) {
-		var $mainMenu;
+// MainNavigationController
+var $ = require('jquery'),
+	events = require('../plugins/events-manager');
 
-		function _foldMenu() {
-			$mainMenu.find('.accordion-content').addClass('invisible');
-		}
+var $mainMenu;
 
-		function _selectCategory(data) {
-			var $category = $mainMenu.find('[data-categoryId="' + data.categoryId + '"]');
+function _foldMenu() {
+	$mainMenu.find('.accordion-content').addClass('invisible');
+}
 
-			_foldMenu();
-			
-			if (!$category.hasClass('_rootCategory')) {
-				$mainMenu.find('.accordion-content a').removeClass('selected');
-				$category.addClass('selected');
-				$category = $category.parents('li').find('._rootCategory');
-			}
+function _selectCategory(data) {
+	var $category = $mainMenu.find('[data-categoryId="' + data.categoryId + '"]');
 
-			$category.siblings('.accordion-content').removeClass('invisible');
-		}
+	_foldMenu();
+	
+	if (!$category.hasClass('_rootCategory')) {
+		$mainMenu.find('.accordion-content a').removeClass('selected');
+		$category.addClass('selected');
+		$category = $category.parents('li').find('._rootCategory');
+	}
 
-		function onCategoryClick (event) {
-			_selectCategory({ categoryId: $(event.target).data('categoryid') });
-		}
+	$category.siblings('.accordion-content').removeClass('invisible');
+}
 
-		function configure() {
-			$mainMenu = $('#main-menu');
-			
-			$mainMenu.on('click', '[data-categoryId]', onCategoryClick);
+function onCategoryClick (event) {
+	_selectCategory({ categoryId: $(event.target).data('categoryid') });
+}
 
-			events.on('FOLD_MENU_REQUEST', _foldMenu);
+function configure() {
+	$mainMenu = $('#main-menu');
+	
+	$mainMenu.on('click', '[data-categoryId]', onCategoryClick);
 
-			events.on('SELECT_MENU_CATEGORY_REQUEST', _selectCategory);
+	events.on('FOLD_MENU_REQUEST', _foldMenu);
 
-			console.log('MainNavigationController initialized!');
-		}
+	events.on('SELECT_MENU_CATEGORY_REQUEST', _selectCategory);
 
-		return {
-			init: configure
-		};
+	console.log('MainNavigationController initialized!');
+}
 
-	});
-}());
+module.exports = {
+	init: configure
+};

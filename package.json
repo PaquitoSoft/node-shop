@@ -23,5 +23,13 @@
     "morgan": "~1.3.0",
     "serve-favicon": "~2.1.3",
     "compression": "~1.3.0"
-  }
+  },
+  "devDependencies": {
+    "css-loader": "^0.13.1",
+    "grunt": "^0.4.5",
+    "steal": "^0.10.5",
+    "steal-tools": "^0.10.4",
+    "style-loader": "^0.12.2"
+  },
+  "system": {}
 }

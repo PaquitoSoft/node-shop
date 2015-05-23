@@ -248,7 +248,17 @@
 			};
 		</script>
 
-		<script data-main="/js/main.js" src="/vendor/requirejs/require.js"></script>
+		{! <script data-main="/js/main.js" src="/vendor/requirejs/require.js"></script>	!}
+
+		{! <script src="/js/bundle.js" type="text/javascript" charset="utf-8"></script> !}
+
+		<script src="/js/dist/shared.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/js/dist/product.entry.chunk.js" type="text/javascript" charset="utf-8"></script>
+
+		{! <script src="/steal/steal.js"
+				data-config='/js/steal.config.js'
+				data-main="/js/main">
+		</script> !}
 
 	</body>
 </html>

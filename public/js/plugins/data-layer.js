@@ -1,8 +1,3 @@
-(function() {
-	'use strict';
+'use strict';
 
-	// Data layer plugin
-	define(function() {
-		return window.NodeShop.dataLayer;
-	});
-}());
+module.exports = window.NodeShop.dataLayer;

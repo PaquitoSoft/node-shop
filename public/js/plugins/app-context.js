@@ -1,8 +1,3 @@
-(function() {
-	'use strict';
+'use strict';
 
-	// Application context plugin
-	define(function() {
-		return window.NodeShop.appContext;
-	});
-}());
+module.exports = window.NodeShop.appContext;

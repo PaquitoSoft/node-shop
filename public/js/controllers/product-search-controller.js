@@ -1,15 +1,9 @@
-(function() {
-	// ProductSearchController
-	define(['jquery'], function($) {
+'use strict';
 
-		
-		function configure() {
-			console.log('ProductSearchController initialized!');
-		}
+function configure() {
+	console.log('ProductSearchController initialized!');
+}
 
-		return {
-			init: configure
-		};
-
-	});
-}());
+module.exports = {
+	init: configure
+};

@@ -21,7 +21,8 @@
     "predef"        : [  // Custom globals.
 		"define",
 		"require",
-		"requirejs"
+		"requirejs",
+		"module"
     ],
  
  

@@ -29,5 +29,6 @@ node_modules
 
 # Front-end dependency directory
 public/vendor
+public/js/dist
 
 resources/db

@@ -1,85 +1,87 @@
-(function() {
-	'use strict';
+'use strict';
 
-	// Router plugin
-	define(['pagejs', 'jquery', 'plugins/templates', 'plugins/controllers-manager', 'plugins/events-manager'],
-		function(page, $, templates, controllersManager, events) {
-		
-		var $mainContainer;
+var $ = require('jquery'),
+	page = require('pagejs'),
+	templates = require('./templates'),
+	controllersManager = require('./controllers-manager'),
+	events = require('./events-manager');
 
-		function handler(options) {
-			return function(context/*, next*/) {
-				// console.log(context);
-				// options.handler.call(null, context, options.template);
-				console.log('Navigating to:', context.path);
-				$.getJSON(context.path)
-					.done(function (data) {
-						templates.render(options.template, data, function (html) {
-							if (html) {
-								$mainContainer.empty().html(html);
-								controllersManager.config($mainContainer);
-								events.trigger('NAVIGATION_DONE', {url: context.path});
+// Router plugin
 
-								if (options.foldedMenu) {
-									events.trigger('FOLD_MENU_REQUEST');
-								}
+var $mainContainer;
 
-								console.log('Navigation done!');
-							} else {
-								console.warn('Could not render HOME page (no template)');
-							}
-						});
-					})
-					.fail(function (xhr, textStatus, err) {
-						// TODO Handle error properly
-						console.error('Error handling ' + context.path + ' route:', textStatus);
-					});
-			};
-		}
+function handler(options) {
+	return function(context/*, next*/) {
+		// console.log(context);
+		// options.handler.call(null, context, options.template);
+		console.log('Navigating to:', context.path);
+		$.getJSON(context.path)
+			.done(function (data) {
+				templates.render(options.template, data, function (html) {
+					if (html) {
+						$mainContainer.empty().html(html);
+						controllersManager.config($mainContainer);
+						events.trigger('NAVIGATION_DONE', {url: context.path});
 
-		function navTo(path) {
-			page(path);
-		}
+						if (options.foldedMenu) {
+							events.trigger('FOLD_MENU_REQUEST');
+						}
 
-		function init() {
-			$mainContainer = $('#main');
+						console.log('Navigation done!');
+					} else {
+						console.warn('Could not render HOME page (no template)');
+					}
+				});
+			})
+			.fail(function (xhr, textStatus, err) {
+				// TODO Handle error properly
+				console.error('Error handling ' + context.path + ' route:', textStatus);
+			});
+	};
+}
 
-			page('/', handler({
-				template: 'home',
-				foldedMenu: true
-			}));
-			page('/catalog/category/:categoryId/:categoryName', handler({
-				template: 'category'
-			}));
-			page('/catalog/category/:categoryId/product/:productId/:productName?', handler({
-				template: 'product-detail'
-			}));
-			page('/shop/cart', handler({
-				template: 'shop-cart',
-				foldedMenu: true
-			}));
+function navTo(path) {
+	page(path);
+}
 
-			/*
-				page([options])
+function init() {
+	$mainContainer = $('#main');
 
-				Register page's popstate / click bindings. If you're doing selective binding you'll like want to pass { click: false } to specify this yourself. The following options are available:
+	page('/', handler({
+		template: 'home',
+		foldedMenu: true
+	}));
+	page('/catalog/category/:categoryId/:categoryName', handler({
+		template: 'category'
+	}));
+	page('/catalog/category/:categoryId/product/:productId/:productName?', handler({
+		template: 'product-detail'
+	}));
+	page('/shop/cart', handler({
+		template: 'shop-cart',
+		foldedMenu: true
+	}));
 
-				click bind to click events [true]
-				popstate bind to popstate [true]
-				dispatch perform initial dispatch [true]
-				hashbang add #! before urls [false]
-				decodeURLComponents remove URL encoding from path components and route params [true]
+	/*
+		page([options])
 
-				If you wish to load serve initial content from the server you likely will want to set dispatch to false.
-			*/
-			page({ dispatch: false });
+		Register page's popstate / click bindings. If you're doing selective binding you'll like want to pass { click: false } to specify this yourself. The following options are available:
 
-			console.log('Router configured!');
-		}
+		click bind to click events [true]
+		popstate bind to popstate [true]
+		dispatch perform initial dispatch [true]
+		hashbang add #! before urls [false]
+		decodeURLComponents remove URL encoding from path components and route params [true]
 
-		return {
-			init: init,
-			navTo: navTo
-		};
-	});
-}());
+		If you wish to load serve initial content from the server you likely will want to set dispatch to false.
+	*/
+	page({ dispatch: false });
+
+	console.log('Router configured!');
+}
+
+
+module.exports = {
+	init: init,
+	navTo: navTo
+};

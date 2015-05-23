@@ -1,69 +1,65 @@
-(function() {
-	'use strict';
+'use strict';
 
-	// Browser storage plugin
-	define(function() {
-		var storage = window.localStorage;
-		var SEPARATOR = '|',
-			TYPE_STRING = '#',
-			TYPE_OBJECT = '@';		
+// Browser storage plugin
 
-		// TTL in seconds
-		function store(key, value, options) {
-			var rawValue = value,
-				_options = options || {},
-				type = (typeof value === 'string') ? TYPE_STRING : TYPE_OBJECT,
-				ttl = _options.ttl || '';
+var storage = window.localStorage;
+var SEPARATOR = '|',
+	TYPE_STRING = '#',
+	TYPE_OBJECT = '@';
 
-			console.log('Storing value:', value);
-			if (type === TYPE_OBJECT) {
-				rawValue = JSON.stringify(value);
-			}
+// TTL in seconds
+function store(key, value, options) {
+	var rawValue = value,
+		_options = options || {},
+		type = (typeof value === 'string') ? TYPE_STRING : TYPE_OBJECT,
+		ttl = _options.ttl || '';
 
-			rawValue = type + SEPARATOR + ttl + SEPARATOR + rawValue;
+	console.log('Storing value:', value);
+	if (type === TYPE_OBJECT) {
+		rawValue = JSON.stringify(value);
+	}
 
-			storage.setItem(key, rawValue);
-		}
+	rawValue = type + SEPARATOR + ttl + SEPARATOR + rawValue;
 
-		function retrieve(key) {
-			var rawValue = storage.getItem(key),
-				result = rawValue,
-				parts;
+	storage.setItem(key, rawValue);
+}
 
-			if (!result) return result;
-			
-			parts = rawValue.split(SEPARATOR);
+function retrieve(key) {
+	var rawValue = storage.getItem(key),
+		result = rawValue,
+		parts;
 
-			// Check if value is expired
-			if (parts[1] && Date.now() > parts[1]) {
-				storage.removeItem(key);
-				return null;
-			}
+	if (!result) return result;
+	
+	parts = rawValue.split(SEPARATOR);
 
-			// Parse value if needed
-			if (parts[0] === TYPE_OBJECT) {
-				result = JSON.parse(parts.slice(2).join(''));
-			} else {
-				result = parts.slice(2).join('');
-			}
+	// Check if value is expired
+	if (parts[1] && Date.now() > parts[1]) {
+		storage.removeItem(key);
+		return null;
+	}
 
-			return result;
-		}
+	// Parse value if needed
+	if (parts[0] === TYPE_OBJECT) {
+		result = JSON.parse(parts.slice(2).join(''));
+	} else {
+		result = parts.slice(2).join('');
+	}
 
-		function remove(key) {
-			return storage.removeItem(key);
-		}
+	return result;
+}
 
-		function clearAll() {
-			return storage.clear();
-		}
+function remove(key) {
+	return storage.removeItem(key);
+}
 
-		return {
-			store: store,
-			retrieve: retrieve,
-			remove: remove,
-			clearAll: clearAll
-		}
+function clearAll() {
+	return storage.clear();
+}
 
-	});
-}());
+module.exports = {
+	store: store,
+	retrieve: retrieve,
+	remove: remove,
+	clearAll: clearAll
+};
