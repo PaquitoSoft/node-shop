@@ -14,6 +14,9 @@
 		shim: {
 			dust: {
 				exports: 'dust'
+			},
+			dustHelpers: {
+				deps: ['dust']
 			}
 		}
 	});
