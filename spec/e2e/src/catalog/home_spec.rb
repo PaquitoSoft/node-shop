@@ -1,5 +1,6 @@
 require 'rspec'
 require 'watir-webdriver'
+require 'watir-webdriver-performance' # http://watirwebdriver.com/page-performance/
 require 'json'
 
 require './spec/e2e/support/helpers'
@@ -7,14 +8,14 @@ require './spec/e2e/support/helpers'
 describe 'Home Page' do	
 	
 	before(:all) do
-		puts "Configuration browser: #{RSpec.configuration.browser}"
-		@browser = Watir::Browser.new RSpec.configuration.browser
-		@h = TestHelper.new(@browser)
+		puts "Running tests in browser: #{RSpec.configuration.browser}"
+		@h = TestHelper.new(RSpec.configuration.browser)
 	end
 
 	before(:each) do
-		@browser.goto 'http://localhost:3000'
-		# @browser.wait
+		@h.browser.goto 'http://localhost:3000'
+		load_secs = @h.browser.performance.summary[:response_time] / 1000
+		puts "Load time: #{load_secs} seconds."
 	end
 
 	# after(:each) do
@@ -22,7 +23,7 @@ describe 'Home Page' do
 	# end
 
 	after(:all) do
-		@browser.close
+		@h.browser.close
 	end
 
 	def check_initial_state

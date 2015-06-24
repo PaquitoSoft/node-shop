@@ -1,8 +1,13 @@
+require 'watir-webdriver'
+require 'watir-webdriver-performance' # http://watirwebdriver.com/page-performance/
 
 class TestHelper
 
-	def initialize(browser)
-		@browser = browser
+	attr_reader :browser
+
+	def initialize(browser_name)
+		@browser_name = browser_name
+		@browser = Watir::Browser.new browser_name
 	end
 
 	def get_elements(selector, parent_element = @browser)

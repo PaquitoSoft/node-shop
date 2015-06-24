@@ -2,6 +2,7 @@ require 'rspec'
 require 'rspec/core/formatters/documentation_formatter'
 
 browsers = ['safari', 'chrome', 'firefox']
+# browsers = ['safari']
 
 def create_configuration
 	config = RSpec::Core::Configuration.new
@@ -51,6 +52,15 @@ end
 browsers.each do |browser|
 	run_suite(browser)
 end
+
+# threads = browsers.map do |browser|
+# 	Thread.new(browser) do |b|
+# 		ENV['_node-shop-e2e-test-browser'] = b
+# 		run_suite(b)
+# 	end
+# end
+
+# threads.each {|t| t.join}
 
 
 # Based on this gist -> https://gist.github.com/activars/4467752
