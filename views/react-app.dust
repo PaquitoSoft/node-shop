@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<!--[if lt IE 7 ]><html class="ie ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!--><html lang="en"> <!--<![endif]-->
+	<head>
+		<title>
+			Simple ecommerce theme demo store
+		</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<meta name="description" content="Testing demo store" />
+
+		<link href="/styles/theme.css" rel="stylesheet" type="text/css"  media="all"  />
+		<link rel="stylesheet" href="/styles/main.css">
+
+		<link rel="shortcut icon" href="/images/favicon.ico">
+		<link rel="apple-touch-icon" href="/images/apple-touch-icon.png?2243">
+		<link rel="apple-touch-icon" sizes="72x72" href="/images/apple-touch-icon-72x72.png?2243">
+		<link rel="apple-touch-icon" sizes="114x114" href="/images/apple-touch-icon-114x114.png?2243">
+	</head>
+
+
+	<body id="simple-ecommerce-theme-demo-store" class="template-index" >
+		<div id="cart-animation">1</div>
+		<div id="fb-root"></div>
+
+
+		<!--START DRAWER-->
+		<div id="drawer" data-controller="summary-cart-controller">
+
+			{@clientDataLayer key="summary-cart-controller" attr="shopCart" data=shoppingCart /}
+
+			<div class="container">
+				<form action="/shop/cart" method="get" class="_list">
+					{! Client side rendering !}
+					<div class="actions">
+						<input type="submit" value="Check Out">
+					</div>
+				</form>
+			</div>
+		</div>
+		<!--END DRAWER-->
+
+		<div id="root"></div>
+
+		</div>
+		<!-- END CONTAINER 3-->
+
+		<script src="/js/dist/app-dist.js"></script>
+
+	</body>
+</html>
